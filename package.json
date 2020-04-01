@@ -5,11 +5,13 @@
   "description": "Личный проект «Большое путешествие» от HTML Academy",
   "scripts": {
     "eslint": "eslint src/**/*.js",
-    "test": "npm run eslint"
+    "test": "npm run eslint",
+    "docs": "jsdoc -c jsdoc.json"
   },
   "devDependencies": {
     "eslint": "6.1.0",
-    "eslint-config-htmlacademy": "0.5.2"
+    "eslint-config-htmlacademy": "0.5.2",
+    "jsdoc": "^3.6.3"
   },
   "engines": {
     "node": "10"
