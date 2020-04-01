@@ -6,7 +6,7 @@
   "scripts": {
     "eslint": "eslint src/**/*.js",
     "test": "npm run eslint",
-    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json"
+    "docs": "jsdoc -c jsdoc.json"
   },
   "devDependencies": {
     "eslint": "6.1.0",
