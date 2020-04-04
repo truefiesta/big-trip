@@ -6,12 +6,17 @@
   "scripts": {
     "eslint": "eslint src/**/*.js",
     "test": "npm run eslint",
-    "docs": "jsdoc -c jsdoc.json"
+    "docs": "jsdoc -c jsdoc.json",
+    "build": "webpack",
+    "start": "webpack-dev-server --open"
   },
   "devDependencies": {
     "eslint": "6.1.0",
     "eslint-config-htmlacademy": "0.5.2",
-    "jsdoc": "^3.6.3"
+    "jsdoc": "3.6.3",
+    "webpack": "4.42.1",
+    "webpack-cli": "3.3.11",
+    "webpack-dev-server": "3.10.3"
   },
   "engines": {
     "node": "10"
