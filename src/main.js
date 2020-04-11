@@ -37,6 +37,6 @@ render(tripEventsElement, createTripDaysTemplate(), `beforeend`);
 const tripEventsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 render(tripEventsListElement, createTripEventEditFormTemplate(), `beforeend`);
 
-for (let i = 0; i < EVENTS_COUNT; i++) {
-  render(tripEventsListElement, createTripEventItemTemplate(), `beforeend`);
+for (let i = 0; i < events.length; i++) {
+  render(tripEventsListElement, createTripEventItemTemplate(events[i]), `beforeend`);
 }
