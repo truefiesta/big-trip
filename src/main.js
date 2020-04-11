@@ -7,8 +7,10 @@ import {createTripSortTemplate} from "./components/sorting.js";
 import {createTripDaysTemplate} from "./components/days.js";
 import {createTripEventEditFormTemplate} from "./components/event-edit.js";
 import {createTripEventItemTemplate} from "./components/event.js";
+import {generateEvents} from "./mock/event.js";
 
-const EVENTS_COUNT = 3;
+const EVENTS_COUNT = 20;
+const events = generateEvents(EVENTS_COUNT);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
