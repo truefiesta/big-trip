@@ -1,3 +1,5 @@
+import {MILLISECONDS_IN_WEEK} from "../utils.js";
+
 const MIN_PHOTOS = 1;
 const MAX_PHOTOS = 5;
 const MIN_DESCRIPTION_PHRASES = 1;
@@ -119,9 +121,9 @@ const getRandomPhotos = (min, max) => {
 const getRandomDate = () => {
   const targetDate = new Date();
   const sign = Math.random() > 0.5 ? 1 : -1;
-  const diffValue = sign * getRandomInteger(0, 8);
+  const diffValue = sign * getRandomInteger(0, MILLISECONDS_IN_WEEK);
 
-  targetDate.setDate(targetDate.getDate() + diffValue);
+  targetDate.setTime(targetDate.getTime() + diffValue);
 
   return targetDate;
 };
@@ -129,9 +131,9 @@ const getRandomDate = () => {
 // Дата окончания не может быть меньше даты начала события.
 const getRandomDateRange = () => {
   const startDate = getRandomDate();
-  const diffValue = getRandomInteger(1, 8);
+  const diffValue = getRandomInteger(0, MILLISECONDS_IN_WEEK);
   const endDate = new Date();
-  endDate.setDate(startDate.getDate() + diffValue);
+  endDate.setTime(startDate.getTime() + diffValue);
 
   return {
     startDate,
