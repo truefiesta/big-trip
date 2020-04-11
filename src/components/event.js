@@ -1,4 +1,4 @@
-import {formatTime, formatDate, formatDuration} from "../utils.js"
+import {formatTime, formatDate, formatDuration} from "../utils.js";
 
 // В колонке «Offers» отображаются не более 3-х дополнительных опций,
 // применённых к точке маршрута. Остальные опции пользователь может
