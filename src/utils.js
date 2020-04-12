@@ -25,9 +25,11 @@ const formatDate = (date) => {
   const month = castTimeFormat(date.getMonth());
   const year = date.getFullYear();
 
+  const twoDigitsYear = year.toString().slice(2);
+
   const time = formatTime(date);
 
-  return `${day}/${month}/${year} ${time}`;
+  return `${day}/${month}/${twoDigitsYear} ${time}`;
 };
 
 const formatDuration = (durationInMilliseconds) => {
