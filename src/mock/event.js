@@ -22,22 +22,6 @@ const eventTypes = [
   `Restaurant`
 ];
 
-// const transferTypes = [
-//   `Taxi`,
-//   `Bus`,
-//   `Train`,
-//   `Ship`,
-//   `Transport`,
-//   `Drive`,
-//   `Flight`
-// ]
-
-// const activityTypes = [
-//   `Check`,
-//   `Sightseeing`,
-//   `Restaurant`
-// ]
-
 const destinations = [
   `Amsterdam`,
   `Geneva`,
@@ -166,4 +150,4 @@ const generateEvents = (eventsCount) => {
   return new Array(eventsCount).fill(``).map(generateEvent);
 };
 
-export {generateEvents};
+export {destinations, generateEvents};

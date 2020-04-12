@@ -1,4 +1,5 @@
 import {formatDate} from "../utils.js";
+import {destinations} from "../mock/event.js";
 
 const createEventTypesMarkup = (eventTypes, type) => {
   return eventTypes.map((eventType) => {
@@ -29,8 +30,67 @@ const createAvailableOffersMarkup = (availableOffers) => {
   }).join(`\n`);
 };
 
+const createOffersSectionMarkup = (offers) => {
+  const eventOffersMarkup = createAvailableOffersMarkup(offers);
+  return (
+    `<section class="event__section  event__section--offers">
+        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+        <div class="event__available-offers">
+          ${eventOffersMarkup}
+        </div>
+      </section>`
+  );
+};
+
+const createDescriptionMarkup = (availableDescription) => {
+  return (
+    `<p class="event__destination-description">${availableDescription}</p>`
+  );
+};
+
+const createPhotosMarkup = (photos) => {
+  return photos.map((photo) => {
+    return (
+      `<img class="event__photo" src="${photo}" alt="Event photo">`
+    );
+  }).join(`\n`);
+};
+
+const createDestinationInfoMarkup = (destinationInformation) => {
+  const {description, photos} = destinationInformation;
+  const hasDescription = !description ? `` : createDescriptionMarkup(description);
+  const hasPhotos = photos.length > 0 ? createPhotosMarkup(photos) : ``;
+  return (
+    `<section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      ${hasDescription}
+      <div class="event__photos-container">
+        <div class="event__photos-tape">
+          ${hasPhotos}
+        </div>
+      </div>
+    </section>`
+  );
+};
+
+const createDestinationOptionsMarkup = () => {
+  return destinations.map((destination) => {
+    return (
+      `<option value="${destination}"></option>`
+    );
+  }).join(`\n`);
+};
+
+const checkType = (activityTypes, type) => {
+  const types = activityTypes.map((it) => it.toLowerCase());
+  type = type.toString().toLowerCase();
+
+  return types.includes(type) ? ` in` : ` to`;
+};
+
 export const createTripEventEditFormTemplate = (event) => {
-  const {type, destination, offers, time, price} = event;
+  const {type, destination, offers, destinationInfo, time, price} = event;
 
   const transferTypes = [
     `Taxi`,
@@ -51,10 +111,14 @@ export const createTripEventEditFormTemplate = (event) => {
   const typeCheck = type === `Check` ? `Check-in` : type;
   const transferTypeEventsMarkup = createEventTypesMarkup(transferTypes, type);
   const activityTypeEventsMarkup = createEventTypesMarkup(activityTypes, type);
-  const isActivityType = activityTypes.includes(type) ? ` in` : ` to`;
+  const isActionType = checkType(activityTypes, type);
+
   const {startTime, endTime} = time;
-  const eventOffersMarkup = createAvailableOffersMarkup(offers);
+
+  const offersSectionMarkup = offers.length > 0 ? createOffersSectionMarkup(offers) : ``;
+  const destinationInfoSectionMarkup = !destinationInfo ? `` : createDestinationInfoMarkup(destinationInfo);
   const isFavorite = Math.random() > 0.5 ? `checked` : ``;
+  const destinationOptions = createDestinationOptionsMarkup();
 
   return (
     `<li class="trip-events__item">
@@ -82,13 +146,11 @@ export const createTripEventEditFormTemplate = (event) => {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              ${typeCheck} ${isActivityType}
+              ${typeCheck} ${isActionType}
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
             <datalist id="destination-list-1">
-              <option value="Amsterdam"></option>
-              <option value="Geneva"></option>
-              <option value="Chamonix"></option>
+              ${destinationOptions}
             </datalist>
           </div>
 
@@ -127,15 +189,9 @@ export const createTripEventEditFormTemplate = (event) => {
             <span class="visually-hidden">Open event</span>
           </button>
         </header>
-
         <section class="event__details">
-          <section class="event__section  event__section--offers">
-            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-            <div class="event__available-offers">
-              ${eventOffersMarkup}
-            </div>
-          </section>
+          ${offersSectionMarkup}
+          ${destinationInfoSectionMarkup}
         </section>
       </form>
     </li>`
