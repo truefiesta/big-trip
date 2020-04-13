@@ -9,6 +9,10 @@ const MILLISECONDS_IN_HOUR = MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE * MINUTE
 const MILLISECONDS_IN_DAY = MILLISECONDS_IN_HOUR * HOURS_IN_DAY;
 const MILLISECONDS_IN_WEEK = DAYS_IN_WEEK * MILLISECONDS_IN_DAY;
 
+const render = (container, template, place) => {
+  container.insertAdjacentHTML(place, template);
+};
+
 const castTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
 };
@@ -55,4 +59,4 @@ const formatDuration = (durationInMilliseconds) => {
   return formatedDuration;
 };
 
-export {MILLISECONDS_IN_WEEK, formatTime, formatDate, formatDuration};
+export {MILLISECONDS_IN_WEEK, render, castTimeFormat, formatTime, formatDate, formatDuration};
