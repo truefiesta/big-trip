@@ -1,4 +1,5 @@
 import {MILLISECONDS_IN_WEEK} from "../utils.js";
+import {destinations, transferTypes, activityTypes} from "../const.js";
 
 const MIN_PHOTOS = 1;
 const MAX_PHOTOS = 5;
@@ -8,26 +9,6 @@ const MIN_OFFERS = 0;
 const MAX_OFFERS = 5;
 const MIN_PRICE = 15;
 const MAX_PRICE = 200;
-
-const eventTypes = [
-  `Taxi`,
-  `Bus`,
-  `Train`,
-  `Ship`,
-  `Transport`,
-  `Drive`,
-  `Flight`,
-  `Check`,
-  `Sightseeing`,
-  `Restaurant`
-];
-
-const destinations = [
-  `Amsterdam`,
-  `Geneva`,
-  `Chamonix`,
-  `Saint Petersburg`
-];
 
 const offers = [
   {
@@ -125,13 +106,15 @@ const getRandomDateRange = () => {
   };
 };
 
+const allEventTypes = transferTypes.concat(activityTypes);
+
 const generateEvent = () => {
   const description = getRandomItemsfromArray(destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES).join(` `);
   const selectedOffers = getRandomItemsfromArray(offers, MIN_OFFERS, MAX_OFFERS);
   const timeRange = getRandomDateRange();
 
   return {
-    type: getRandomArrayItem(eventTypes),
+    type: getRandomArrayItem(allEventTypes),
     destination: getRandomArrayItem(destinations),
     offers: selectedOffers,
     destinationInfo: {

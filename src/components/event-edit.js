@@ -1,5 +1,5 @@
 import {formatDate} from "../utils.js";
-import {destinations} from "../mock/event.js";
+import {destinations, transferTypes, activityTypes} from "../const.js";
 
 const createEventTypesMarkup = (eventTypes, type) => {
   return eventTypes.map((eventType) => {
@@ -59,15 +59,16 @@ const createPhotosMarkup = (photos) => {
 
 const createDestinationInfoMarkup = (destinationInformation) => {
   const {description, photos} = destinationInformation;
-  const hasDescription = !description ? `` : createDescriptionMarkup(description);
-  const hasPhotos = photos.length > 0 ? createPhotosMarkup(photos) : ``;
+  const descriptionMarkup = !description ? `` : createDescriptionMarkup(description);
+  const photosMarkup = photos.length > 0 ? createPhotosMarkup(photos) : ``;
+
   return (
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      ${hasDescription}
+      ${descriptionMarkup}
       <div class="event__photos-container">
         <div class="event__photos-tape">
-          ${hasPhotos}
+          ${photosMarkup}
         </div>
       </div>
     </section>`
@@ -82,7 +83,7 @@ const createDestinationOptionsMarkup = () => {
   }).join(`\n`);
 };
 
-const checkType = (activityTypes, type) => {
+const checkType = (type) => {
   const types = activityTypes.map((it) => it.toLowerCase());
   type = type.toString().toLowerCase();
 
@@ -92,26 +93,10 @@ const checkType = (activityTypes, type) => {
 export const createTripEventEditFormTemplate = (event) => {
   const {type, destination, offers, destinationInfo, time, price} = event;
 
-  const transferTypes = [
-    `Taxi`,
-    `Bus`,
-    `Train`,
-    `Ship`,
-    `Transport`,
-    `Drive`,
-    `Flight`
-  ];
-
-  const activityTypes = [
-    `Check`,
-    `Sightseeing`,
-    `Restaurant`
-  ];
-
   const typeCheck = type === `Check` ? `Check-in` : type;
   const transferTypeEventsMarkup = createEventTypesMarkup(transferTypes, type);
   const activityTypeEventsMarkup = createEventTypesMarkup(activityTypes, type);
-  const isActionType = checkType(activityTypes, type);
+  const isActionType = checkType(type);
 
   const {startTime, endTime} = time;
 
