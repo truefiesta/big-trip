@@ -77,4 +77,4 @@ const createElement = (template) => {
   return newElement.firstChild;
 };
 
-export {MILLISECONDS_IN_WEEK, render, castTimeFormat, formatTime, formatDate, formatDuration, createElement};
+export {MILLISECONDS_IN_WEEK, RenderPosition, render, castTimeFormat, formatTime, formatDate, formatDuration, createElement};
