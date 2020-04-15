@@ -1,8 +1,5 @@
-const createTripMainInfoSectionElement = () => {
-  return `<section class="trip-main__trip-info  trip-info"></section>`;
-};
+import {createElement} from "../utils.js";
 
-// Информация о маршруте (доп.задание);
 const createTripMainInfoElement = () => {
   return (
     `<div class="trip-info__main">
@@ -13,4 +10,24 @@ const createTripMainInfoElement = () => {
   );
 };
 
-export {createTripMainInfoSectionElement, createTripMainInfoElement};
+export default class Info {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripMainInfoElement();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
