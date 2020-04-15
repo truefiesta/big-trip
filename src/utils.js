@@ -59,4 +59,11 @@ const formatDuration = (durationInMilliseconds) => {
   return formatedDuration;
 };
 
-export {MILLISECONDS_IN_WEEK, render, castTimeFormat, formatTime, formatDate, formatDuration};
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
+export {MILLISECONDS_IN_WEEK, render, castTimeFormat, formatTime, formatDate, formatDuration, createElement};
