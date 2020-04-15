@@ -1,4 +1,4 @@
-import {formatDate} from "../utils.js";
+import {formatDate, createElement} from "../utils.js";
 import {destinations, transferTypes, activityTypes} from "../const.js";
 
 const createEventTypesMarkup = (eventTypes, type) => {
@@ -90,7 +90,7 @@ const checkType = (type) => {
   return types.includes(type) ? ` in` : ` to`;
 };
 
-export const createTripEventEditFormTemplate = (event) => {
+const createTripEventEditFormTemplate = (event) => {
   const {type, destination, offers, destinationInfo, time, price} = event;
 
   const typeCheck = type === `Check` ? `Check-in` : type;
@@ -180,3 +180,26 @@ export const createTripEventEditFormTemplate = (event) => {
       </form>`
   );
 };
+
+export default class EventEdit {
+  constructor(event) {
+    this._event = event;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventEditFormTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
