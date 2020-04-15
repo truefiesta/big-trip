@@ -10,7 +10,9 @@ const MILLISECONDS_IN_DAY = MILLISECONDS_IN_HOUR * HOURS_IN_DAY;
 const MILLISECONDS_IN_WEEK = DAYS_IN_WEEK * MILLISECONDS_IN_DAY;
 const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`
+  BEFOREEND: `beforeend`,
+  BEFORE: `before`,
+  AFTER: `after`
 };
 
 const render = (container, element, place) => {
@@ -20,6 +22,12 @@ const render = (container, element, place) => {
       break;
     case RenderPosition.BEFOREEND:
       container.append(element);
+      break;
+    case RenderPosition.AFTER:
+      container.after(element);
+      break;
+    case RenderPosition.BEFORE:
+      container.before(element);
       break;
   }
 };
