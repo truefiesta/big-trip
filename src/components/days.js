@@ -1,6 +1,6 @@
-import {createTripEventItemTemplate} from "../components/event.js";
 import {MONTH_NAMES} from "../const.js";
 import {castTimeFormat} from "../utils.js";
+import EventComponent from "../components/event.js";
 
 const dayInfoElementsTemplate = (count, dateString) => {
   const dateObj = JSON.parse(dateString);
@@ -16,7 +16,9 @@ export const createTripDayTemplate = (dayWithEvents) => {
   const {eventSort, daysCount, uniqDate, events} = dayWithEvents;
   const dayInfoMarkup = eventSort ? dayInfoElementsTemplate(daysCount, uniqDate) : ``;
   const eventsMarkup = events.map((event) => {
-    return createTripEventItemTemplate(event);
+
+    const eventComponent = new EventComponent(event);
+    return eventComponent.getTemplate();
   }).join(`\n`);
 
   return (
