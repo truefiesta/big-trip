@@ -1,5 +1,9 @@
-import {render} from "../utils.js";
-import {createTripDayTemplate} from "../components/days.js";
+import {render, RenderPosition} from "../utils.js";
+import DayComponent from "../components/day.js";
+import DayInfoComponent from "../components/day-info.js";
+import EventsComponent from "../components/events.js";
+import EventComponent from "../components/event.js";
+import EventEditComponent from "../components/event-edit.js";
 
 // Логика для формирования дней
 // Формирует массив с начальными датами событий.
@@ -50,8 +54,7 @@ const groupEventsByStartDate = (dateString, eventsArray) => {
 
 // Events выводятся в days
 // Сформируем структуру данных, в которой будут события по дате, фильтр, начальные даты.
-
-const prepareDataBeforeRendering = (events, sort) => {
+const prepareDaysWithEventsBeforeRendering = (events, sort) => {
   sort = document.querySelector(`input[name=trip-sort]:checked`);
   const daysAndEvents = [];
   let daysCount = 0;
@@ -89,9 +92,65 @@ const prepareDataBeforeRendering = (events, sort) => {
   return daysAndEvents;
 };
 
-export const renderDaysWithEvents = (tripDaysElement, events) => {
-  const daysWithEventsToRender = prepareDataBeforeRendering(events);
-  daysWithEventsToRender.forEach((dayWithEvents) => {
-    render(tripDaysElement, createTripDayTemplate(dayWithEvents), `beforeend`);
+// в EventsComponent отрисовать EventComponent (<li class="trip-events__item"> (events) </li>)
+const renderEvent = (eventsListElement, event) => {
+
+  const replaceEventToEdit = () => {
+    eventsListElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
+
+  const replaceEditToEvent = () => {
+    eventsListElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
+
+  const onOpenEventButtonClick = () => {
+    replaceEventToEdit();
+  };
+
+  const onEventEditFormSubmit = (evt) => {
+    evt.preventDefault();
+    replaceEditToEvent();
+  };
+
+  const eventComponent = new EventComponent(event);
+  const openEventButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
+  openEventButton.addEventListener(`click`, onOpenEventButtonClick);
+
+  const eventEditComponent = new EventEditComponent(event);
+  const eventEditForm = eventEditComponent.getElement().querySelector(`form`);
+  eventEditForm.addEventListener(`submit`, onEventEditFormSubmit);
+
+  render(eventsListElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
+const renderDayInfo = (dayComponent, eventSort, daysCount, uniqDate) => {
+  render(dayComponent.getElement(), new DayInfoComponent(eventSort, daysCount, uniqDate).getElement(), RenderPosition.BEFOREEND);
+};
+
+const renderEvents = (dayComponent, events) => {
+  render(dayComponent.getElement(), new EventsComponent(events).getElement(), RenderPosition.BEFOREEND);
+  const eventsListElement = dayComponent.getElement().querySelector(`.trip-events__list`);
+
+  events.forEach((event) => {
+    renderEvent(eventsListElement, event);
+  });
+};
+
+// отрисовать DayComponent (<li class="trip-days__item  day"></li>)
+//   - в DayComponent отрисовать DayInfoComponent (<div class="day__info"> (count, dateString) </div>)
+//   - в DayComponent же отрисовть EventsComponent (<ul class="trip-events__list"></ul>)
+//      - в EventsComponent отрисовать EventComponent (<li class="trip-events__item"> (events) </li>)
+export const renderDaysWithEvents = (tripDaysComponent, allEvents) => {
+  const daysWithEvents = prepareDaysWithEventsBeforeRendering(allEvents);
+
+  daysWithEvents.forEach((dayWithEvents) => {
+    const {eventSort, daysCount, uniqDate, events} = dayWithEvents;
+    // отрисовать DayComponent (<li class="trip-days__item day"></li>)
+    const dayComponent = new DayComponent();
+    render(tripDaysComponent.getElement(), dayComponent.getElement(), RenderPosition.BEFOREEND);
+    //    в DayComponent отрисовать DayInfoComponent (<div class="day__info"> (count, dateString) </div>)
+    renderDayInfo(dayComponent, eventSort, daysCount, uniqDate);
+    //    в DayComponent отрисовть EventsComponent (<ul class="trip-events__list"></ul>)
+    renderEvents(dayComponent, events);
   });
 };
