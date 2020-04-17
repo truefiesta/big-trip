@@ -1,4 +1,4 @@
-import {formatTime, formatDate, formatDuration} from "../utils.js";
+import {formatTime, formatDate, formatDuration, createElement} from "../utils.js";
 
 // В колонке «Offers» отображаются не более 3-х дополнительных опций,
 // применённых к точке маршрута. Остальные опции пользователь может
@@ -65,3 +65,26 @@ export const createTripEventItemTemplate = (event) => {
     </li>`
   );
 };
+
+export default class Event {
+  constructor(event) {
+    this._event = event;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventItemTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,4 +1,4 @@
-import {formatDate} from "../utils.js";
+import {formatDate, createElement} from "../utils.js";
 import {destinations, transferTypes, activityTypes} from "../const.js";
 
 const createEventTypesMarkup = (eventTypes, type) => {
@@ -90,7 +90,7 @@ const checkType = (type) => {
   return types.includes(type) ? ` in` : ` to`;
 };
 
-export const createTripEventEditFormTemplate = (event) => {
+const createTripEventEditFormTemplate = (event) => {
   const {type, destination, offers, destinationInfo, time, price} = event;
 
   const typeCheck = type === `Check` ? `Check-in` : type;
@@ -106,7 +106,8 @@ export const createTripEventEditFormTemplate = (event) => {
   const destinationOptions = createDestinationOptionsMarkup();
 
   return (
-    `<form class="event trip-events__item event--edit" action="#" method="post">
+    `<li class="trip-events__item">
+      <form class="event trip-events__item event--edit" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -177,6 +178,30 @@ export const createTripEventEditFormTemplate = (event) => {
           ${offersSectionMarkup}
           ${destinationInfoSectionMarkup}
         </section>
-      </form>`
+      </form>
+    </li>`
   );
 };
+
+export default class EventEdit {
+  constructor(event) {
+    this._event = event;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventEditFormTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

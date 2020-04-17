@@ -1,37 +1,34 @@
-import {render} from "./utils.js";
-import {createTripMainInfoSectionElement} from "./components/info.js";
-import {createTripMainInfoElement} from "./components/info.js";
-import {createTripInfoCostElement} from "./components/cost.js";
-import {createSiteMenuTemplate} from "./components/menu.js";
-import {createSiteFilterTemplate} from "./components/filter.js";
-import {createTripSortTemplate} from "./components/sorting.js";
-import {createTripDaysTemplate} from "./components/days.js";
-import {createTripEventEditFormTemplate} from "./components/event-edit.js";
+import {render, RenderPosition} from "./utils.js";
+import InfoSectionComponent from "./components/info-section.js";
+import InfoComponent from "./components/info.js";
+import CostComponent from "./components/cost.js";
+import MenuComponent from "./components/menu.js";
+import FilterComponent from "./components/filter.js";
+import SortComponent from "./components/sort.js";
+import DaysComponent from "./components/days.js";
 import {generateEvents} from "./mock/event.js";
 import {renderDaysWithEvents} from "./render/events.js";
 
 const EVENTS_COUNT = 20;
-const events = generateEvents(EVENTS_COUNT);
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 const tripControlsFilterHeaderElement = tripControlsElement.querySelector(`h2:nth-of-type(2)`);
 
-render(tripControlsFilterHeaderElement, createSiteMenuTemplate(), `beforebegin`);
-render(tripControlsElement, createSiteFilterTemplate(), `beforeend`);
-render(tripControlsElement, createTripMainInfoSectionElement(), `beforebegin`);
+const events = generateEvents(EVENTS_COUNT);
+
+render(tripControlsFilterHeaderElement, new MenuComponent().getElement(), RenderPosition.BEFORE);
+render(tripControlsElement, new FilterComponent().getElement(), RenderPosition.BEFOREEND);
+render(tripControlsElement, new InfoSectionComponent().getElement(), RenderPosition.BEFORE);
 
 const tripMainInfoSectionElement = tripMainElement.querySelector(`.trip-info`);
-render(tripMainInfoSectionElement, createTripMainInfoElement(), `beforeend`);
-render(tripMainInfoSectionElement, createTripInfoCostElement(), `beforeend`);
+render(tripMainInfoSectionElement, new InfoComponent().getElement(), RenderPosition.BEFOREEND);
+render(tripMainInfoSectionElement, new CostComponent().getElement(), RenderPosition.BEFOREEND);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 const tripEventsHeaderElement = tripEventsElement.querySelector(`h2`);
+render(tripEventsHeaderElement, new SortComponent().getElement(), RenderPosition.AFTER);
 
-render(tripEventsHeaderElement, createTripSortTemplate(), `afterend`);
-render(tripEventsElement, createTripEventEditFormTemplate(events[0]), `beforeend`);
-
-render(tripEventsElement, createTripDaysTemplate(), `beforeend`);
-
-const tripDaysElement = tripEventsElement.querySelector(`.trip-days`);
-renderDaysWithEvents(tripDaysElement, events.slice(1));
+const tripDaysComponent = new DaysComponent();
+render(tripEventsElement, tripDaysComponent.getElement(), RenderPosition.BEFOREEND);
+renderDaysWithEvents(tripDaysComponent, events);

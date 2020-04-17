@@ -1,20 +1,16 @@
 import {createElement} from "../utils.js";
 
-const createTripInfoCostElement = () => {
-  return (
-    `<p class="trip-info__cost">
-      Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
-    </p>`
-  );
+const createTripMainInfoSectionElement = () => {
+  return `<section class="trip-main__trip-info  trip-info"></section>`;
 };
 
-export default class Cost {
+export default class InfoSection {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createTripInfoCostElement();
+    return createTripMainInfoSectionElement();
   }
 
   getElement() {
@@ -29,4 +25,3 @@ export default class Cost {
     this._element = null;
   }
 }
-
