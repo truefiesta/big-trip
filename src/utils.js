@@ -7,15 +7,15 @@ const SECONDS_IN_HOUR = SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
 const SECONDS_IN_DAY = SECONDS_IN_HOUR * HOURS_IN_DAY;
 const MILLISECONDS_IN_HOUR = MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
 const MILLISECONDS_IN_DAY = MILLISECONDS_IN_HOUR * HOURS_IN_DAY;
-const MILLISECONDS_IN_WEEK = DAYS_IN_WEEK * MILLISECONDS_IN_DAY;
-const RenderPosition = {
+export const MILLISECONDS_IN_WEEK = DAYS_IN_WEEK * MILLISECONDS_IN_DAY;
+export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
   BEFORE: `before`,
   AFTER: `after`
 };
 
-const render = (container, element, place) => {
+export const render = (container, element, place) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -32,18 +32,18 @@ const render = (container, element, place) => {
   }
 };
 
-const castTimeFormat = (value) => {
+export const castTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
 };
 
-const formatTime = (date) => {
+export const formatTime = (date) => {
   const hours = castTimeFormat(date.getHours() % 12);
   const minutes = castTimeFormat(date.getMinutes());
 
   return `${hours}:${minutes}`;
 };
 
-const formatDate = (date) => {
+export const formatDate = (date) => {
   const day = castTimeFormat(date.getDate());
   const month = castTimeFormat(date.getMonth());
   const year = date.getFullYear();
@@ -55,7 +55,7 @@ const formatDate = (date) => {
   return `${day}/${month}/${twoDigitsYear} ${time}`;
 };
 
-const formatDuration = (durationInMilliseconds) => {
+export const formatDuration = (durationInMilliseconds) => {
   let formatedDuration = ``;
   const durationInSeconds = durationInMilliseconds / 1000;
 
@@ -78,11 +78,9 @@ const formatDuration = (durationInMilliseconds) => {
   return formatedDuration;
 };
 
-const createElement = (template) => {
+export const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
 
   return newElement.firstChild;
 };
-
-export {MILLISECONDS_IN_WEEK, RenderPosition, render, castTimeFormat, formatTime, formatDate, formatDuration, createElement};
