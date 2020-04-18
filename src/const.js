@@ -48,3 +48,6 @@ export const MONTH_NAMES = [
   `NOV`,
   `DEC`,
 ];
+
+export const ESC_KEY = `Esc`;
+export const ESCAPE_KEY = `Escape`;

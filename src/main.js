@@ -4,6 +4,7 @@ import InfoComponent from "./components/info.js";
 import CostComponent from "./components/cost.js";
 import MenuComponent from "./components/menu.js";
 import FilterComponent from "./components/filter.js";
+import NoEventsComponent from "./components/no-events.js";
 import SortComponent from "./components/sort.js";
 import DaysComponent from "./components/days.js";
 import {generateEvents} from "./mock/event.js";
@@ -27,8 +28,12 @@ render(tripMainInfoSectionElement, new CostComponent().getElement(), RenderPosit
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 const tripEventsHeaderElement = tripEventsElement.querySelector(`h2`);
-render(tripEventsHeaderElement, new SortComponent().getElement(), RenderPosition.AFTER);
 
-const tripDaysComponent = new DaysComponent();
-render(tripEventsElement, tripDaysComponent.getElement(), RenderPosition.BEFOREEND);
-renderDaysWithEvents(tripDaysComponent, events);
+if (events.length > 0) {
+  render(tripEventsHeaderElement, new SortComponent().getElement(), RenderPosition.AFTER);
+  const tripDaysComponent = new DaysComponent();
+  render(tripEventsElement, tripDaysComponent.getElement(), RenderPosition.BEFOREEND);
+  renderDaysWithEvents(tripDaysComponent, events);
+} else {
+  render(tripEventsHeaderElement, new NoEventsComponent().getElement(), RenderPosition.AFTER);
+}
