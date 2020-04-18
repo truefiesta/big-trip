@@ -1,4 +1,5 @@
 import {render, RenderPosition} from "../utils.js";
+import {ESCAPE_KEY, ESC_KEY} from "../const.js";
 import DayComponent from "../components/day.js";
 import DayInfoComponent from "../components/day-info.js";
 import EventsComponent from "../components/events.js";
@@ -105,11 +106,22 @@ const renderEvent = (eventsListElement, event) => {
 
   const onOpenEventButtonClick = () => {
     replaceEventToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
   };
 
   const onEventEditFormSubmit = (evt) => {
     evt.preventDefault();
     replaceEditToEvent();
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  };
+
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === ESCAPE_KEY || evt.key === ESC_KEY;
+
+    if (isEscKey) {
+      replaceEditToEvent();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
   };
 
   const eventComponent = new EventComponent(event);
