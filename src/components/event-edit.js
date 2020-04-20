@@ -1,5 +1,5 @@
 import AbstractComponent from "../components/abstract-component.js";
-import {formatDate} from "../utils/utils.js";
+import {formatDate} from "../utils/common.js";
 import {destinations, transferTypes, activityTypes} from "../const.js";
 
 const createEventTypesMarkup = (eventTypes, type) => {
