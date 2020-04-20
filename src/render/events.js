@@ -1,4 +1,4 @@
-import {render, RenderPosition} from "../utils/render.js";
+import {render, RenderPosition, replace} from "../utils/render.js";
 import {ESCAPE_KEY, ESC_KEY} from "../const.js";
 import DayComponent from "../components/day.js";
 import DayInfoComponent from "../components/day-info.js";
@@ -97,11 +97,11 @@ const prepareDaysWithEventsBeforeRendering = (events, sort) => {
 const renderEvent = (eventsListElement, event) => {
 
   const replaceEventToEdit = () => {
-    eventsListElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+    replace(eventEditComponent, eventComponent);
   };
 
   const replaceEditToEvent = () => {
-    eventsListElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+    replace(eventComponent, eventEditComponent);
   };
 
   const onOpenEventButtonClick = () => {
