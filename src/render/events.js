@@ -1,4 +1,4 @@
-import {render, RenderPosition} from "../utils.js";
+import {render, RenderPosition} from "../utils/render.js";
 import {ESCAPE_KEY, ESC_KEY} from "../const.js";
 import DayComponent from "../components/day.js";
 import DayInfoComponent from "../components/day-info.js";

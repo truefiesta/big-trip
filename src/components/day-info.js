@@ -1,5 +1,5 @@
 import AbstractComponent from "../components/abstract-component.js";
-import {castTimeFormat} from "../utils.js";
+import {castTimeFormat} from "../utils/utils.js";
 import {MONTH_NAMES} from "../const.js";
 
 const tripDayInfoElementsTemplate = (count, dateString) => {

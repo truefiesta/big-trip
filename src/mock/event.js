@@ -1,4 +1,4 @@
-import {MILLISECONDS_IN_WEEK} from "../utils.js";
+import {MILLISECONDS_IN_WEEK} from "../utils/utils.js";
 import {destinations, transferTypes, activityTypes} from "../const.js";
 
 const MIN_PHOTOS = 1;

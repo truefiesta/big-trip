@@ -1,4 +1,4 @@
-import {render, RenderPosition} from "./utils.js";
+import {render, RenderPosition} from "./utils/render.js";
 import InfoSectionComponent from "./components/info-section.js";
 import InfoComponent from "./components/info.js";
 import CostComponent from "./components/cost.js";
