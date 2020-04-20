@@ -132,15 +132,15 @@ const renderEvent = (eventsListElement, event) => {
   const eventEditForm = eventEditComponent.getElement().querySelector(`form`);
   eventEditForm.addEventListener(`submit`, onEventEditFormSubmit);
 
-  render(eventsListElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
+  render(eventsListElement, eventComponent, RenderPosition.BEFOREEND);
 };
 
 const renderDayInfo = (dayComponent, eventSort, daysCount, uniqDate) => {
-  render(dayComponent.getElement(), new DayInfoComponent(eventSort, daysCount, uniqDate).getElement(), RenderPosition.BEFOREEND);
+  render(dayComponent.getElement(), new DayInfoComponent(eventSort, daysCount, uniqDate), RenderPosition.BEFOREEND);
 };
 
 const renderEvents = (dayComponent, events) => {
-  render(dayComponent.getElement(), new EventsComponent(events).getElement(), RenderPosition.BEFOREEND);
+  render(dayComponent.getElement(), new EventsComponent(events), RenderPosition.BEFOREEND);
   const eventsListElement = dayComponent.getElement().querySelector(`.trip-events__list`);
 
   events.forEach((event) => {
@@ -159,7 +159,7 @@ export const renderDaysWithEvents = (tripDaysComponent, allEvents) => {
     const {eventSort, daysCount, uniqDate, events} = dayWithEvents;
     // отрисовать DayComponent (<li class="trip-days__item day"></li>)
     const dayComponent = new DayComponent();
-    render(tripDaysComponent.getElement(), dayComponent.getElement(), RenderPosition.BEFOREEND);
+    render(tripDaysComponent.getElement(), dayComponent, RenderPosition.BEFOREEND);
     //    в DayComponent отрисовать DayInfoComponent (<div class="day__info"> (count, dateString) </div>)
     renderDayInfo(dayComponent, eventSort, daysCount, uniqDate);
     //    в DayComponent отрисовть EventsComponent (<ul class="trip-events__list"></ul>)
