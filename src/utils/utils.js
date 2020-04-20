@@ -8,29 +8,6 @@ const SECONDS_IN_DAY = SECONDS_IN_HOUR * HOURS_IN_DAY;
 const MILLISECONDS_IN_HOUR = MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
 const MILLISECONDS_IN_DAY = MILLISECONDS_IN_HOUR * HOURS_IN_DAY;
 export const MILLISECONDS_IN_WEEK = DAYS_IN_WEEK * MILLISECONDS_IN_DAY;
-export const RenderPosition = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`,
-  BEFORE: `before`,
-  AFTER: `after`
-};
-
-export const render = (container, element, place) => {
-  switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RenderPosition.BEFOREEND:
-      container.append(element);
-      break;
-    case RenderPosition.AFTER:
-      container.after(element);
-      break;
-    case RenderPosition.BEFORE:
-      container.before(element);
-      break;
-  }
-};
 
 export const castTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
@@ -76,11 +53,4 @@ export const formatDuration = (durationInMilliseconds) => {
   }
 
   return formatedDuration;
-};
-
-export const createElement = (template) => {
-  const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
 };
