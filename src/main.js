@@ -8,7 +8,7 @@ import NoEventsComponent from "./components/no-events.js";
 import SortComponent from "./components/sort.js";
 import DaysComponent from "./components/days.js";
 import {generateEvents} from "./mock/event.js";
-import {renderDaysWithEvents} from "./render/events.js";
+import TripController from "./controllers/trip-controller.js";
 
 const EVENTS_COUNT = 20;
 
@@ -31,9 +31,12 @@ const tripEventsHeaderElement = tripEventsElement.querySelector(`h2`);
 
 if (events.length > 0) {
   render(tripEventsHeaderElement, new SortComponent(), RenderPosition.AFTER);
+
   const tripDaysComponent = new DaysComponent();
   render(tripEventsElement, tripDaysComponent, RenderPosition.BEFOREEND);
-  renderDaysWithEvents(tripDaysComponent, events);
+
+  const tripController = new TripController(tripDaysComponent);
+  tripController.render(events);
 } else {
   render(tripEventsHeaderElement, new NoEventsComponent(), RenderPosition.AFTER);
 }
