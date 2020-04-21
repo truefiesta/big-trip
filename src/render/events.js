@@ -104,17 +104,6 @@ const renderEvent = (eventsListElement, event) => {
     replace(eventComponent, eventEditComponent);
   };
 
-  const onOpenEventButtonClick = () => {
-    replaceEventToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  };
-
-  const onEventEditFormSubmit = (evt) => {
-    evt.preventDefault();
-    replaceEditToEvent();
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  };
-
   const onEscKeyDown = (evt) => {
     const isEscKey = evt.key === ESCAPE_KEY || evt.key === ESC_KEY;
 
@@ -125,12 +114,17 @@ const renderEvent = (eventsListElement, event) => {
   };
 
   const eventComponent = new EventComponent(event);
-  const openEventButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
-  openEventButton.addEventListener(`click`, onOpenEventButtonClick);
+  eventComponent.setOpenButtonClickHandler(() => {
+    replaceEventToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
+  });
 
   const eventEditComponent = new EventEditComponent(event);
-  const eventEditForm = eventEditComponent.getElement().querySelector(`form`);
-  eventEditForm.addEventListener(`submit`, onEventEditFormSubmit);
+  eventEditComponent.setEventEditFormSubmitHandler((evt) => {
+    evt.preventDefault();
+    replaceEditToEvent();
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  });
 
   render(eventsListElement, eventComponent, RenderPosition.BEFOREEND);
 };
