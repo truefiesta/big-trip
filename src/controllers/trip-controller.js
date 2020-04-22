@@ -1,4 +1,4 @@
-import {render, RenderPosition} from "../utils.js";
+import {render, RenderPosition, replace} from "../utils/render.js";
 import {ESCAPE_KEY, ESC_KEY} from "../const.js";
 import DayComponent from "../components/day.js";
 import DayInfoComponent from "../components/day-info.js";
@@ -97,22 +97,11 @@ const prepareDaysWithEventsBeforeRendering = (events, sort) => {
 const renderEvent = (eventsListElement, event) => {
 
   const replaceEventToEdit = () => {
-    eventsListElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+    replace(eventEditComponent, eventComponent);
   };
 
   const replaceEditToEvent = () => {
-    eventsListElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
-  };
-
-  const onOpenEventButtonClick = () => {
-    replaceEventToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  };
-
-  const onEventEditFormSubmit = (evt) => {
-    evt.preventDefault();
-    replaceEditToEvent();
-    document.removeEventListener(`keydown`, onEscKeyDown);
+    replace(eventComponent, eventEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -125,22 +114,27 @@ const renderEvent = (eventsListElement, event) => {
   };
 
   const eventComponent = new EventComponent(event);
-  const openEventButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
-  openEventButton.addEventListener(`click`, onOpenEventButtonClick);
+  eventComponent.setOpenButtonClickHandler(() => {
+    replaceEventToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
+  });
 
   const eventEditComponent = new EventEditComponent(event);
-  const eventEditForm = eventEditComponent.getElement().querySelector(`form`);
-  eventEditForm.addEventListener(`submit`, onEventEditFormSubmit);
+  eventEditComponent.setEventEditFormSubmitHandler((evt) => {
+    evt.preventDefault();
+    replaceEditToEvent();
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  });
 
-  render(eventsListElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
+  render(eventsListElement, eventComponent, RenderPosition.BEFOREEND);
 };
 
 const renderDayInfo = (dayComponent, eventSort, daysCount, uniqDate) => {
-  render(dayComponent.getElement(), new DayInfoComponent(eventSort, daysCount, uniqDate).getElement(), RenderPosition.BEFOREEND);
+  render(dayComponent.getElement(), new DayInfoComponent(eventSort, daysCount, uniqDate), RenderPosition.BEFOREEND);
 };
 
 const renderEvents = (dayComponent, events) => {
-  render(dayComponent.getElement(), new EventsComponent(events).getElement(), RenderPosition.BEFOREEND);
+  render(dayComponent.getElement(), new EventsComponent(events), RenderPosition.BEFOREEND);
   const eventsListElement = dayComponent.getElement().querySelector(`.trip-events__list`);
 
   events.forEach((event) => {
@@ -152,17 +146,28 @@ const renderEvents = (dayComponent, events) => {
 //   - в DayComponent отрисовать DayInfoComponent (<div class="day__info"> (count, dateString) </div>)
 //   - в DayComponent же отрисовть EventsComponent (<ul class="trip-events__list"></ul>)
 //      - в EventsComponent отрисовать EventComponent (<li class="trip-events__item"> (events) </li>)
-export const renderDaysWithEvents = (tripDaysComponent, allEvents) => {
+const renderDaysWithEvents = (tripDaysComponent, allEvents) => {
   const daysWithEvents = prepareDaysWithEventsBeforeRendering(allEvents);
 
   daysWithEvents.forEach((dayWithEvents) => {
     const {eventSort, daysCount, uniqDate, events} = dayWithEvents;
     // отрисовать DayComponent (<li class="trip-days__item day"></li>)
     const dayComponent = new DayComponent();
-    render(tripDaysComponent.getElement(), dayComponent.getElement(), RenderPosition.BEFOREEND);
+    render(tripDaysComponent.getElement(), dayComponent, RenderPosition.BEFOREEND);
     //    в DayComponent отрисовать DayInfoComponent (<div class="day__info"> (count, dateString) </div>)
     renderDayInfo(dayComponent, eventSort, daysCount, uniqDate);
     //    в DayComponent отрисовть EventsComponent (<ul class="trip-events__list"></ul>)
     renderEvents(dayComponent, events);
   });
 };
+
+
+export default class TripController {
+  constructor(container) {
+    this._container = container;
+  }
+
+  render(events) {
+    renderDaysWithEvents(this._container, events);
+  }
+}

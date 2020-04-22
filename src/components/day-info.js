@@ -1,4 +1,5 @@
-import {castTimeFormat, createElement} from "../utils.js";
+import AbstractComponent from "../components/abstract-component.js";
+import {castTimeFormat} from "../utils/common.js";
 import {MONTH_NAMES} from "../const.js";
 
 const tripDayInfoElementsTemplate = (count, dateString) => {
@@ -22,27 +23,15 @@ const tripDayInfoElementTemplate = (eventSort, count, dateString) => {
   );
 };
 
-export default class DayInfo {
+export default class DayInfo extends AbstractComponent {
   constructor(eventSort, count, dateString) {
+    super();
     this._eventSort = eventSort;
     this._count = count;
     this._dateString = dateString;
-    this._element = null;
   }
 
   getTemplate() {
     return tripDayInfoElementTemplate(this._eventSort, this._count, this._dateString);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,4 +1,5 @@
-import {formatTime, formatDate, formatDuration, createElement} from "../utils.js";
+import AbstractComponent from "../components/abstract-component.js";
+import {formatTime, formatDate, formatDuration} from "../utils/common.js";
 
 // В колонке «Offers» отображаются не более 3-х дополнительных опций,
 // применённых к точке маршрута. Остальные опции пользователь может
@@ -66,25 +67,17 @@ export const createTripEventItemTemplate = (event) => {
   );
 };
 
-export default class Event {
+export default class Event extends AbstractComponent {
   constructor(event) {
+    super();
     this._event = event;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripEventItemTemplate(this._event);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setOpenButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
   }
 }
