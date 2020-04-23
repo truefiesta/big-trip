@@ -51,4 +51,3 @@ export const MONTH_NAMES = [
 
 export const ESC_KEY = `Esc`;
 export const ESCAPE_KEY = `Escape`;
-export const sortNames = [`Event`, `Time`, `Price`];
