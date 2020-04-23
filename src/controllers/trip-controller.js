@@ -167,21 +167,21 @@ const renderDaysWithEvents = (tripDaysComponent, allEvents) => {
 export default class TripController {
   constructor(container) {
     this._container = container;
+    this._noEventsComponent = new NoEventsComponent();
+    this._sortComponent = new SortComponent();
+    this._daysComponent = new DaysComponent();
   }
 
   render(events) {
     const tripEventsHeaderElement = this._container.querySelector(`h2`);
 
     if (events.length <= 0) {
-      render(tripEventsHeaderElement, new NoEventsComponent(), RenderPosition.AFTER);
+      render(tripEventsHeaderElement, this._noEventsComponent, RenderPosition.AFTER);
       return;
     }
 
-    render(tripEventsHeaderElement, new SortComponent(), RenderPosition.AFTER);
-
-    const tripDaysComponent = new DaysComponent();
-    render(this._container, tripDaysComponent, RenderPosition.BEFOREEND);
-
-    renderDaysWithEvents(tripDaysComponent, events);
+    render(tripEventsHeaderElement, this._sortComponent, RenderPosition.AFTER);
+    render(this._container, this._daysComponent, RenderPosition.BEFOREEND);
+    renderDaysWithEvents(this._daysComponent, events);
   }
 }
