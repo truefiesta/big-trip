@@ -1,6 +1,5 @@
 import AbstractComponent from "../components/abstract-component.js";
-
-const sortNames = [`Event`, `Time`, `Price`];
+import {sortNames} from "../const.js";
 
 // <label class="trip-sort__btn  trip-sort__btn--active  trip-sort__btn--by-increase" for="sort-time">
 const createSortItemTemplate = (sortName, isChecked) => {
