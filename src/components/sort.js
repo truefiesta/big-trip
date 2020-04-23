@@ -1,12 +1,13 @@
 import AbstractComponent from "../components/abstract-component.js";
 
 const sortNames = [`Event`, `Time`, `Price`];
-
+// Что это делают эти классы (trip-sort__btn--active и trip-sort__btn--by-increase)?
 // <label class="trip-sort__btn  trip-sort__btn--active  trip-sort__btn--by-increase" for="sort-time">
 const createSortItemTemplate = (sortName, isChecked) => {
   return (
     `<div class="trip-sort__item  trip-sort__item--${sortName.toLowerCase()}">
-      <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${sortName.toLowerCase()}" ${isChecked ? `checked` : ``}>
+      <input id="sort-${sortName.toLowerCase()}" class="trip-sort__input  visually-hidden" type="radio"
+        name="trip-sort" value="sort-${sortName.toLowerCase()}" ${isChecked ? `checked` : ``}>
       <label class="trip-sort__btn" for="sort-${sortName.toLowerCase()}">${sortName}</label>
     </div>`
   );
