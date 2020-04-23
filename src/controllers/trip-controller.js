@@ -2,6 +2,9 @@ import {render, RenderPosition, replace} from "../utils/render.js";
 import {ESCAPE_KEY, ESC_KEY} from "../const.js";
 import DayComponent from "../components/day.js";
 import DayInfoComponent from "../components/day-info.js";
+import NoEventsComponent from "../components/no-events.js";
+import SortComponent from "../components/sort.js";
+import DaysComponent from "../components/days.js";
 import EventsComponent from "../components/events.js";
 import EventComponent from "../components/event.js";
 import EventEditComponent from "../components/event-edit.js";
@@ -161,13 +164,24 @@ const renderDaysWithEvents = (tripDaysComponent, allEvents) => {
   });
 };
 
-
 export default class TripController {
   constructor(container) {
     this._container = container;
   }
 
   render(events) {
-    renderDaysWithEvents(this._container, events);
+    const tripEventsHeaderElement = this._container.querySelector(`h2`);
+
+    if (events.length <= 0) {
+      render(tripEventsHeaderElement, new NoEventsComponent(), RenderPosition.AFTER);
+      return;
+    }
+
+    render(tripEventsHeaderElement, new SortComponent(), RenderPosition.AFTER);
+
+    const tripDaysComponent = new DaysComponent();
+    render(this._container, tripDaysComponent, RenderPosition.BEFOREEND);
+
+    renderDaysWithEvents(tripDaysComponent, events);
   }
 }
