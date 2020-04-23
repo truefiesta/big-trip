@@ -26,8 +26,39 @@ const createTripSortTemplate = (sortTypes) => {
   );
 };
 
-export default class Filter extends AbstractComponent {
+export default class Sort extends AbstractComponent {
+  constructor() {
+    super();
+    this._currentSortName = `sort-${sortNames[0].toLowerCase()}`;
+  }
+
   getTemplate() {
     return createTripSortTemplate(sortNames);
+  }
+
+  getSortName() {
+    return this._currentSortName;
+  }
+
+  setSortNameChangeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+
+      if (evt.target.tagName.toLowerCase() !== `label`) {
+        return;
+      }
+
+      const sortName = evt.target.getAttribute(`for`);
+
+      if (this._currentSortName === sortName) {
+        return;
+      }
+      // Как это сделать правильно?
+      this.getElement().querySelector(`input:checked`).removeAttribute(`checked`);
+      this.getElement().querySelector(`input[value=${sortName}]`).setAttribute(`checked`, `true`);
+
+      this._currentSortName = sortName;
+      handler(this._currentSortName);
+    });
   }
 }
