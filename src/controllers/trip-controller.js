@@ -144,15 +144,22 @@ const renderDaysWithEvents = (tripDaysComponent, allEvents, sortType) => {
 export default class TripController {
   constructor(container) {
     this._container = container;
+
+    this._events = [];
     this._noEventsComponent = new NoEventsComponent();
     this._sortComponent = new SortComponent();
     this._daysComponent = new DaysComponent();
+
+    this._onSortTypeChange = this._onSortTypeChange.bind(this);
+    this._sortComponent.setSortNameChangeHandler(this._onSortTypeChange);
   }
 
   render(events) {
+    this._events = events;
+
     const tripEventsHeaderElement = this._container.querySelector(`h2`);
 
-    if (events.length <= 0) {
+    if (this._events.length <= 0) {
       render(tripEventsHeaderElement, this._noEventsComponent, RenderPosition.AFTER);
       return;
     }
@@ -160,11 +167,11 @@ export default class TripController {
     render(tripEventsHeaderElement, this._sortComponent, RenderPosition.AFTER);
     render(this._container, this._daysComponent, RenderPosition.BEFOREEND);
 
-    renderDaysWithEvents(this._daysComponent, events, SortType.SORT_EVENT);
+    renderDaysWithEvents(this._daysComponent, this._events, SortType.SORT_EVENT);
+  }
 
-    this._sortComponent.setSortNameChangeHandler((sortType) => {
-      this._daysComponent.getElement().innerHTML = ``;
-      renderDaysWithEvents(this._daysComponent, events, sortType);
-    });
+  _onSortTypeChange(sortType) {
+    this._daysComponent.getElement().innerHTML = ``;
+    renderDaysWithEvents(this._daysComponent, this._events, sortType);
   }
 }
