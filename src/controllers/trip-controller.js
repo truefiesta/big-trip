@@ -1,13 +1,12 @@
-import {render, RenderPosition, replace} from "../utils/render.js";
-import {ESCAPE_KEY, ESC_KEY, SortType} from "../const.js";
+import {render, RenderPosition} from "../utils/render.js";
+import {SortType} from "../const.js";
 import DayComponent from "../components/day.js";
 import DayInfoComponent from "../components/day-info.js";
 import NoEventsComponent from "../components/no-events.js";
 import SortComponent from "../components/sort.js";
 import DaysComponent from "../components/days.js";
 import EventsComponent from "../components/events.js";
-import EventComponent from "../components/event.js";
-import EventEditComponent from "../components/event-edit.js";
+import PointController from "./point-controller.js";
 
 // Логика для формирования дней
 // Формирует массив с начальными датами событий.
@@ -109,42 +108,6 @@ const prepareDaysWithEventsBeforeRendering = (events, sortType) => {
   return daysAndEvents;
 };
 
-// в EventsComponent отрисовать EventComponent (<li class="trip-events__item"> (events) </li>)
-const renderEvent = (eventsListElement, event) => {
-
-  const replaceEventToEdit = () => {
-    replace(eventEditComponent, eventComponent);
-  };
-
-  const replaceEditToEvent = () => {
-    replace(eventComponent, eventEditComponent);
-  };
-
-  const onEscKeyDown = (evt) => {
-    const isEscKey = evt.key === ESCAPE_KEY || evt.key === ESC_KEY;
-
-    if (isEscKey) {
-      replaceEditToEvent();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  const eventComponent = new EventComponent(event);
-  eventComponent.setOpenButtonClickHandler(() => {
-    replaceEventToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
-
-  const eventEditComponent = new EventEditComponent(event);
-  eventEditComponent.setEventEditFormSubmitHandler((evt) => {
-    evt.preventDefault();
-    replaceEditToEvent();
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  });
-
-  render(eventsListElement, eventComponent, RenderPosition.BEFOREEND);
-};
-
 const renderDayInfo = (dayComponent, eventSort, daysCount, uniqDate) => {
   render(dayComponent.getElement(), new DayInfoComponent(eventSort, daysCount, uniqDate), RenderPosition.BEFOREEND);
 };
@@ -153,8 +116,9 @@ const renderEvents = (dayComponent, events) => {
   render(dayComponent.getElement(), new EventsComponent(events), RenderPosition.BEFOREEND);
   const eventsListElement = dayComponent.getElement().querySelector(`.trip-events__list`);
 
-  events.forEach((event) => {
-    renderEvent(eventsListElement, event);
+  return events.map((event) => {
+    const pointController = new PointController(eventsListElement);
+    pointController.render(event);
   });
 };
 
