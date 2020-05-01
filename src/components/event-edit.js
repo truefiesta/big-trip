@@ -17,12 +17,13 @@ const createEventTypesMarkup = (allTypes, type) => {
 
 const createAvailableOffersMarkup = (allOffersForEventType, selectedEventOffers) => {
   return allOffersForEventType.map(({type, title, price}) => {
-    const isChecked = ``;
-    if (selectedEventOffers.length > 0 && selectedEventOffers[type.toLowerCase()]) {
-      if (selectedEventOffers[type].toLowerCase() === type.toLowerCase() &&
-      selectedEventOffers[title].toLowerCase() === title.toLowerCase() &&
-      selectedEventOffers[price] === price) {
-        isChecked = `checked`;
+    let isChecked = ``;
+    if (selectedEventOffers.length > 0) {
+      for (const selectedEventOffer of selectedEventOffers) {
+        if (type.toLowerCase() === selectedEventOffer.type.toLowerCase() &&
+        title === selectedEventOffer.title && price === selectedEventOffer.price) {
+          isChecked = `checked`;
+        }
       }
     }
 
