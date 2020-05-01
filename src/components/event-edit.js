@@ -92,7 +92,7 @@ const checkType = (type) => {
 };
 
 const createTripEventEditFormTemplate = (event) => {
-  const {type, destination, offers, destinationInfo, time, price} = event;
+  const {type, destination, offers, destinationInfo, time, price, isFavorite} = event;
 
   const typeCheck = type === `Check` ? `Check-in` : type;
   const transferTypeEventsMarkup = createEventTypesMarkup(transferTypes, type);
@@ -103,7 +103,7 @@ const createTripEventEditFormTemplate = (event) => {
 
   const offersSectionMarkup = offers.length > 0 ? createOffersSectionMarkup(offers) : ``;
   const destinationInfoSectionMarkup = !destinationInfo ? `` : createDestinationInfoMarkup(destinationInfo);
-  const isFavorite = Math.random() > 0.5 ? `checked` : ``;
+  const favoriteButton = isFavorite ? `checked` : ``;
   const destinationOptions = createDestinationOptionsMarkup();
 
   return (
@@ -163,7 +163,7 @@ const createTripEventEditFormTemplate = (event) => {
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
           <button class="event__reset-btn" type="reset">Delete</button>
 
-          <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite}>
+          <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${favoriteButton}>
           <label class="event__favorite-btn" for="event-favorite-1">
             <span class="visually-hidden">Add to favorite</span>
             <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
