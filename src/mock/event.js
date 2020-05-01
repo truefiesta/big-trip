@@ -125,7 +125,8 @@ const generateEvent = () => {
       startTime: timeRange.startDate,
       endTime: timeRange.endDate
     },
-    price: getRandomInteger(MIN_PRICE, MAX_PRICE)
+    price: getRandomInteger(MIN_PRICE, MAX_PRICE),
+    isFavorite: Math.random() > 0.5
   };
 };
 
