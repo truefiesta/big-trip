@@ -1,9 +1,9 @@
 import AbstractComponent from "../components/abstract-component.js";
 import {formatDate} from "../utils/common.js";
-import {destinations, transferTypes, activityTypes} from "../const.js";
+import {destinations, transferTypes, activityTypes, offersByType} from "../const.js";
 
-const createEventTypesMarkup = (eventTypes, type) => {
-  return eventTypes.map((eventType) => {
+const createEventTypesMarkup = (allTypes, type) => {
+  return allTypes.map((eventType) => {
     const typeCheck = eventType === `Check` ? `Check-in` : eventType;
     const isChecked = typeCheck === type ? `checked` : ``;
     return (
@@ -15,9 +15,17 @@ const createEventTypesMarkup = (eventTypes, type) => {
   }).join(`\n`);
 };
 
-const createAvailableOffersMarkup = (availableOffers) => {
-  return availableOffers.map(({type, title, price}) => {
-    const isChecked = Math.random() > 0.5 ? `checked` : ``;
+const createAvailableOffersMarkup = (allOffersForEventType, selectedEventOffers) => {
+  return allOffersForEventType.map(({type, title, price}) => {
+    const isChecked = ``;
+    if (selectedEventOffers.length > 0 && selectedEventOffers[type.toLowerCase()]) {
+      if (selectedEventOffers[type].toLowerCase() === type.toLowerCase() &&
+      selectedEventOffers[title].toLowerCase() === title.toLowerCase() &&
+      selectedEventOffers[price] === price) {
+        isChecked = `checked`;
+      }
+    }
+
     return (
       `<div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}" ${isChecked}>
@@ -31,8 +39,8 @@ const createAvailableOffersMarkup = (availableOffers) => {
   }).join(`\n`);
 };
 
-const createOffersSectionMarkup = (offers) => {
-  const eventOffersMarkup = createAvailableOffersMarkup(offers);
+const createOffersSectionMarkup = (allOffersForEventType, selectedEventOffers) => {
+  const eventOffersMarkup = createAvailableOffersMarkup(allOffersForEventType, selectedEventOffers);
   return (
     `<section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -101,7 +109,8 @@ const createTripEventEditFormTemplate = (event) => {
 
   const {startTime, endTime} = time;
 
-  const offersSectionMarkup = offers.length > 0 ? createOffersSectionMarkup(offers) : ``;
+  const availableOffersForEventType = offersByType[type.toLowerCase()];
+  const offersSectionMarkup = availableOffersForEventType.length > 0 ? createOffersSectionMarkup(availableOffersForEventType, offers) : ``;
   const destinationInfoSectionMarkup = !destinationInfo ? `` : createDestinationInfoMarkup(destinationInfo);
   const favoriteButton = isFavorite ? `checked` : ``;
   const destinationOptions = createDestinationOptionsMarkup();
