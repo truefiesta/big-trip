@@ -2,14 +2,18 @@ import {render, RenderPosition, replace} from "../utils/render.js";
 import {ESCAPE_KEY, ESC_KEY} from "../const.js";
 import EventComponent from "../components/event.js";
 import EventEditComponent from "../components/event-edit.js";
+import cloneDeep from "../../node_modules/lodash/cloneDeep";
 
 /**
  * Отвечает за смену точки маршрута на форму редактирования.
 */
 export default class PointController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     /** @private Элемент, в который контроллер будет отрисовывать точку маршрута */
     this._container = container;
+    /** @private Функция получает на вход точку маршрута и измененную точку маршрута */
+    this._onDataChange = onDataChange;
+
     /** @private Точка маршрута */
     this._eventComponent = null;
     /** @private Форма редактирования */
@@ -40,6 +44,12 @@ export default class PointController {
       evt.preventDefault();
       this._replaceEditToEvent();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
+    });
+
+    this._eventEditComponent.setEventFavoriteClickHandler(() => {
+      const newEvent = cloneDeep(event);
+      newEvent.isFavorite = !event.isFavorite;
+      this._onDataChange(this, event, newEvent);
     });
 
     if (oldEventComponent && oldEventEditComponent) {

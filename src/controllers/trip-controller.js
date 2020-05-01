@@ -112,12 +112,12 @@ const renderDayInfo = (dayComponent, eventSort, daysCount, uniqDate) => {
   render(dayComponent.getElement(), new DayInfoComponent(eventSort, daysCount, uniqDate), RenderPosition.BEFOREEND);
 };
 
-const renderEvents = (dayComponent, events) => {
+const renderEvents = (dayComponent, events, onDataChange) => {
   render(dayComponent.getElement(), new EventsComponent(events), RenderPosition.BEFOREEND);
   const eventsListElement = dayComponent.getElement().querySelector(`.trip-events__list`);
 
   return events.map((event) => {
-    const pointController = new PointController(eventsListElement);
+    const pointController = new PointController(eventsListElement, onDataChange);
     pointController.render(event);
   });
 };
@@ -126,7 +126,7 @@ const renderEvents = (dayComponent, events) => {
 //   - в DayComponent отрисовать DayInfoComponent (<div class="day__info"> (count, dateString) </div>)
 //   - в DayComponent же отрисовть EventsComponent (<ul class="trip-events__list"></ul>)
 //      - в EventsComponent отрисовать EventComponent (<li class="trip-events__item"> (events) </li>)
-const renderDaysWithEvents = (tripDaysComponent, allEvents, sortType) => {
+const renderDaysWithEvents = (tripDaysComponent, allEvents, sortType, onDataChange) => {
   const daysWithEvents = prepareDaysWithEventsBeforeRendering(allEvents, sortType);
 
   daysWithEvents.forEach((dayWithEvents) => {
@@ -137,7 +137,7 @@ const renderDaysWithEvents = (tripDaysComponent, allEvents, sortType) => {
     //    в DayComponent отрисовать DayInfoComponent (<div class="day__info"> (count, dateString) </div>)
     renderDayInfo(dayComponent, eventSort, daysCount, uniqDate);
     //    в DayComponent отрисовть EventsComponent (<ul class="trip-events__list"></ul>)
-    renderEvents(dayComponent, events);
+    renderEvents(dayComponent, events, onDataChange);
   });
 };
 
@@ -150,6 +150,7 @@ export default class TripController {
     this._sortComponent = new SortComponent();
     this._daysComponent = new DaysComponent();
 
+    this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._sortComponent.setSortNameChangeHandler(this._onSortTypeChange);
   }
@@ -167,11 +168,23 @@ export default class TripController {
     render(tripEventsHeaderElement, this._sortComponent, RenderPosition.AFTER);
     render(this._container, this._daysComponent, RenderPosition.BEFOREEND);
 
-    renderDaysWithEvents(this._daysComponent, this._events, SortType.SORT_EVENT);
+    renderDaysWithEvents(this._daysComponent, this._events, SortType.SORT_EVENT, this._onDataChange);
+  }
+
+  _onDataChange(pointController, oldPoint, newPoint) {
+    const index = this._events.findIndex((event) => event === oldPoint);
+
+    if (index === -1) {
+      return;
+    }
+
+    this._events = [].concat(this._events.slice(0, index), newPoint, this._events.slice(index + 1));
+
+    pointController.render(this._events[index]);
   }
 
   _onSortTypeChange(sortType) {
     this._daysComponent.getElement().innerHTML = ``;
-    renderDaysWithEvents(this._daysComponent, this._events, sortType);
+    renderDaysWithEvents(this._daysComponent, this._events, sortType, this._onDataChange);
   }
 }
