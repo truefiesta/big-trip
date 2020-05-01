@@ -1,5 +1,5 @@
 import {MILLISECONDS_IN_WEEK} from "../utils/common.js";
-import {destinations, transferTypes, activityTypes} from "../const.js";
+import {destinations, transferTypes, activityTypes, eventTypes, offersByType} from "../const.js";
 
 const MIN_PHOTOS = 1;
 const MAX_PHOTOS = 5;
@@ -85,11 +85,18 @@ const allEventTypes = transferTypes.concat(activityTypes);
 
 const generateEvent = () => {
   const description = getRandomItemsfromArray(destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES).join(` `);
-  const selectedOffers = getRandomItemsfromArray(offers, MIN_OFFERS, MAX_OFFERS);
+  const type = getRandomArrayItem(allEventTypes);
+
+  const getSelectedOffers = (currentType, offers) => {
+    const maxOffers = offers[currentType.toLowerCase()].length;
+    return getRandomItemsfromArray(offers[currentType.toLowerCase()], MIN_OFFERS, maxOffers);
+  };
+  const selectedOffers = getSelectedOffers(type, offersByType);
+
   const timeRange = getRandomDateRange();
 
   return {
-    type: getRandomArrayItem(allEventTypes),
+    type,
     destination: getRandomArrayItem(destinations),
     offers: selectedOffers,
     destinationInfo: {
