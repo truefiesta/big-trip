@@ -1,16 +1,16 @@
 import {MILLISECONDS_IN_WEEK} from "../utils/common.js";
-import {destinations, transferTypes, activityTypes, eventTypes, offersByType} from "../const.js";
+import {destinations, transferTypes, activityTypes, offersByType} from "../const.js";
 
-const MIN_PHOTOS = 1;
-const MAX_PHOTOS = 5;
-const MIN_DESCRIPTION_PHRASES = 1;
-const MAX_DESCRIPTION_PHRASES = 5;
+export const MIN_PHOTOS = 1;
+export const MAX_PHOTOS = 5;
+export const MIN_DESCRIPTION_PHRASES = 1;
+export const MAX_DESCRIPTION_PHRASES = 5;
 const MIN_OFFERS = 0;
-const MAX_OFFERS = 5;
+// const MAX_OFFERS = 5;
 const MIN_PRICE = 15;
 const MAX_PRICE = 200;
 
-const destinationDescriptions = [
+export const destinationDescriptions = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra.`,
   `Aliquam id orci ut lectus varius viverra.`,
@@ -30,7 +30,7 @@ const getRandomArrayItem = (array) => {
   return array[randomIndex];
 };
 
-const getRandomItemsfromArray = (array, min, max) => {
+export const getRandomItemsfromArray = (array, min, max) => {
 
   const arrayLength = getRandomInteger(min, max);
   const newArray = [];
@@ -46,7 +46,7 @@ const getRandomItemsfromArray = (array, min, max) => {
   return newArray;
 };
 
-const getRandomPhotos = (min, max) => {
+export const getRandomPhotos = (min, max) => {
   const arrayLength = getRandomInteger(min, max);
   const newArray = [];
 
@@ -112,8 +112,6 @@ const generateEvent = () => {
   };
 };
 
-const generateEvents = (eventsCount) => {
+export const generateEvents = (eventsCount) => {
   return new Array(eventsCount).fill(``).map(generateEvent);
 };
-
-export {destinations, generateEvents};

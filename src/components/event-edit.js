@@ -1,6 +1,7 @@
-import AbstractComponent from "../components/abstract-component.js";
+import AbstractSmartComponent from "../components/abstract-smart-component.js";
 import {formatDate} from "../utils/common.js";
 import {destinations, transferTypes, activityTypes, offersByType} from "../const.js";
+import {getRandomItemsfromArray, getRandomPhotos, destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES, MIN_PHOTOS, MAX_PHOTOS} from "../mock/event.js";
 
 const createEventTypesMarkup = (allTypes, type) => {
   return allTypes.map((eventType) => {
@@ -15,21 +16,31 @@ const createEventTypesMarkup = (allTypes, type) => {
   }).join(`\n`);
 };
 
+const compareOffers = (offerOne, offerTwo) => {
+  if (offerOne.type.toLowerCase() === offerTwo.type.toLowerCase() &&
+    offerOne.title === offerTwo.title &&
+    offerOne.price === offerTwo.price) {
+    return true;
+  }
+  return false;
+};
+
 const createAvailableOffersMarkup = (allOffersForEventType, selectedEventOffers) => {
-  return allOffersForEventType.map(({type, title, price}) => {
+  return allOffersForEventType.map((offerForEventType) => {
     let isChecked = ``;
     if (selectedEventOffers.length > 0) {
       for (const selectedEventOffer of selectedEventOffers) {
-        if (type.toLowerCase() === selectedEventOffer.type.toLowerCase() &&
-        title === selectedEventOffer.title && price === selectedEventOffer.price) {
+        if (compareOffers(offerForEventType, selectedEventOffer)) {
           isChecked = `checked`;
         }
       }
     }
 
+    const {type, title, price} = offerForEventType;
+
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}" ${isChecked}>
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" data-offer-type=${type} type="checkbox" name="event-offer-${type}" ${isChecked}>
         <label class="event__offer-label" for="event-offer-${type}-1">
           <span class="event__offer-title">${title}</span>
           &plus;
@@ -100,8 +111,9 @@ const checkType = (type) => {
   return types.includes(type) ? ` in` : ` to`;
 };
 
-const createTripEventEditFormTemplate = (event) => {
-  const {type, destination, offers, destinationInfo, time, price, isFavorite} = event;
+const createTripEventEditFormTemplate = (event, options = {}) => {
+  const {destination, offers, destinationInfo, time, price, isFavorite} = event;
+  const {type} = options;
 
   const typeCheck = type === `Check` ? `Check-in` : type;
   const transferTypeEventsMarkup = createEventTypesMarkup(transferTypes, type);
@@ -194,21 +206,87 @@ const createTripEventEditFormTemplate = (event) => {
   );
 };
 
-export default class EventEdit extends AbstractComponent {
+export default class EventEdit extends AbstractSmartComponent {
   constructor(event) {
     super();
     this._event = event;
+    this._type = event.type;
+    this._destination = event.destination;
+    this._destinationInfo = event.destinationInfo;
+    this._selectedOffers = event.offers.slice();
+    this._submitHandler = null;
+    this._favoriteHandler = null;
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createTripEventEditFormTemplate(this._event);
+    return createTripEventEditFormTemplate(this._event, {type: this._type});
   }
 
   setEventEditFormSubmitHandler(handler) {
     this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
+
+    this._submitHandler = handler;
   }
 
   setEventFavoriteClickHandler(handler) {
     this.getElement().querySelector(`input[name=event-favorite]`).addEventListener(`click`, handler);
+
+    this._favoriteHandler = handler;
+  }
+
+  recoveryListeners() {
+    this.setEventEditFormSubmitHandler(this._submitHandler);
+    this.setEventFavoriteClickHandler(this._favoriteHandler);
+    this._subscribeOnEvents();
+  }
+
+  rerender() {
+    super.rerender();
+  }
+
+  _subscribeOnEvents() {
+    const element = this.getElement();
+
+    // Изменение типа точки маршрута
+    element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
+      this._type = evt.target.value;
+
+      this.rerender();
+    });
+
+    // Изменение выбранных опций. (Видимо, это не надо было делать)
+    element.querySelector(`.event__available-offers`).addEventListener(`change`, (evt) => {
+      if (evt.target.tagName !== `INPUT`) {
+        return;
+      }
+
+      const availableOffers = offersByType[this._type.toLowerCase()];
+      const typeOfClickedOffer = evt.target.dataset.offerType;
+
+      if (evt.target.checked) {
+        const selectedOffer = availableOffers.filter((availableOffer) => availableOffer.type === typeOfClickedOffer);
+        this._selectedOffers.push(selectedOffer);
+      } else {
+        this._selectedOffers = this._selectedOffers.filter((selectedOffer) => selectedOffer.type !== typeOfClickedOffer);
+      }
+
+      this.rerender();
+    });
+
+    // Изменение пункта назначения
+    element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
+      if (evt.target.value.toLowerCase() !== this._destination.toLowerCase()) {
+        this._destination = evt.target.value;
+        // Временно
+        const newDescription = getRandomItemsfromArray(destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES).join(` `);
+        const newPhotos = getRandomPhotos(MIN_PHOTOS, MAX_PHOTOS);
+
+        this._destinationInfo.description = newDescription;
+        this._destinationInfo.photos = newPhotos;
+      }
+
+      this.rerender();
+    });
   }
 }
