@@ -112,8 +112,8 @@ const checkType = (type) => {
 };
 
 const createTripEventEditFormTemplate = (event, options = {}) => {
-  const {destination, offers, destinationInfo, time, price, isFavorite} = event;
-  const {type} = options;
+  const {time, price, isFavorite} = event;
+  const {type, destination, offers, destinationInfo} = options;
 
   const typeCheck = type === `Check` ? `Check-in` : type;
   const transferTypeEventsMarkup = createEventTypesMarkup(transferTypes, type);
@@ -220,7 +220,12 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createTripEventEditFormTemplate(this._event, {type: this._type});
+    return createTripEventEditFormTemplate(this._event, {
+      type: this._type,
+      destination: this._destination,
+      destinationInfo: this._destinationInfo,
+      offers: this._selectedOffers
+    });
   }
 
   setEventEditFormSubmitHandler(handler) {
@@ -266,7 +271,7 @@ export default class EventEdit extends AbstractSmartComponent {
 
       if (evt.target.checked) {
         const selectedOffer = availableOffers.filter((availableOffer) => availableOffer.type === typeOfClickedOffer);
-        this._selectedOffers.push(selectedOffer);
+        this._selectedOffers.concat(selectedOffer);
       } else {
         this._selectedOffers = this._selectedOffers.filter((selectedOffer) => selectedOffer.type !== typeOfClickedOffer);
       }
