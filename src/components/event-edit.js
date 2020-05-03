@@ -2,6 +2,7 @@ import AbstractSmartComponent from "../components/abstract-smart-component.js";
 import {formatDate} from "../utils/common.js";
 import {destinations, transferTypes, activityTypes, offersByType} from "../const.js";
 import {getRandomItemsfromArray, getRandomPhotos, destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES, MIN_PHOTOS, MAX_PHOTOS} from "../mock/event.js";
+import cloneDeep from "../../node_modules/lodash/cloneDeep";
 
 const createEventTypesMarkup = (allTypes, type) => {
   return allTypes.map((eventType) => {
@@ -210,13 +211,18 @@ export default class EventEdit extends AbstractSmartComponent {
   constructor(event) {
     super();
     this._event = event;
-    this._type = event.type;
-    this._destination = event.destination;
-    this._destinationInfo = event.destinationInfo;
-    this._selectedOffers = event.offers.slice();
+    this._copyEventFields(event);
     this._submitHandler = null;
     this._favoriteHandler = null;
+    this._closeHandler = null;
     this._subscribeOnEvents();
+  }
+
+  _copyEventFields(event) {
+    this._type = event.type;
+    this._destination = event.destination;
+    this._destinationInfo = cloneDeep(event.destinationInfo);
+    this._selectedOffers = event.offers.slice();
   }
 
   getTemplate() {
@@ -240,14 +246,28 @@ export default class EventEdit extends AbstractSmartComponent {
     this._favoriteHandler = handler;
   }
 
+  setCloseButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
+
+    this._closeHandler = handler;
+  }
+
   recoveryListeners() {
     this.setEventEditFormSubmitHandler(this._submitHandler);
     this.setEventFavoriteClickHandler(this._favoriteHandler);
+    this.setCloseButtonClickHandler(this._closeHandler);
     this._subscribeOnEvents();
   }
 
   rerender() {
     super.rerender();
+  }
+
+  reset() {
+    const event = this._event;
+    this._copyEventFields(event);
+
+    this.rerender();
   }
 
   _subscribeOnEvents() {

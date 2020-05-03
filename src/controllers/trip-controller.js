@@ -112,13 +112,13 @@ const renderDayInfo = (dayComponent, eventSort, daysCount, uniqDate) => {
   render(dayComponent.getElement(), new DayInfoComponent(eventSort, daysCount, uniqDate), RenderPosition.BEFOREEND);
 };
 
-const renderEvents = (dayComponent, events, onDataChange) => {
+const renderEvents = (dayComponent, events, onDataChange, onViewChange) => {
   render(dayComponent.getElement(), new EventsComponent(events), RenderPosition.BEFOREEND);
   const eventsListElement = dayComponent.getElement().querySelector(`.trip-events__list`);
-
   return events.map((event) => {
-    const pointController = new PointController(eventsListElement, onDataChange);
+    const pointController = new PointController(eventsListElement, onDataChange, onViewChange);
     pointController.render(event);
+    return pointController;
   });
 };
 
@@ -126,10 +126,11 @@ const renderEvents = (dayComponent, events, onDataChange) => {
 //   - в DayComponent отрисовать DayInfoComponent (<div class="day__info"> (count, dateString) </div>)
 //   - в DayComponent же отрисовть EventsComponent (<ul class="trip-events__list"></ul>)
 //      - в EventsComponent отрисовать EventComponent (<li class="trip-events__item"> (events) </li>)
-const renderDaysWithEvents = (tripDaysComponent, allEvents, sortType, onDataChange) => {
+const renderDaysWithEvents = (tripDaysComponent, allEvents, sortType, onDataChange, onViewChange) => {
   const daysWithEvents = prepareDaysWithEventsBeforeRendering(allEvents, sortType);
+  const allPointControllers = [];
 
-  daysWithEvents.forEach((dayWithEvents) => {
+  daysWithEvents.map((dayWithEvents) => {
     const {eventSort, daysCount, uniqDate, events} = dayWithEvents;
     // отрисовать DayComponent (<li class="trip-days__item day"></li>)
     const dayComponent = new DayComponent();
@@ -137,8 +138,11 @@ const renderDaysWithEvents = (tripDaysComponent, allEvents, sortType, onDataChan
     //    в DayComponent отрисовать DayInfoComponent (<div class="day__info"> (count, dateString) </div>)
     renderDayInfo(dayComponent, eventSort, daysCount, uniqDate);
     //    в DayComponent отрисовть EventsComponent (<ul class="trip-events__list"></ul>)
-    renderEvents(dayComponent, events, onDataChange);
+    const dayPointControllers = renderEvents(dayComponent, events, onDataChange, onViewChange);
+    allPointControllers.push(...dayPointControllers);
   });
+
+  return allPointControllers;
 };
 
 export default class TripController {
@@ -146,11 +150,14 @@ export default class TripController {
     this._container = container;
 
     this._events = [];
+    this._pointControllers = [];
+
     this._noEventsComponent = new NoEventsComponent();
     this._sortComponent = new SortComponent();
     this._daysComponent = new DaysComponent();
 
     this._onDataChange = this._onDataChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._sortComponent.setSortNameChangeHandler(this._onSortTypeChange);
   }
@@ -168,7 +175,7 @@ export default class TripController {
     render(tripEventsHeaderElement, this._sortComponent, RenderPosition.AFTER);
     render(this._container, this._daysComponent, RenderPosition.BEFOREEND);
 
-    renderDaysWithEvents(this._daysComponent, this._events, SortType.SORT_EVENT, this._onDataChange);
+    this._pointControllers = renderDaysWithEvents(this._daysComponent, this._events, SortType.SORT_EVENT, this._onDataChange, this._onViewChange);
   }
 
   _onDataChange(pointController, oldPoint, newPoint) {
@@ -183,8 +190,12 @@ export default class TripController {
     pointController.render(this._events[index]);
   }
 
+  _onViewChange() {
+    this._pointControllers.forEach((it) => it.setDefaultView());
+  }
+
   _onSortTypeChange(sortType) {
     this._daysComponent.getElement().innerHTML = ``;
-    renderDaysWithEvents(this._daysComponent, this._events, sortType, this._onDataChange);
+    this._pointControllers = renderDaysWithEvents(this._daysComponent, this._events, sortType, this._onDataChange, this._onViewChange);
   }
 }

@@ -4,16 +4,23 @@ import EventComponent from "../components/event.js";
 import EventEditComponent from "../components/event-edit.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
 
+const Mode = {
+  DEFAULT: `default`,
+  EDIT: `edit`
+};
 /**
  * Отвечает за смену точки маршрута на форму редактирования.
 */
 export default class PointController {
-  constructor(container, onDataChange) {
+  constructor(container, onDataChange, onViewChange) {
     /** @private Элемент, в который контроллер будет отрисовывать точку маршрута */
     this._container = container;
     /** @private Функция получает на вход точку маршрута и измененную точку маршрута */
     this._onDataChange = onDataChange;
-
+    /** @private Функция вызывается при смене точки маршрута на форму редактирования */
+    this._onViewChange = onViewChange;
+    /** @private Режим */
+    this._mode = Mode.DEFAULT;
     /** @private Точка маршрута */
     this._eventComponent = null;
     /** @private Форма редактирования */
@@ -40,6 +47,11 @@ export default class PointController {
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
+    this._eventEditComponent.setCloseButtonClickHandler(() => {
+      this._replaceEditToEvent();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+    });
+
     this._eventEditComponent.setEventEditFormSubmitHandler((evt) => {
       evt.preventDefault();
       this._replaceEditToEvent();
@@ -60,12 +72,22 @@ export default class PointController {
     }
   }
 
+  setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceEditToEvent();
+    }
+  }
+
   _replaceEventToEdit() {
+    this._onViewChange();
     replace(this._eventEditComponent, this._eventComponent);
+    this._mode = Mode.EDIT;
   }
 
   _replaceEditToEvent() {
+    this._eventEditComponent.reset();
     replace(this._eventComponent, this._eventEditComponent);
+    this._mode = Mode.DEFAULT;
   }
 
   _onEscKeyDown(evt) {
