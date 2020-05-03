@@ -271,7 +271,7 @@ export default class EventEdit extends AbstractSmartComponent {
 
       if (evt.target.checked) {
         const selectedOffer = availableOffers.filter((availableOffer) => availableOffer.type === typeOfClickedOffer);
-        this._selectedOffers.concat(selectedOffer);
+        this._selectedOffers = this._selectedOffers.concat(selectedOffer);
       } else {
         this._selectedOffers = this._selectedOffers.filter((selectedOffer) => selectedOffer.type !== typeOfClickedOffer);
       }
