@@ -219,22 +219,6 @@ export default class EventEdit extends AbstractSmartComponent {
     this._flatpickrStartDate = null;
     this._flatpickrEndDate = null;
     this._subscribeOnEvents();
-  }
-
-  _copyEventFields(event) {
-    this._type = event.type;
-    this._destination = event.destination;
-    this._destinationInfo = cloneDeep(event.destinationInfo);
-    this._selectedOffers = event.offers.slice();
-  }
-
-  getTemplate() {
-    return createTripEventEditFormTemplate(this._event, {
-      type: this._type,
-      destination: this._destination,
-      destinationInfo: this._destinationInfo,
-      offers: this._selectedOffers
-    });
     this._applyFlatpickrStartDate();
     this._applyFlatpickrEndDate();
   }
@@ -257,6 +241,15 @@ export default class EventEdit extends AbstractSmartComponent {
     this._closeHandler = handler;
   }
 
+  getTemplate() {
+    return createTripEventEditFormTemplate(this._event, {
+      type: this._type,
+      destination: this._destination,
+      destinationInfo: this._destinationInfo,
+      offers: this._selectedOffers
+    });
+  }
+
   recoveryListeners() {
     this.setEventEditFormSubmitHandler(this._submitHandler);
     this.setEventFavoriteClickHandler(this._favoriteHandler);
@@ -277,11 +270,13 @@ export default class EventEdit extends AbstractSmartComponent {
     this.rerender();
   }
 
-  _subscribeOnEvents() {
-    const element = this.getElement();
+  _copyEventFields(event) {
+    this._type = event.type;
+    this._destination = event.destination;
+    this._destinationInfo = cloneDeep(event.destinationInfo);
+    this._selectedOffers = event.offers.slice();
+  }
 
-    // Изменение типа точки маршрута
-    element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
   _applyFlatpickrStartDate() {
     const startDateElement = this.getElement().querySelector(`input[name=event-start-time]`);
     this._applyFlatpickr(`_flatpickrStartDate`, startDateElement);
@@ -307,13 +302,17 @@ export default class EventEdit extends AbstractSmartComponent {
       dateFormat: `d/m/y H:i`
     });
   }
+
+  _subscribeOnTypeChange() {
+    this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
       this._type = evt.target.value;
 
       this.rerender();
     });
+  }
 
-    // Изменение выбранных опций. (Видимо, это не надо было делать)
-    element.querySelector(`.event__available-offers`).addEventListener(`change`, (evt) => {
+  _subscribeOnOffersChange() {
+    this.getElement().querySelector(`.event__available-offers`).addEventListener(`change`, (evt) => {
       if (evt.target.tagName !== `INPUT`) {
         return;
       }
@@ -330,9 +329,10 @@ export default class EventEdit extends AbstractSmartComponent {
 
       this.rerender();
     });
+  }
 
-    // Изменение пункта назначения
-    element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
+  _subscribeOnDestinationChange() {
+    this.getElement().querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
       if (evt.target.value.toLowerCase() !== this._destination.toLowerCase()) {
         this._destination = evt.target.value;
         // Временно
@@ -345,5 +345,11 @@ export default class EventEdit extends AbstractSmartComponent {
 
       this.rerender();
     });
+  }
+
+  _subscribeOnEvents() {
+    this._subscribeOnTypeChange();
+    this._subscribeOnOffersChange();
+    this._subscribeOnDestinationChange();
   }
 }
