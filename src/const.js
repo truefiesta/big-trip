@@ -49,6 +49,197 @@ export const MONTH_NAMES = [
   `DEC`,
 ];
 
+export const offers = [
+  {
+    type: `luggage`,
+    title: `Add luggage`,
+    price: 30
+  },
+  {
+    type: `comfort`,
+    title: `Switch to comfort class`,
+    price: 100
+  },
+  {
+    type: `meal`,
+    title: `Add meal`,
+    price: 15
+  },
+  {
+    type: `seats`,
+    title: `Choose seats`,
+    price: 5
+  },
+  {
+    type: `train`,
+    title: `Travel by train`,
+    price: 40
+  }
+];
+
+export const offersByType = {
+  taxi: [
+    {
+      type: `luggage`,
+      title: `Add luggage`,
+      price: 30
+    },
+    {
+      type: `comfort`,
+      title: `Switch to comfort class`,
+      price: 100
+    }
+  ],
+  bus: [
+    {
+      type: `luggage`,
+      title: `Add luggage`,
+      price: 30
+    },
+    {
+      type: `comfort`,
+      title: `Switch to comfort class`,
+      price: 100
+    },
+    {
+      type: `seats`,
+      title: `Choose seats`,
+      price: 5
+    }
+  ],
+  train: [
+    {
+      type: `luggage`,
+      title: `Add luggage`,
+      price: 30
+    },
+    {
+      type: `comfort`,
+      title: `Switch to comfort class`,
+      price: 100
+    },
+    {
+      type: `meal`,
+      title: `Add meal`,
+      price: 15
+    },
+    {
+      type: `seats`,
+      title: `Choose seats`,
+      price: 5
+    },
+    {
+      type: `train`,
+      title: `Travel by train`,
+      price: 40
+    }
+  ],
+  ship: [
+    {
+      type: `luggage`,
+      title: `Add luggage`,
+      price: 30
+    },
+    {
+      type: `comfort`,
+      title: `Switch to comfort class`,
+      price: 100
+    },
+    {
+      type: `meal`,
+      title: `Add meal`,
+      price: 15
+    },
+    {
+      type: `seats`,
+      title: `Choose seats`,
+      price: 5
+    }
+  ],
+  transport: [
+    {
+      type: `luggage`,
+      title: `Add luggage`,
+      price: 30
+    },
+    {
+      type: `comfort`,
+      title: `Switch to comfort class`,
+      price: 100
+    },
+    {
+      type: `seats`,
+      title: `Choose seats`,
+      price: 5
+    },
+    {
+      type: `train`,
+      title: `Travel by train`,
+      price: 40
+    }
+  ],
+  drive: [
+    {
+      type: `comfort`,
+      title: `Switch to comfort class`,
+      price: 100
+    }
+  ],
+  flight: [
+    {
+      type: `luggage`,
+      title: `Add luggage`,
+      price: 30
+    },
+    {
+      type: `comfort`,
+      title: `Switch to comfort class`,
+      price: 100
+    },
+    {
+      type: `seats`,
+      title: `Choose seats`,
+      price: 5
+    },
+    {
+      type: `meal`,
+      title: `Add meal`,
+      price: 15
+    }
+  ],
+  check: [
+    {
+      type: `comfort`,
+      title: `Switch to comfort class`,
+      price: 100
+    },
+    {
+      type: `luggage`,
+      title: `Add luggage`,
+      price: 30
+    },
+  ],
+  sightseeing: [
+    {
+      type: `train`,
+      title: `Travel by train`,
+      price: 40
+    }
+  ],
+  restaurant: [
+    {
+      type: `seats`,
+      title: `Choose seats`,
+      price: 5
+    },
+    {
+      type: `meal`,
+      title: `Add meal`,
+      price: 15
+    }
+  ]
+};
+
 export const ESC_KEY = `Esc`;
 export const ESCAPE_KEY = `Escape`;
 

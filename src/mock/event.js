@@ -1,41 +1,16 @@
 import {MILLISECONDS_IN_WEEK} from "../utils/common.js";
-import {destinations, transferTypes, activityTypes} from "../const.js";
+import {destinations, transferTypes, activityTypes, offersByType} from "../const.js";
 
-const MIN_PHOTOS = 1;
-const MAX_PHOTOS = 5;
-const MIN_DESCRIPTION_PHRASES = 1;
-const MAX_DESCRIPTION_PHRASES = 5;
+export const MIN_PHOTOS = 1;
+export const MAX_PHOTOS = 5;
+export const MIN_DESCRIPTION_PHRASES = 1;
+export const MAX_DESCRIPTION_PHRASES = 5;
 const MIN_OFFERS = 0;
-const MAX_OFFERS = 5;
+// const MAX_OFFERS = 5;
 const MIN_PRICE = 15;
 const MAX_PRICE = 200;
 
-const offers = [
-  {
-    type: `luggage`,
-    title: `Add luggage`,
-    price: 30
-  },
-  {
-    type: `comfort`,
-    title: `Switch to comfort class`,
-    price: 100
-  }, {
-    type: `meal`,
-    title: `Add meal`,
-    price: 15
-  }, {
-    type: `seats`,
-    title: `Choose seats`,
-    price: 5
-  }, {
-    type: `train`,
-    title: `Travel by train`,
-    price: 40
-  }
-];
-
-const destinationDescriptions = [
+export const destinationDescriptions = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra.`,
   `Aliquam id orci ut lectus varius viverra.`,
@@ -55,7 +30,7 @@ const getRandomArrayItem = (array) => {
   return array[randomIndex];
 };
 
-const getRandomItemsfromArray = (array, min, max) => {
+export const getRandomItemsfromArray = (array, min, max) => {
 
   const arrayLength = getRandomInteger(min, max);
   const newArray = [];
@@ -71,7 +46,7 @@ const getRandomItemsfromArray = (array, min, max) => {
   return newArray;
 };
 
-const getRandomPhotos = (min, max) => {
+export const getRandomPhotos = (min, max) => {
   const arrayLength = getRandomInteger(min, max);
   const newArray = [];
 
@@ -110,11 +85,18 @@ const allEventTypes = transferTypes.concat(activityTypes);
 
 const generateEvent = () => {
   const description = getRandomItemsfromArray(destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES).join(` `);
-  const selectedOffers = getRandomItemsfromArray(offers, MIN_OFFERS, MAX_OFFERS);
+  const type = getRandomArrayItem(allEventTypes);
+
+  const getSelectedOffers = (currentType, offers) => {
+    const maxOffers = offers[currentType.toLowerCase()].length;
+    return getRandomItemsfromArray(offers[currentType.toLowerCase()], MIN_OFFERS, maxOffers);
+  };
+  const selectedOffers = getSelectedOffers(type, offersByType);
+
   const timeRange = getRandomDateRange();
 
   return {
-    type: getRandomArrayItem(allEventTypes),
+    type,
     destination: getRandomArrayItem(destinations),
     offers: selectedOffers,
     destinationInfo: {
@@ -125,12 +107,11 @@ const generateEvent = () => {
       startTime: timeRange.startDate,
       endTime: timeRange.endDate
     },
-    price: getRandomInteger(MIN_PRICE, MAX_PRICE)
+    price: getRandomInteger(MIN_PRICE, MAX_PRICE),
+    isFavorite: Math.random() > 0.5
   };
 };
 
-const generateEvents = (eventsCount) => {
+export const generateEvents = (eventsCount) => {
   return new Array(eventsCount).fill(``).map(generateEvent);
 };
-
-export {destinations, generateEvents};

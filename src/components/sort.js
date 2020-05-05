@@ -1,7 +1,6 @@
 import AbstractComponent from "../components/abstract-component.js";
 
 const sortNames = [`Event`, `Time`, `Price`];
-// Что это делают эти классы (trip-sort__btn--active и trip-sort__btn--by-increase)?
 // <label class="trip-sort__btn  trip-sort__btn--active  trip-sort__btn--by-increase" for="sort-time">
 const createSortItemTemplate = (sortName, isChecked) => {
   return (
@@ -53,7 +52,7 @@ export default class Sort extends AbstractComponent {
       if (this._currentSortName === sortName) {
         return;
       }
-      // Как это сделать правильно?
+
       this.getElement().querySelector(`input:checked`).removeAttribute(`checked`);
       this.getElement().querySelector(`input[value=${sortName}]`).setAttribute(`checked`, `true`);
 
