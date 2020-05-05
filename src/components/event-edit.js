@@ -1,8 +1,9 @@
 import AbstractSmartComponent from "../components/abstract-smart-component.js";
-import {formatDate} from "../utils/common.js";
 import {destinations, transferTypes, activityTypes, offersByType} from "../const.js";
 import {getRandomItemsfromArray, getRandomPhotos, destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES, MIN_PHOTOS, MAX_PHOTOS} from "../mock/event.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
 
 const createEventTypesMarkup = (allTypes, type) => {
   return allTypes.map((eventType) => {
@@ -215,6 +216,8 @@ export default class EventEdit extends AbstractSmartComponent {
     this._submitHandler = null;
     this._favoriteHandler = null;
     this._closeHandler = null;
+    this._flatpickrStartDate = null;
+    this._flatpickrEndDate = null;
     this._subscribeOnEvents();
   }
 
@@ -232,6 +235,8 @@ export default class EventEdit extends AbstractSmartComponent {
       destinationInfo: this._destinationInfo,
       offers: this._selectedOffers
     });
+    this._applyFlatpickrStartDate();
+    this._applyFlatpickrEndDate();
   }
 
   setEventEditFormSubmitHandler(handler) {
@@ -261,6 +266,8 @@ export default class EventEdit extends AbstractSmartComponent {
 
   rerender() {
     super.rerender();
+    this._applyFlatpickrStartDate();
+    this._applyFlatpickrEndDate();
   }
 
   reset() {
@@ -275,6 +282,31 @@ export default class EventEdit extends AbstractSmartComponent {
 
     // Изменение типа точки маршрута
     element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
+  _applyFlatpickrStartDate() {
+    const startDateElement = this.getElement().querySelector(`input[name=event-start-time]`);
+    this._applyFlatpickr(`_flatpickrStartDate`, startDateElement);
+  }
+
+  _applyFlatpickrEndDate() {
+    const endDateElement = this.getElement().querySelector(`input[name=event-end-time]`);
+    this._applyFlatpickr(`_flatpickrEndDate`, endDateElement);
+  }
+
+  _applyFlatpickr(datePropertyName, element) {
+    const flatpickrDate = this[datePropertyName];
+    if (flatpickrDate) {
+      flatpickrDate.destroy();
+      this[datePropertyName] = null;
+    }
+
+    this[datePropertyName] = flatpickr(element, {
+      altInput: true,
+      allowInput: true,
+      enableTime: true,
+      altFormat: `d/m/y H:i`,
+      dateFormat: `d/m/y H:i`
+    });
+  }
       this._type = evt.target.value;
 
       this.rerender();
