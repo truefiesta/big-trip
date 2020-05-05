@@ -31,7 +31,6 @@ export const createTripEventItemTemplate = (event) => {
   const selectedOffers = offers.slice(0, SELECTED_OFFERS_COUNT);
   const offersMarkup = createOffersMarkup(selectedOffers);
   const {startTime, endTime} = time;
-  const duration = endTime - startTime;
 
   return (
     `<li class="trip-events__item">
@@ -47,7 +46,7 @@ export const createTripEventItemTemplate = (event) => {
             &mdash;
             <time class="event__end-time" datetime="${formatDate(endTime)}">${formatTime(endTime)}</time>
           </p>
-          <p class="event__duration">${formatDuration(duration)}</p>
+          <p class="event__duration">${formatDuration(startTime, endTime)}</p>
         </div>
 
         <p class="event__price">
