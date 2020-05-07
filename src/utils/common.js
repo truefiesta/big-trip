@@ -1,3 +1,4 @@
+import moment from "moment";
 const MILLISECONDS_IN_SECOND = 1000;
 const SECONDS_IN_MINUTE = 60;
 const MINUTES_IN_HOUR = 60;
@@ -14,43 +15,34 @@ export const castTimeFormat = (value) => {
 };
 
 export const formatTime = (date) => {
-  const hours = castTimeFormat(date.getHours() % 12);
-  const minutes = castTimeFormat(date.getMinutes());
-
-  return `${hours}:${minutes}`;
+  return moment(date).format(`hh:mm`);
 };
 
 export const formatDate = (date) => {
-  const day = castTimeFormat(date.getDate());
-  const month = castTimeFormat(date.getMonth());
-  const year = date.getFullYear();
-
-  const twoDigitsYear = year.toString().slice(2);
-
-  const time = formatTime(date);
-
-  return `${day}/${month}/${twoDigitsYear} ${time}`;
+  return moment(date).format(`DD/MM/YY`);
 };
 
-export const formatDuration = (durationInMilliseconds) => {
-  let formatedDuration = ``;
-  const durationInSeconds = durationInMilliseconds / 1000;
+const getDuration = (startDate, endDate) => {
+  const startMoment = moment(startDate);
+  const endMoment = moment(endDate);
+  return moment.duration(endMoment.diff(startMoment));
+};
 
-  const days = Math.floor(durationInSeconds / SECONDS_IN_DAY);
-  const daysReminder = durationInSeconds % SECONDS_IN_DAY;
-
-  const hours = Math.floor(daysReminder / SECONDS_IN_HOUR);
-  const hoursReminder = daysReminder % SECONDS_IN_HOUR;
-
-  const minutes = Math.floor(hoursReminder / SECONDS_IN_MINUTE);
+export const formatDuration = (startDate, endDate) => {
+  const duration = getDuration(startDate, endDate);
+  const durationInSeconds = duration.as(`seconds`);
+  const durationInMinutes = castTimeFormat(duration.get(`minutes`));
+  const durationInHours = castTimeFormat(duration.get(`hours`));
+  const durationInDays = castTimeFormat(duration.get(`days`));
+  let formattedDuration = ``;
 
   if (durationInSeconds < SECONDS_IN_HOUR) {
-    formatedDuration = `${castTimeFormat(minutes)}M`;
+    formattedDuration = `${durationInMinutes}M`;
   } else if (durationInSeconds >= SECONDS_IN_HOUR && durationInSeconds < SECONDS_IN_DAY) {
-    formatedDuration = `${castTimeFormat(hours)}H ${castTimeFormat(minutes)}M`;
+    formattedDuration = `${durationInHours}H ${durationInMinutes}M`;
   } else {
-    formatedDuration = `${castTimeFormat(days)}D ${castTimeFormat(hours)}H ${castTimeFormat(minutes)}M`;
+    formattedDuration = `${durationInDays}D ${durationInHours}H ${durationInMinutes}M`;
   }
 
-  return formatedDuration;
+  return formattedDuration;
 };

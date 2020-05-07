@@ -1,8 +1,9 @@
 import AbstractSmartComponent from "../components/abstract-smart-component.js";
-import {formatDate} from "../utils/common.js";
 import {destinations, transferTypes, activityTypes, offersByType} from "../const.js";
 import {getRandomItemsfromArray, getRandomPhotos, destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES, MIN_PHOTOS, MAX_PHOTOS} from "../mock/event.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
 
 const createEventTypesMarkup = (allTypes, type) => {
   return allTypes.map((eventType) => {
@@ -167,12 +168,12 @@ const createTripEventEditFormTemplate = (event, options = {}) => {
             <label class="visually-hidden" for="event-start-time-1">
               From
             </label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(startTime)}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">
               To
             </label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(endTime)}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endTime}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -215,23 +216,11 @@ export default class EventEdit extends AbstractSmartComponent {
     this._submitHandler = null;
     this._favoriteHandler = null;
     this._closeHandler = null;
+    this._flatpickrStartDate = null;
+    this._flatpickrEndDate = null;
     this._subscribeOnEvents();
-  }
-
-  _copyEventFields(event) {
-    this._type = event.type;
-    this._destination = event.destination;
-    this._destinationInfo = cloneDeep(event.destinationInfo);
-    this._selectedOffers = event.offers.slice();
-  }
-
-  getTemplate() {
-    return createTripEventEditFormTemplate(this._event, {
-      type: this._type,
-      destination: this._destination,
-      destinationInfo: this._destinationInfo,
-      offers: this._selectedOffers
-    });
+    this._applyFlatpickrStartDate();
+    this._applyFlatpickrEndDate();
   }
 
   setEventEditFormSubmitHandler(handler) {
@@ -252,6 +241,15 @@ export default class EventEdit extends AbstractSmartComponent {
     this._closeHandler = handler;
   }
 
+  getTemplate() {
+    return createTripEventEditFormTemplate(this._event, {
+      type: this._type,
+      destination: this._destination,
+      destinationInfo: this._destinationInfo,
+      offers: this._selectedOffers
+    });
+  }
+
   recoveryListeners() {
     this.setEventEditFormSubmitHandler(this._submitHandler);
     this.setEventFavoriteClickHandler(this._favoriteHandler);
@@ -261,6 +259,8 @@ export default class EventEdit extends AbstractSmartComponent {
 
   rerender() {
     super.rerender();
+    this._applyFlatpickrStartDate();
+    this._applyFlatpickrEndDate();
   }
 
   reset() {
@@ -270,18 +270,49 @@ export default class EventEdit extends AbstractSmartComponent {
     this.rerender();
   }
 
-  _subscribeOnEvents() {
-    const element = this.getElement();
+  _copyEventFields(event) {
+    this._type = event.type;
+    this._destination = event.destination;
+    this._destinationInfo = cloneDeep(event.destinationInfo);
+    this._selectedOffers = event.offers.slice();
+  }
 
-    // Изменение типа точки маршрута
-    element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
+  _applyFlatpickrStartDate() {
+    const startDateElement = this.getElement().querySelector(`input[name=event-start-time]`);
+    this._applyFlatpickr(`_flatpickrStartDate`, startDateElement);
+  }
+
+  _applyFlatpickrEndDate() {
+    const endDateElement = this.getElement().querySelector(`input[name=event-end-time]`);
+    this._applyFlatpickr(`_flatpickrEndDate`, endDateElement);
+  }
+
+  _applyFlatpickr(datePropertyName, element) {
+    const flatpickrDate = this[datePropertyName];
+    if (flatpickrDate) {
+      flatpickrDate.destroy();
+      this[datePropertyName] = null;
+    }
+
+    this[datePropertyName] = flatpickr(element, {
+      altInput: true,
+      allowInput: true,
+      enableTime: true,
+      altFormat: `d/m/y H:i`,
+      dateFormat: `d/m/y H:i`
+    });
+  }
+
+  _subscribeOnTypeChange() {
+    this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
       this._type = evt.target.value;
 
       this.rerender();
     });
+  }
 
-    // Изменение выбранных опций. (Видимо, это не надо было делать)
-    element.querySelector(`.event__available-offers`).addEventListener(`change`, (evt) => {
+  _subscribeOnOffersChange() {
+    this.getElement().querySelector(`.event__available-offers`).addEventListener(`change`, (evt) => {
       if (evt.target.tagName !== `INPUT`) {
         return;
       }
@@ -298,9 +329,10 @@ export default class EventEdit extends AbstractSmartComponent {
 
       this.rerender();
     });
+  }
 
-    // Изменение пункта назначения
-    element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
+  _subscribeOnDestinationChange() {
+    this.getElement().querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
       if (evt.target.value.toLowerCase() !== this._destination.toLowerCase()) {
         this._destination = evt.target.value;
         // Временно
@@ -313,5 +345,11 @@ export default class EventEdit extends AbstractSmartComponent {
 
       this.rerender();
     });
+  }
+
+  _subscribeOnEvents() {
+    this._subscribeOnTypeChange();
+    this._subscribeOnOffersChange();
+    this._subscribeOnDestinationChange();
   }
 }
