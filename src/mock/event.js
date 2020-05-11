@@ -96,6 +96,7 @@ const generateEvent = () => {
   const timeRange = getRandomDateRange();
 
   return {
+    id: String(new Date() + Math.random()),
     type,
     destination: getRandomArrayItem(destinations),
     offers: selectedOffers,
