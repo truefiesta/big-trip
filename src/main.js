@@ -6,6 +6,7 @@ import MenuComponent from "./components/menu.js";
 import FilterComponent from "./components/filter.js";
 import {generateEvents} from "./mock/event.js";
 import TripController from "./controllers/trip-controller.js";
+import PointsModel from "./models/points.js";
 
 const EVENTS_COUNT = 20;
 
@@ -14,6 +15,8 @@ const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 const tripControlsFilterHeaderElement = tripControlsElement.querySelector(`h2:nth-of-type(2)`);
 
 const events = generateEvents(EVENTS_COUNT);
+const pointsModel = new PointsModel();
+pointsModel.setEvents(events);
 
 render(tripControlsFilterHeaderElement, new MenuComponent(), RenderPosition.BEFORE);
 render(tripControlsElement, new FilterComponent(), RenderPosition.BEFOREEND);
