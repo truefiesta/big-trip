@@ -28,5 +28,5 @@ render(tripMainInfoSectionElement, new CostComponent(), RenderPosition.BEFOREEND
 
 // Trip
 const tripEventsElement = document.querySelector(`.trip-events`);
-const tripController = new TripController(tripEventsElement);
-tripController.render(events);
+const tripController = new TripController(tripEventsElement, pointsModel);
+tripController.render();

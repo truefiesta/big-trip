@@ -146,10 +146,10 @@ const renderDaysWithEvents = (tripDaysComponent, allEvents, sortType, onDataChan
 };
 
 export default class TripController {
-  constructor(container) {
+  constructor(container, pointsModel) {
     this._container = container;
+    this._pointsModel = pointsModel;
 
-    this._events = [];
     this._pointControllers = [];
 
     this._noEventsComponent = new NoEventsComponent();
@@ -162,12 +162,12 @@ export default class TripController {
     this._sortComponent.setSortNameChangeHandler(this._onSortTypeChange);
   }
 
-  render(events) {
-    this._events = events;
+  render() {
+    const events = this._pointsModel.getAllEvents();
 
     const tripEventsHeaderElement = this._container.querySelector(`h2`);
 
-    if (this._events.length <= 0) {
+    if (events.length <= 0) {
       render(tripEventsHeaderElement, this._noEventsComponent, RenderPosition.AFTER);
       return;
     }
@@ -175,19 +175,15 @@ export default class TripController {
     render(tripEventsHeaderElement, this._sortComponent, RenderPosition.AFTER);
     render(this._container, this._daysComponent, RenderPosition.BEFOREEND);
 
-    this._pointControllers = renderDaysWithEvents(this._daysComponent, this._events, SortType.SORT_EVENT, this._onDataChange, this._onViewChange);
+    this._pointControllers = renderDaysWithEvents(this._daysComponent, events, SortType.SORT_EVENT, this._onDataChange, this._onViewChange);
   }
 
-  _onDataChange(pointController, oldPoint, newPoint) {
-    const index = this._events.findIndex((event) => event === oldPoint);
+  _onDataChange(pointController, oldEvent, newEvent) {
+    const isSuccess = this._pointsModel.updateTask(oldEvent.id, newEvent);
 
-    if (index === -1) {
-      return;
+    if (isSuccess) {
+      pointController.render(newEvent);
     }
-
-    this._events = [].concat(this._events.slice(0, index), newPoint, this._events.slice(index + 1));
-
-    pointController.render(this._events[index]);
   }
 
   _onViewChange() {
@@ -195,7 +191,8 @@ export default class TripController {
   }
 
   _onSortTypeChange(sortType) {
+    const events = this._pointsModel.getAllEvents();
     this._daysComponent.getElement().innerHTML = ``;
-    this._pointControllers = renderDaysWithEvents(this._daysComponent, this._events, sortType, this._onDataChange, this._onViewChange);
+    this._pointControllers = renderDaysWithEvents(this._daysComponent, events, sortType, this._onDataChange, this._onViewChange);
   }
 }
