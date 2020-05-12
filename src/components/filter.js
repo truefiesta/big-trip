@@ -1,30 +1,42 @@
 import AbstractComponent from "../components/abstract-component.js";
+import {capitalize} from "../utils/common.js";
 
-const createSiteFilterTemplate = () => {
+const createFilterItemTemplate = (filter) => {
+  const {title, isChecked} = filter;
+  const checked = isChecked ? `checked` : ``;
+  return (
+    `<div class="trip-filters__filter">
+      <input id="filter-${title}" data-filter-type="${title}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything" ${checked}>
+      <label class="trip-filters__filter-label" for="filter-${title}">${capitalize(title)}</label>
+    </div>`
+  );
+};
+
+const createSiteFilterTemplate = (filters) => {
+  const filtersMarkup = filters.map((filter) => createFilterItemTemplate(filter)).join(`\n`);
+
   return (
     `<form class="trip-filters" action="#" method="get">
-      <div class="trip-filters__filter">
-        <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything" checked>
-        <label class="trip-filters__filter-label" for="filter-everything">Everything</label>
-      </div>
-
-      <div class="trip-filters__filter">
-        <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future">
-        <label class="trip-filters__filter-label" for="filter-future">Future</label>
-      </div>
-
-      <div class="trip-filters__filter">
-        <input id="filter-past" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="past">
-        <label class="trip-filters__filter-label" for="filter-past">Past</label>
-      </div>
-
+      ${filtersMarkup}
       <button class="visually-hidden" type="submit">Accept filter</button>
     </form>`
   );
 };
 
 export default class Filter extends AbstractComponent {
+  constructor(filters) {
+    super();
+    this._filters = filters;
+  }
+
   getTemplate() {
-    return createSiteFilterTemplate();
+    return createSiteFilterTemplate(this._filters);
+  }
+
+  setFilterChangeHandler(handler) {
+    this.getElement().addEventListener(`change`, (evt) => {
+      const filterType = evt.target.dataset.filterType;
+      handler(filterType);
+    });
   }
 }

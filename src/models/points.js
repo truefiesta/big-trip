@@ -1,13 +1,19 @@
+import {FilterType} from "../const.js";
+import {getEventsByFilter} from "../utils/filter.js";
+
 export default class PointsModel {
   constructor() {
     this._events = [];
 
+    this._activeFilterType = FilterType.ALL;
+
+    this._filterChangeHandlers = [];
     this._eventDataChangeHandlers = [];
   }
 
-  // Метод для получения всех точек маршрута.
-  getAllEvents() {
-    return this._events;
+  // Метод для получения отфильтрованных точек маршрута.
+  getEvents() {
+    return getEventsByFilter(this._events, this._activeFilterType);
   }
 
   // Метод для записи точек маршрута
@@ -16,8 +22,14 @@ export default class PointsModel {
     this._callHandlers(this._eventDataChangeHandlers);
   }
 
+  // Метод для установки выбранного фильтра.
+  setFilter(filterType) {
+    this._activeFilterType = filterType;
+    this._callHandlers(this._filterChangeHandlers);
+  }
+
   // Метод для обновления конкретной точки маршрута.
-  updadeEvent(id, event) {
+  updateEvent(id, event) {
     const index = this._events.findIndex((it) => it.id === id);
 
     if (index === -1) {
@@ -31,7 +43,11 @@ export default class PointsModel {
     return true;
   }
 
-  setEventDataChangeHandler(handler) {
+  setFilterChangeHandler(handler) {
+    this._filterChangeHandlers.push(handler);
+  }
+
+  setEventsChangeHandler(handler) {
     this._eventDataChangeHandlers.push(handler);
   }
 

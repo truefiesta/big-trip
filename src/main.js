@@ -3,7 +3,7 @@ import InfoSectionComponent from "./components/info-section.js";
 import InfoComponent from "./components/info.js";
 import CostComponent from "./components/cost.js";
 import MenuComponent from "./components/menu.js";
-import FilterComponent from "./components/filter.js";
+import FilterController from "./controllers/filter-controller.js";
 import {generateEvents} from "./mock/event.js";
 import TripController from "./controllers/trip-controller.js";
 import PointsModel from "./models/points.js";
@@ -19,7 +19,10 @@ const pointsModel = new PointsModel();
 pointsModel.setEvents(events);
 
 render(tripControlsFilterHeaderElement, new MenuComponent(), RenderPosition.BEFORE);
-render(tripControlsElement, new FilterComponent(), RenderPosition.BEFOREEND);
+
+const filterController = new FilterController(tripControlsElement, pointsModel);
+filterController.render();
+
 render(tripControlsElement, new InfoSectionComponent(), RenderPosition.BEFORE);
 
 const tripMainInfoSectionElement = tripMainElement.querySelector(`.trip-info`);

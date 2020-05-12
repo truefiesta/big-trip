@@ -158,12 +158,15 @@ export default class TripController {
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
+
     this._sortComponent.setSortNameChangeHandler(this._onSortTypeChange);
+    this._pointsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   render() {
-    const events = this._pointsModel.getAllEvents();
+    const events = this._pointsModel.getEvents();
 
     const tripEventsHeaderElement = this._container.querySelector(`h2`);
 
@@ -188,6 +191,10 @@ export default class TripController {
 
   _onViewChange() {
     this._pointControllers.forEach((it) => it.setDefaultView());
+  }
+
+  _onFilterChange() {
+    this._updateEvents();
   }
 
   _onSortTypeChange(sortType) {
