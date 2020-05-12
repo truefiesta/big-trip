@@ -187,8 +187,14 @@ export default class TripController {
     this._daysComponent.getElement().innerHTML = ``;
   }
 
+  _updateEvents() {
+    this._removeEvents();
+    const events = this._pointsModel.getEvents();
+    this._pointControllers = renderDaysWithEvents(this._daysComponent, events, SortType.SORT_EVENT, this._onDataChange, this._onViewChange);
+  }
+
   _onDataChange(pointController, oldEvent, newEvent) {
-    const isSuccess = this._pointsModel.updateTask(oldEvent.id, newEvent);
+    const isSuccess = this._pointsModel.updateEvent(oldEvent.id, newEvent);
 
     if (isSuccess) {
       pointController.render(newEvent);
