@@ -1,4 +1,4 @@
-import {render, RenderPosition} from "../utils/render.js";
+import {render, RenderPosition, replace} from "../utils/render.js";
 import {SortType} from "../const.js";
 import DayComponent from "../components/day.js";
 import DayInfoComponent from "../components/day-info.js";
@@ -153,7 +153,7 @@ export default class TripController {
     this._pointControllers = [];
 
     this._noEventsComponent = new NoEventsComponent();
-    this._sortComponent = new SortComponent();
+    this._sortComponent = null;
     this._daysComponent = new DaysComponent();
 
     this._onDataChange = this._onDataChange.bind(this);
@@ -161,7 +161,6 @@ export default class TripController {
     this._onFilterChange = this._onFilterChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
 
-    this._sortComponent.setSortNameChangeHandler(this._onSortTypeChange);
     this._pointsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
@@ -175,10 +174,23 @@ export default class TripController {
       return;
     }
 
-    render(tripEventsHeaderElement, this._sortComponent, RenderPosition.AFTER);
+    this._renderSortComponent();
     render(this._container, this._daysComponent, RenderPosition.BEFOREEND);
 
     this._pointControllers = renderDaysWithEvents(this._daysComponent, events, SortType.SORT_EVENT, this._onDataChange, this._onViewChange);
+  }
+
+  _renderSortComponent() {
+    const oldSortComponent = this._sortComponent;
+    this._sortComponent = new SortComponent();
+    this._sortComponent.setSortNameChangeHandler(this._onSortTypeChange);
+    const tripEventsHeaderElement = this._container.querySelector(`h2`);
+
+    if (oldSortComponent) {
+      replace(this._sortComponent, oldSortComponent);
+    } else {
+      render(tripEventsHeaderElement, this._sortComponent, RenderPosition.AFTER);
+    }
   }
 
   _removeEvents() {
@@ -207,6 +219,7 @@ export default class TripController {
 
   _onFilterChange() {
     this._updateEvents();
+    this._renderSortComponent();
   }
 
   _onSortTypeChange(sortType) {
