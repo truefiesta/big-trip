@@ -216,9 +216,12 @@ export default class EventEdit extends AbstractSmartComponent {
     this._submitHandler = null;
     this._favoriteHandler = null;
     this._closeHandler = null;
+    this._deleteButtonClickHandler = null;
     this._flatpickrStartDate = null;
     this._flatpickrEndDate = null;
     this._subscribeOnEvents();
+    this._removeFlatpickrStartDate();
+    this._removeFlatpickrEndDate();
     this._applyFlatpickrStartDate();
     this._applyFlatpickrEndDate();
   }
@@ -235,10 +238,22 @@ export default class EventEdit extends AbstractSmartComponent {
     this._favoriteHandler = handler;
   }
 
+  setDeleteButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, handler);
+
+    this._deleteButtonClickHandler = handler;
+  }
+
   setCloseButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
 
     this._closeHandler = handler;
+  }
+
+  removeElement() {
+    this._removeFlatpickrStartDate();
+    this._removeFlatpickrEndDate();
+    super.removeElement();
   }
 
   getTemplate() {
@@ -277,22 +292,24 @@ export default class EventEdit extends AbstractSmartComponent {
     this._selectedOffers = event.offers.slice();
   }
 
-  _applyFlatpickrStartDate() {
-    const startDateElement = this.getElement().querySelector(`input[name=event-start-time]`);
-    this._applyFlatpickr(`_flatpickrStartDate`, startDateElement);
-  }
-
-  _applyFlatpickrEndDate() {
-    const endDateElement = this.getElement().querySelector(`input[name=event-end-time]`);
-    this._applyFlatpickr(`_flatpickrEndDate`, endDateElement);
-  }
-
-  _applyFlatpickr(datePropertyName, element) {
+  _removeFlatpickr(datePropertyName) {
     const flatpickrDate = this[datePropertyName];
     if (flatpickrDate) {
       flatpickrDate.destroy();
       this[datePropertyName] = null;
     }
+  }
+
+  _removeFlatpickrStartDate() {
+    this._removeFlatpickr(`_flatpickrStartDate`);
+  }
+
+  _removeFlatpickrEndDate() {
+    this._removeFlatpickr(`_flatpickrEndDate`);
+  }
+
+  _applyFlatpickr(datePropertyName, element) {
+    this._removeFlatpickr(datePropertyName);
 
     this[datePropertyName] = flatpickr(element, {
       altInput: true,
@@ -301,6 +318,16 @@ export default class EventEdit extends AbstractSmartComponent {
       altFormat: `d/m/y H:i`,
       dateFormat: `d/m/y H:i`
     });
+  }
+
+  _applyFlatpickrStartDate() {
+    const startDateElement = this.getElement().querySelector(`input[name=event-start-time]`);
+    this._applyFlatpickr(`_flatpickrStartDate`, startDateElement);
+  }
+
+  _applyFlatpickrEndDate() {
+    const endDateElement = this.getElement().querySelector(`input[name=event-end-time]`);
+    this._applyFlatpickr(`_flatpickrEndDate`, endDateElement);
   }
 
   _subscribeOnTypeChange() {

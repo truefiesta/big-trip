@@ -206,10 +206,16 @@ export default class TripController {
   }
 
   _onDataChange(pointController, oldEvent, newEvent) {
-    const isSuccess = this._pointsModel.updateEvent(oldEvent.id, newEvent);
-
-    if (isSuccess) {
-      pointController.render(newEvent);
+    if (newEvent === null) {
+      // Удаление
+      this._pointsModel.removeEvent(oldEvent.id);
+      this._updateEvents();
+    } else {
+      // Обновление
+      const isSuccess = this._pointsModel.updateEvent(oldEvent.id, newEvent);
+      if (isSuccess) {
+        pointController.render(newEvent);
+      }
     }
   }
 

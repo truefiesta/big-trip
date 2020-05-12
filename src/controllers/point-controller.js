@@ -64,6 +64,10 @@ export default class PointController {
       this._onDataChange(this, event, newEvent);
     });
 
+    this._eventEditComponent.setDeleteButtonClickHandler(() => {
+      this._onDataChange(this, event, null);
+    });
+
     if (oldEventComponent && oldEventEditComponent) {
       replace(this._eventComponent, oldEventComponent);
       replace(this._eventEditComponent, oldEventEditComponent);
