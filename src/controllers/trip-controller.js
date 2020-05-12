@@ -181,6 +181,12 @@ export default class TripController {
     this._pointControllers = renderDaysWithEvents(this._daysComponent, events, SortType.SORT_EVENT, this._onDataChange, this._onViewChange);
   }
 
+  _removeEvents() {
+    this._pointControllers.forEach((pointController) => pointController.destroy());
+    this._pointControllers = [];
+    this._daysComponent.getElement().innerHTML = ``;
+  }
+
   _onDataChange(pointController, oldEvent, newEvent) {
     const isSuccess = this._pointsModel.updateTask(oldEvent.id, newEvent);
 
@@ -198,8 +204,8 @@ export default class TripController {
   }
 
   _onSortTypeChange(sortType) {
-    const events = this._pointsModel.getAllEvents();
-    this._daysComponent.getElement().innerHTML = ``;
+    this._removeEvents();
+    const events = this._pointsModel.getEvents();
     this._pointControllers = renderDaysWithEvents(this._daysComponent, events, sortType, this._onDataChange, this._onViewChange);
   }
 }

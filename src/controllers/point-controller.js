@@ -1,4 +1,4 @@
-import {render, RenderPosition, replace} from "../utils/render.js";
+import {render, RenderPosition, replace, remove} from "../utils/render.js";
 import {ESCAPE_KEY, ESC_KEY} from "../const.js";
 import EventComponent from "../components/event.js";
 import EventEditComponent from "../components/event-edit.js";
@@ -76,6 +76,12 @@ export default class PointController {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToEvent();
     }
+  }
+
+  destroy() {
+    remove(this._eventEditComponent);
+    remove(this._eventComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _replaceEventToEdit() {
