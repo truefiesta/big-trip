@@ -59,7 +59,7 @@ const getSortedEvents = (events, sortType) => {
       a.time.startTime - b.time.startTime);
       break;
     case SortType.SORT_TIME: sortedEvents = allEvents.sort((a, b) =>
-      (a.time.endTime - a.time.startTime) - (b.time.endTime - b.time.startTime));
+      (b.time.endTime - b.time.startTime) - (a.time.endTime - a.time.startTime));
       break;
     case SortType.SORT_PRICE: sortedEvents = allEvents.sort((a, b) =>
       b.price - a.price);
