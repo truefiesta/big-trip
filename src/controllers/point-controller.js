@@ -1,10 +1,35 @@
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
-import {ESCAPE_KEY, ESC_KEY} from "../const.js";
+import {ESCAPE_KEY, ESC_KEY, EventType, offersByType, Mode} from "../const.js";
 import EventComponent from "../components/event.js";
 import EventEditComponent from "../components/event-edit.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
 
+const generateId = () => {
+  return String(new Date() + Math.random());
 };
+
+const DefaultEvent = {
+  type: EventType.FLIGHT,
+  destination: ``,
+  offers: offersByType[EventType.FLIGHT],
+  destinationInfo: {
+    description: ``,
+    photos: []
+  },
+  time: {
+    startTime: new Date(),
+    endTime: new Date()
+  },
+  price: ``,
+  isFavorite: false
+};
+
+export const generateDefaultEvent = () => {
+  const defauldEvent = cloneDeep(DefaultEvent);
+  defauldEvent.id = generateId();
+  return defauldEvent;
+};
+
 /**
  * Отвечает за смену точки маршрута на форму редактирования.
 */
@@ -31,13 +56,15 @@ export default class PointController {
    * Отвечает за отрисовку точки маршрута, ее замену на форму редактирования и
    * наоборот.
    * @param {object} event - Данные одной точки марштура.
+   * @param {string} mode - Режим задачи.
    */
-  render(event) {
+  render(event, mode) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
+    this._mode = mode;
 
     this._eventComponent = new EventComponent(event);
-    this._eventEditComponent = new EventEditComponent(event);
+    this._eventEditComponent = new EventEditComponent(event, mode);
 
     this._eventComponent.setOpenButtonClickHandler(() => {
       this._replaceEventToEdit();
@@ -49,14 +76,14 @@ export default class PointController {
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    this._eventEditComponent.setEventEditFormSubmitHandler((evt) => {
-      evt.preventDefault();
-      this._replaceEditToEvent();
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._eventEditComponent.setEventEditFormSubmitHandler(() => {
+      const newEvent = this._eventEditComponent.getData();
+      this._onDataChange(this, event, newEvent);
     });
 
     this._eventEditComponent.setEventFavoriteClickHandler(() => {
       const newEvent = cloneDeep(event);
+      console.log('Favorite');
       newEvent.isFavorite = !event.isFavorite;
       this._onDataChange(this, event, newEvent);
     });
@@ -65,11 +92,20 @@ export default class PointController {
       this._onDataChange(this, event, null);
     });
 
-    if (oldEventComponent && oldEventEditComponent) {
-      replace(this._eventComponent, oldEventComponent);
-      replace(this._eventEditComponent, oldEventEditComponent);
-    } else {
-      render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+    switch (mode) {
+      case Mode.DEFAULT:
+        if (oldEventComponent && oldEventEditComponent) {
+          replace(this._eventComponent, oldEventComponent);
+          replace(this._eventEditComponent, oldEventEditComponent);
+          this._replaceEditToEvent();
+        } else {
+          render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+        }
+        break;
+      case Mode.ADDING:
+        document.addEventListener(`keydown`, this._onEscKeyDown);
+        render(this._container, this._eventEditComponent, RenderPosition.AFTER);
+        break;
     }
   }
 
@@ -92,8 +128,13 @@ export default class PointController {
   }
 
   _replaceEditToEvent() {
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._eventEditComponent.reset();
-    replace(this._eventComponent, this._eventEditComponent);
+
+    if (document.contains(this._eventEditComponent.getElement())) {
+      replace(this._eventComponent, this._eventEditComponent);
+    }
+
     this._mode = Mode.DEFAULT;
   }
 
@@ -101,6 +142,9 @@ export default class PointController {
     const isEscKey = evt.key === ESCAPE_KEY || evt.key === ESC_KEY;
 
     if (isEscKey) {
+      if (this._mode === Mode.ADDING) {
+        this._onDataChange(this, DefaultEvent, null);
+      }
       this._replaceEditToEvent();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }

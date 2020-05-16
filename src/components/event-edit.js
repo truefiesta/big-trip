@@ -129,6 +129,18 @@ const createTripEventEditFormTemplate = (event, options = {}) => {
   const favoriteButton = isFavorite ? `checked` : ``;
   const destinationOptions = createDestinationOptionsMarkup();
 
+  let isDescription = false;
+  let isPhotos = false;
+  if (destinationInfo) {
+    const {description, photos} = destinationInfo;
+    isDescription = description !== `` ? true : false;
+    isPhotos = false;
+    if (photos) {
+      isPhotos = photos.length > 0 ? true : false;
+    }
+  }
+  const destinationInfoSectionMarkup = (isDescription || isPhotos) ? createDestinationInfoMarkup(destinationInfo) : ``;
+  const destinationOptions = createDestinationOptionsMarkup();
 
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
             <datalist id="destination-list-1">
@@ -205,10 +217,70 @@ const createTripEventEditFormTemplate = (event, options = {}) => {
   );
 };
 
+const getOfferByOfferType = (eventType, offerType) => {
+  const offers = offersByType[eventType];
+  for (const offer of offers) {
+    if (offer.type === offerType) {
+      return offer;
+    }
+  }
+
+  return null;
+};
+
+const getDestinationInformation = (destinationName) => {
+  for (const destinationElement of Destinations) {
+    if (destinationElement.name === destinationName) {
+      return destinationElement;
+    }
+  }
+
+  return null;
+};
+
+const parseFormData = (formData) => {
+  const eventType = formData.get(`event-type`);
+  const selectedOffers = [];
+  for (const [key, value] of formData.entries()) {
+    if (key.startsWith(`event-offer-`)) {
+      const offerType = value;
+      const offer = getOfferByOfferType(eventType, offerType);
+      if (offer) {
+        selectedOffers.push(offer);
+      }
+    }
+  }
+
+  const destination = formData.get(`event-destination`);
+  const destinationInformation = getDestinationInformation(destination);
+  const destinationPhotos = destinationInformation.pictures;
+
+  const photoUrls = [];
+  for (let {src} of destinationPhotos) {
+    photoUrls.push(src);
+  }
+
+  return {
+    type: eventType,
+    destination,
+    offers: selectedOffers,
+    destinationInfo: {
+      description: destinationInformation.description,
+      photos: photoUrls
+    },
+    time: {
+      startTime: moment(formData.get(`event-start-time`), `DD/MM/YY HH:mm`),
+      endTime: moment(formData.get(`event-end-time`), `DD/MM/YY HH:mm`)
+    },
+    price: formData.get(`event-price`)
+  };
+};
+
 export default class EventEdit extends AbstractSmartComponent {
-  constructor(event) {
+  constructor(event, mode) {
     super();
     this._event = event;
+    this._mode = mode;
     this._copyEventFields(event);
     this._submitHandler = null;
     this._favoriteHandler = null;
@@ -251,6 +323,16 @@ export default class EventEdit extends AbstractSmartComponent {
     this._removeFlatpickrStartDate();
     this._removeFlatpickrEndDate();
     super.removeElement();
+  }
+
+  getData() {
+    const form = this.getElement();
+    const formData = new FormData(form);
+    const event = parseFormData(formData);
+    event.id = this._event.id;
+    event.isFavorite = this._event.isFavorite;
+
+    return event;
   }
 
   getTemplate() {

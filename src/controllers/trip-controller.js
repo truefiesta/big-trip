@@ -1,13 +1,16 @@
 import {render, RenderPosition, replace} from "../utils/render.js";
-import {SortType} from "../const.js";
+import {SortType, Mode} from "../const.js";
 import DayComponent from "../components/day.js";
 import DayInfoComponent from "../components/day-info.js";
 import NoEventsComponent from "../components/no-events.js";
 import SortComponent from "../components/sort.js";
 import DaysComponent from "../components/days.js";
 import EventsComponent from "../components/events.js";
-import PointController from "./point-controller.js";
 import EventItemComponent from "../components/event-item.js";
+import PointController, {generateDefaultEvent} from "./point-controller.js";
+import isEqual from "../../node_modules/lodash/isEqual";
+const OPENED = true;
+const CLOSED = false;
 
 // Логика для формирования дней
 // Формирует массив с начальными датами событий.
@@ -154,10 +157,12 @@ export default class TripController {
     this._pointsModel = pointsModel;
 
     this._pointControllers = [];
+    this._newEventFormToggleHandler = null;
 
     this._noEventsComponent = new NoEventsComponent();
     this._sortComponent = null;
     this._daysComponent = new DaysComponent();
+    this._eventBeingCreated = null;
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
@@ -181,6 +186,33 @@ export default class TripController {
     render(this._container, this._daysComponent, RenderPosition.BEFOREEND);
 
     this._pointControllers = renderDaysWithEvents(this._daysComponent, events, SortType.SORT_EVENT, this._onDataChange, this._onViewChange);
+  }
+
+  createEvent() {
+    if (this._eventBeingCreated) {
+      return;
+    }
+
+    let containerForPointController = null;
+    if (!this._sortComponent) {
+      containerForPointController = this._container.querySelector(`h2`);
+    } else {
+      containerForPointController = this._sortComponent.getElement();
+    }
+
+    this._eventBeingCreated = new PointController(containerForPointController, this._onDataChange, this._onViewChange);
+    this._eventBeingCreated.render(generateDefaultEvent(), Mode.ADDING);
+    this._callNewEventFormToggleHandler(OPENED);
+  }
+
+  setNewEventFormToggleHandler(handler) {
+    this._newEventFormToggleHandler = handler;
+  }
+
+  _callNewEventFormToggleHandler(openCloseMode) {
+    if (this._newEventFormToggleHandler) {
+      this._newEventFormToggleHandler(openCloseMode);
+    }
   }
 
   _renderSortComponent() {
@@ -209,7 +241,20 @@ export default class TripController {
   }
 
   _onDataChange(pointController, oldEvent, newEvent) {
-    if (newEvent === null) {
+    if (this._eventBeingCreated) {
+      this._eventBeingCreated.destroy();
+      this._eventBeingCreated = null;
+      this._callNewEventFormToggleHandler(CLOSED);
+      if (newEvent === null) {
+        // Если расхотели создавать событие.
+        pointController.destroy();
+        this._updateEvents();
+      } else {
+        // Создание
+        this._pointsModel.addEvent(newEvent);
+        this._updateEvents();
+      }
+    } else if (newEvent === null) {
       // Удаление
       this._pointsModel.removeEvent(oldEvent.id);
       this._updateEvents();
@@ -217,7 +262,12 @@ export default class TripController {
       // Обновление
       const isSuccess = this._pointsModel.updateEvent(oldEvent.id, newEvent);
       if (isSuccess) {
-        pointController.render(newEvent);
+        const eventWithRevertedFavorite = Object.assign({}, newEvent, {isFavorite: !newEvent.isFavorite});
+        if (isEqual(oldEvent, eventWithRevertedFavorite)) {
+          // no rerender
+        } else {
+          pointController.render(newEvent, Mode.DEFAULT);
+        }
       }
     }
   }

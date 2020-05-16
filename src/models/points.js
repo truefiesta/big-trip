@@ -28,6 +28,12 @@ export default class PointsModel {
     this._callHandlers(this._filterChangeHandlers);
   }
 
+  // Метод для добавления точки маршрута.
+  addEvent(event) {
+    this._events = [].concat(event, this._events);
+    this._callHandlers(this._eventDataChangeHandlers);
+  }
+
   // Метод для удаления конкретной точки маршрута.
   removeEvent(id) {
     const index = this._events.findIndex((it) => it.id === id);
