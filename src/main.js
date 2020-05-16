@@ -19,7 +19,8 @@ const events = generateEvents(EVENTS_COUNT);
 const pointsModel = new PointsModel();
 pointsModel.setEvents(events);
 
-render(tripControlsFilterHeaderElement, new MenuComponent(), RenderPosition.BEFORE);
+const menuComponent = new MenuComponent();
+render(tripControlsFilterHeaderElement, menuComponent, RenderPosition.BEFORE);
 
 const filterController = new FilterController(tripControlsElement, pointsModel);
 filterController.render();
