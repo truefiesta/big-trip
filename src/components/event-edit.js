@@ -290,6 +290,9 @@ export default class EventEdit extends AbstractSmartComponent {
     this._destination = event.destination;
     this._destinationInfo = cloneDeep(event.destinationInfo);
     this._selectedOffers = event.offers.slice();
+    this._price = event.price;
+    this._startTime = event.time.startTime;
+    this._endTime = event.time.endTime;
   }
 
   _removeFlatpickr(datePropertyName) {
@@ -338,6 +341,12 @@ export default class EventEdit extends AbstractSmartComponent {
     });
   }
 
+  _subscribeOnPriceChange() {
+    this.getElement().querySelector(`input[name=event-price]`).addEventListener(`change`, (evt) => {
+      this._price = evt.target.value;
+    });
+  }
+
   _subscribeOnOffersChange() {
     this.getElement().querySelector(`.event__available-offers`).addEventListener(`change`, (evt) => {
       if (evt.target.tagName !== `INPUT`) {
@@ -374,9 +383,24 @@ export default class EventEdit extends AbstractSmartComponent {
     });
   }
 
+  _subscribeOnStartTimeChange() {
+    this.getElement().querySelector(`input[name=event-start-time]`).addEventListener(`change`, (evt) => {
+      this._startTime = evt.target.value;
+    });
+  }
+
+  _subscribeOnEndTimeChange() {
+    this.getElement().querySelector(`input[name=event-end-time]`).addEventListener(`change`, (evt) => {
+      this._endTime = evt.target.value;
+    });
+  }
+
   _subscribeOnEvents() {
     this._subscribeOnTypeChange();
+    this._subscribeOnPriceChange();
     this._subscribeOnOffersChange();
     this._subscribeOnDestinationChange();
+    this._subscribeOnStartTimeChange();
+    this._subscribeOnEndTimeChange();
   }
 }
