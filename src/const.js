@@ -49,7 +49,7 @@ export const offers = [
 ];
 
 export const offersByType = {
-  taxi: [
+  "taxi": [
     {
       type: `luggage`,
       title: `Add luggage`,
@@ -61,7 +61,7 @@ export const offersByType = {
       price: 100
     }
   ],
-  bus: [
+  "bus": [
     {
       type: `luggage`,
       title: `Add luggage`,
@@ -78,7 +78,7 @@ export const offersByType = {
       price: 5
     }
   ],
-  train: [
+  "train": [
     {
       type: `luggage`,
       title: `Add luggage`,
@@ -105,7 +105,7 @@ export const offersByType = {
       price: 40
     }
   ],
-  ship: [
+  "ship": [
     {
       type: `luggage`,
       title: `Add luggage`,
@@ -127,7 +127,7 @@ export const offersByType = {
       price: 5
     }
   ],
-  transport: [
+  "transport": [
     {
       type: `luggage`,
       title: `Add luggage`,
@@ -149,14 +149,14 @@ export const offersByType = {
       price: 40
     }
   ],
-  drive: [
+  "drive": [
     {
       type: `comfort`,
       title: `Switch to comfort class`,
       price: 100
     }
   ],
-  flight: [
+  "flight": [
     {
       type: `luggage`,
       title: `Add luggage`,
@@ -178,7 +178,7 @@ export const offersByType = {
       price: 15
     }
   ],
-  check: [
+  "check-in": [
     {
       type: `comfort`,
       title: `Switch to comfort class`,
@@ -190,14 +190,14 @@ export const offersByType = {
       price: 30
     },
   ],
-  sightseeing: [
+  "sightseeing": [
     {
       type: `train`,
       title: `Travel by train`,
       price: 40
     }
   ],
-  restaurant: [
+  "restaurant": [
     {
       type: `seats`,
       title: `Choose seats`,
