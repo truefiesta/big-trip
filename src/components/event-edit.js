@@ -359,12 +359,18 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createTripEventEditFormTemplate(this._event, {
+    return createTripEventEditFormTemplate({
       type: this._type,
       destination: this._destination,
       destinationInfo: this._destinationInfo,
-      offers: this._selectedOffers
-    });
+      offers: this._selectedOffers,
+      price: this._price,
+      time: {
+        startTime: this._startTime,
+        endTime: this._endTime
+      },
+      isFavorite: this._isFavorite
+    }, this._mode);
   }
 
   recoveryListeners() {
