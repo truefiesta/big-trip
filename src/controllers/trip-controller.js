@@ -7,6 +7,7 @@ import SortComponent from "../components/sort.js";
 import DaysComponent from "../components/days.js";
 import EventsComponent from "../components/events.js";
 import PointController from "./point-controller.js";
+import EventItemComponent from "../components/event-item.js";
 
 // Логика для формирования дней
 // Формирует массив с начальными датами событий.
@@ -116,8 +117,10 @@ const renderEvents = (dayComponent, events, onDataChange, onViewChange) => {
   render(dayComponent.getElement(), new EventsComponent(events), RenderPosition.BEFOREEND);
   const eventsListElement = dayComponent.getElement().querySelector(`.trip-events__list`);
   return events.map((event) => {
-    const pointController = new PointController(eventsListElement, onDataChange, onViewChange);
-    pointController.render(event);
+    const eventItemComponent = new EventItemComponent();
+    render(eventsListElement, eventItemComponent, RenderPosition.BEFOREEND);
+    const pointController = new PointController(eventItemComponent.getElement(), onDataChange, onViewChange);
+    pointController.render(event, Mode.DEFAULT);
     return pointController;
   });
 };
