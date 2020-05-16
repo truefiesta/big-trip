@@ -1,37 +1,8 @@
-export const eventTypes = [
-  `Taxi`,
-  `Bus`,
-  `Train`,
-  `Ship`,
-  `Transport`,
-  `Drive`,
-  `Flight`,
-  `Check`,
-  `Sightseeing`,
-  `Restaurant`
-];
-
 export const destinations = [
   `Amsterdam`,
   `Geneva`,
   `Chamonix`,
   `Saint Petersburg`
-];
-
-export const transferTypes = [
-  `Taxi`,
-  `Bus`,
-  `Train`,
-  `Ship`,
-  `Transport`,
-  `Drive`,
-  `Flight`
-];
-
-export const activityTypes = [
-  `Check`,
-  `Sightseeing`,
-  `Restaurant`
 ];
 
 export const MONTH_NAMES = [
@@ -254,3 +225,34 @@ export const FilterType = {
   FUTURE: `future`,
   PAST: `past`
 };
+
+export const transferTypes = [
+  `taxi`,
+  `bus`,
+  `train`,
+  `ship`,
+  `transport`,
+  `drive`,
+  `flight`
+];
+
+export const activityTypes = [
+  `check-in`,
+  `sightseeing`,
+  `restaurant`
+];
+
+export const EventType = {
+  TAXI: `taxi`,
+  BUS: `bus`,
+  TRAIN: `train`,
+  SHIP: `ship`,
+  TRANSPORT: `transport`,
+  DRIVE: `drive`,
+  FLIGHT: `flight`,
+  CHECK: `check-in`,
+  SIGHTSEEING: `sightseeing`,
+  RESTAURANT: `restaurant`
+};
+
+export const EVENT_TYPES = Object.values(EventType);
