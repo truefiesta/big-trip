@@ -256,3 +256,8 @@ export const EventType = {
 };
 
 export const EVENT_TYPES = Object.values(EventType);
+export const Mode = {
+  ADDING: `adding`,
+  DEFAULT: `default`,
+  EDIT: `edit`
+};

@@ -4,9 +4,6 @@ import EventComponent from "../components/event.js";
 import EventEditComponent from "../components/event-edit.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
 
-const Mode = {
-  DEFAULT: `default`,
-  EDIT: `edit`
 };
 /**
  * Отвечает за смену точки маршрута на форму редактирования.
