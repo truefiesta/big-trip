@@ -9,6 +9,8 @@ import EventsComponent from "../components/events.js";
 import EventItemComponent from "../components/event-item.js";
 import PointController, {generateDefaultEvent} from "./point-controller.js";
 import isEqual from "../../node_modules/lodash/isEqual";
+import moment from "moment";
+
 const OPENED = true;
 const CLOSED = false;
 
@@ -24,6 +26,9 @@ const getEventsStartDates = (events) => {
 
 // Возвращает объект с данными о дне, месяце и годe.
 const getFullDate = (date) => {
+  if (moment.isMoment(date)) {
+    date = date.toDate();
+  }
   return {
     date: date.getDate(),
     month: date.getMonth(),

@@ -3,6 +3,7 @@ import {destinations, transferTypes, activityTypes, offersByType, Destinations, 
 import {capitalize} from "../utils/common.js";
 import {getRandomItemsfromArray, getRandomPhotos, destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES, MIN_PHOTOS, MAX_PHOTOS} from "../mock/event.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
+import moment from "moment";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 
@@ -390,26 +391,23 @@ export default class EventEdit extends AbstractSmartComponent {
     this._removeFlatpickr(`_flatpickrEndDate`);
   }
 
-  _applyFlatpickr(datePropertyName, element) {
+  _applyFlatpickr(datePropertyName, initialValue, element) {
     this._removeFlatpickr(datePropertyName);
-
     this[datePropertyName] = flatpickr(element, {
-      altInput: true,
-      allowInput: true,
       enableTime: true,
-      altFormat: `d/m/y H:i`,
-      dateFormat: `d/m/y H:i`
+      dateFormat: `d/m/y H:i`,
+      defaultDate: initialValue,
     });
   }
 
   _applyFlatpickrStartDate() {
     const startDateElement = this.getElement().querySelector(`input[name=event-start-time]`);
-    this._applyFlatpickr(`_flatpickrStartDate`, startDateElement);
+    this._applyFlatpickr(`_flatpickrStartDate`, this._event.time.startTime.valueOf(), startDateElement);
   }
 
   _applyFlatpickrEndDate() {
     const endDateElement = this.getElement().querySelector(`input[name=event-end-time]`);
-    this._applyFlatpickr(`_flatpickrEndDate`, endDateElement);
+    this._applyFlatpickr(`_flatpickrEndDate`, this._event.time.endTime.valueOf(), endDateElement);
   }
 
   _subscribeOnTypeChange() {
