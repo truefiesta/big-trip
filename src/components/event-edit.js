@@ -82,8 +82,8 @@ const createPhotosMarkup = (photos) => {
   }).join(`\n`);
 };
 
-const createDestinationInfoMarkup = (destinationInformation) => {
-  const {description, photos} = destinationInformation;
+const createDestinationInfoMarkup = (destinationInfo) => {
+  const {description, photos} = destinationInfo;
   const descriptionMarkup = !description ? `` : createDescriptionMarkup(description);
   const photosMarkup = photos.length > 0 ? createPhotosMarkup(photos) : ``;
 
@@ -141,8 +141,6 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
   const {startTime, endTime} = time;
   const availableOffersForEventType = offersByType[type.toLowerCase()];
   const offersSectionMarkup = availableOffersForEventType.length > 0 ? createOffersSectionMarkup(availableOffersForEventType, offers) : ``;
-  const destinationInfoSectionMarkup = !destinationInfo ? `` : createDestinationInfoMarkup(destinationInfo);
-  const destinationOptions = createDestinationOptionsMarkup();
 
   let isDescription = false;
   let isPhotos = false;
