@@ -1,5 +1,6 @@
 import AbstractSmartComponent from "../components/abstract-smart-component.js";
-import {destinations, transferTypes, activityTypes, offersByType} from "../const.js";
+import {destinations, transferTypes, activityTypes, offersByType, Destinations, Mode} from "../const.js";
+import {capitalize} from "../utils/common.js";
 import {getRandomItemsfromArray, getRandomPhotos, destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES, MIN_PHOTOS, MAX_PHOTOS} from "../mock/event.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
 import flatpickr from "flatpickr";
@@ -7,12 +8,12 @@ import "flatpickr/dist/flatpickr.min.css";
 
 const createEventTypesMarkup = (allTypes, type) => {
   return allTypes.map((eventType) => {
-    const typeCheck = eventType === `Check` ? `Check-in` : eventType;
-    const isChecked = typeCheck === type ? `checked` : ``;
+    eventType = eventType.toLowerCase();
+    const isChecked = eventType === type.toLowerCase() ? `checked` : ``;
     return (
       `<div class="event__type-item">
-        <input id="event-type-${typeCheck.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeCheck.toLowerCase()}" ${isChecked}>
-        <label class="event__type-label  event__type-label--${typeCheck.toLowerCase()}" for="event-type-${typeCheck.toLowerCase()}-1">${typeCheck}</label>
+        <input id="event-type-${eventType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}" ${isChecked}>
+        <label class="event__type-label  event__type-label--${eventType}" for="event-type-${eventType}-1">${capitalize(eventType)}</label>
       </div>`
     );
   }).join(`\n`);
@@ -42,7 +43,7 @@ const createAvailableOffersMarkup = (allOffersForEventType, selectedEventOffers)
 
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" data-offer-type=${type} type="checkbox" name="event-offer-${type}" ${isChecked}>
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" data-offer-type=${type} type="checkbox" name="event-offer-${type}" value="${type}" ${isChecked}>
         <label class="event__offer-label" for="event-offer-${type}-1">
           <span class="event__offer-title">${title}</span>
           &plus;
@@ -117,47 +118,18 @@ const createTripEventEditFormTemplate = (event, options = {}) => {
   const {time, price, isFavorite} = event;
   const {type, destination, offers, destinationInfo} = options;
 
-  const typeCheck = type === `Check` ? `Check-in` : type;
   const transferTypeEventsMarkup = createEventTypesMarkup(transferTypes, type);
   const activityTypeEventsMarkup = createEventTypesMarkup(activityTypes, type);
   const isActionType = checkType(type);
 
   const {startTime, endTime} = time;
-
   const availableOffersForEventType = offersByType[type.toLowerCase()];
   const offersSectionMarkup = availableOffersForEventType.length > 0 ? createOffersSectionMarkup(availableOffersForEventType, offers) : ``;
   const destinationInfoSectionMarkup = !destinationInfo ? `` : createDestinationInfoMarkup(destinationInfo);
   const favoriteButton = isFavorite ? `checked` : ``;
   const destinationOptions = createDestinationOptionsMarkup();
 
-  return (
-    `<li class="trip-events__item">
-      <form class="event trip-events__item event--edit" action="#" method="post">
-        <header class="event__header">
-          <div class="event__type-wrapper">
-            <label class="event__type  event__type-btn" for="event-type-toggle-1">
-              <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${typeCheck.toLowerCase()}.png" alt="Event type icon">
-            </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
-            <div class="event__type-list">
-              <fieldset class="event__type-group">
-                <legend class="visually-hidden">Transfer</legend>
-                ${transferTypeEventsMarkup}
-              </fieldset>
-
-              <fieldset class="event__type-group">
-                <legend class="visually-hidden">Activity</legend>
-                ${activityTypeEventsMarkup}
-              </fieldset>
-            </div>
-          </div>
-
-          <div class="event__field-group  event__field-group--destination">
-            <label class="event__label  event__type-output" for="event-destination-1">
-              ${typeCheck} ${isActionType}
-            </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
             <datalist id="destination-list-1">
               ${destinationOptions}
@@ -174,7 +146,28 @@ const createTripEventEditFormTemplate = (event, options = {}) => {
               To
             </label>
             <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endTime}">
+  return (
+    `<form class="event trip-events__item event--edit" action="#" method="post">
+      <header class="event__header">
+        <div class="event__type-wrapper">
+          <label class="event__type  event__type-btn" for="event-type-toggle-1">
+            <span class="visually-hidden">Choose event type</span>
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
+          </label>
+          <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox">
+
+          <div class="event__type-list">
+            <fieldset class="event__type-group">
+              <legend class="visually-hidden">Transfer</legend>
+              ${transferTypeEventsMarkup}
+            </fieldset>
+
+            <fieldset class="event__type-group">
+              <legend class="visually-hidden">Activity</legend>
+              ${activityTypeEventsMarkup}
+            </fieldset>
           </div>
+        </div>
 
           <div class="event__field-group  event__field-group--price">
             <label class="event__label" for="event-price-1">
@@ -183,6 +176,10 @@ const createTripEventEditFormTemplate = (event, options = {}) => {
             </label>
             <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
           </div>
+        <div class="event__field-group  event__field-group--destination">
+          <label class="event__label  event__type-output" for="event-destination-1">
+            ${capitalize(type)} ${isActionType}
+          </label>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
           <button class="event__reset-btn" type="reset">Delete</button>
