@@ -1,4 +1,5 @@
 import {render, RenderPosition} from "./utils/render.js";
+import AddButtonComponent from "./components/add-button.js";
 import InfoSectionComponent from "./components/info-section.js";
 import InfoComponent from "./components/info.js";
 import CostComponent from "./components/cost.js";
@@ -25,6 +26,9 @@ filterController.render();
 
 render(tripControlsElement, new InfoSectionComponent(), RenderPosition.BEFORE);
 
+const addButtonComponent = new AddButtonComponent();
+render(tripMainElement, addButtonComponent, RenderPosition.BEFOREEND);
+
 const tripMainInfoSectionElement = tripMainElement.querySelector(`.trip-info`);
 render(tripMainInfoSectionElement, new InfoComponent(), RenderPosition.BEFOREEND);
 render(tripMainInfoSectionElement, new CostComponent(), RenderPosition.BEFOREEND);
@@ -33,3 +37,15 @@ render(tripMainInfoSectionElement, new CostComponent(), RenderPosition.BEFOREEND
 const tripEventsElement = document.querySelector(`.trip-events`);
 const tripController = new TripController(tripEventsElement, pointsModel);
 tripController.render();
+tripController.setNewEventFormToggleHandler((isOpen) => {
+  if (isOpen) {
+    addButtonComponent.disableElement();
+  } else {
+    addButtonComponent.enableElement();
+  }
+});
+
+addButtonComponent.setOnClickHandler(() => {
+  filterController.reset();
+  tripController.createEvent();
+});
