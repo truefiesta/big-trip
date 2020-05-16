@@ -83,7 +83,6 @@ export default class PointController {
 
     this._eventEditComponent.setEventFavoriteClickHandler(() => {
       const newEvent = cloneDeep(event);
-      console.log('Favorite');
       newEvent.isFavorite = !event.isFavorite;
       this._onDataChange(this, event, newEvent);
     });
