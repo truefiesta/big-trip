@@ -486,7 +486,7 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   _subscribeOnDestinationChange() {
-    const destinationElement = this.getElement().querySelector(`input[name=event-destination]`)
+    const destinationElement = this.getElement().querySelector(`input[name=event-destination]`);
     destinationElement.addEventListener(`change`, (evt) => {
 
       if (this._validateDestination(destinationElement)) {
