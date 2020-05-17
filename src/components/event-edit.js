@@ -506,14 +506,40 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   _subscribeOnStartTimeChange() {
-    this.getElement().querySelector(`input[name=event-start-time]`).addEventListener(`change`, (evt) => {
+    const endTimeElement = this.getElement().querySelector(`input[name=event-end-time]`);
+    const startTimeElement = this.getElement().querySelector(`input[name=event-start-time]`);
+    const saveButton = this.getElement().querySelector(`.event__save-btn`);
+
+    startTimeElement.addEventListener(`change`, (evt) => {
       this._startTime = evt.target.value;
+
+      const startMoment = moment(startTimeElement.value, `DD-MM-YYYY HH:mm`);
+      const endMoment = moment(endTimeElement.value, `DD-MM-YYYY HH:mm`);
+
+      if (moment(startMoment).isAfter(endMoment)) {
+        saveButton.setAttribute(`disabled`, ``);
+      } else {
+        saveButton.removeAttribute(`disabled`);
+      }
     });
   }
 
   _subscribeOnEndTimeChange() {
-    this.getElement().querySelector(`input[name=event-end-time]`).addEventListener(`change`, (evt) => {
+    const endTimeElement = this.getElement().querySelector(`input[name=event-end-time]`);
+    const startTimeElement = this.getElement().querySelector(`input[name=event-start-time]`);
+    const saveButton = this.getElement().querySelector(`.event__save-btn`);
+
+    endTimeElement.addEventListener(`change`, (evt) => {
       this._endTime = evt.target.value;
+
+      const startMoment = moment(startTimeElement.value, `DD-MM-YYYY HH:mm`);
+      const endMoment = moment(endTimeElement.value, `DD-MM-YYYY HH:mm`);
+
+      if (moment(endMoment).isBefore(startMoment)) {
+        saveButton.setAttribute(`disabled`, ``);
+      } else {
+        saveButton.removeAttribute(`disabled`);
+      }
     });
   }
 
