@@ -274,7 +274,7 @@ export const Destinations = [
   },
   {
     "description": `Saint-Petersburg, aliquam id orci ut lectus varius viverra. Sed sed nisi sed augue convallis suscipit in sed felis.`,
-    "name": `Saint-Petersburg`,
+    "name": `Saint Petersburg`,
     "pictures": [
       {
         "src": `http://picsum.photos/248/152?r=0.6737960490195023`,
@@ -303,6 +303,14 @@ export const Destinations = [
     ]
   }
 ];
+
+const getDestinations = () => {
+  return Destinations.map((destinationsItem) => {
+    return destinationsItem.name;
+  });
+};
+
+export const DESTINATION_NAMES = getDestinations();
 
 export const Mode = {
   ADDING: `adding`,

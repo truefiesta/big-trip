@@ -1,5 +1,5 @@
 import AbstractSmartComponent from "../components/abstract-smart-component.js";
-import {destinations, transferTypes, activityTypes, offersByType, Destinations, Mode} from "../const.js";
+import {destinations, transferTypes, activityTypes, offersByType, Destinations, Mode, DESTINATION_NAMES} from "../const.js";
 import {capitalize} from "../utils/common.js";
 import {getRandomItemsfromArray, getRandomPhotos, destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES, MIN_PHOTOS, MAX_PHOTOS} from "../mock/event.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
@@ -470,19 +470,38 @@ export default class EventEdit extends AbstractSmartComponent {
     });
   }
 
+  _validateDestination(destinationElement) {
+    const destinationElementValue = destinationElement.value;
+    const validationResult = !!DESTINATION_NAMES.find((destinationName) =>
+      destinationName.toLocaleLowerCase() === destinationElementValue.toLowerCase()
+    );
+
+    if (!validationResult) {
+      destinationElement.setCustomValidity(`Unknown destination`);
+    } else {
+      destinationElement.setCustomValidity(``);
+    }
+
+    return validationResult;
+  }
+
   _subscribeOnDestinationChange() {
-    this.getElement().querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
-      if (evt.target.value.toLowerCase() !== this._destination.toLowerCase()) {
-        this._destination = evt.target.value;
-        // Временно
-        const newDescription = getRandomItemsfromArray(destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES).join(` `);
-        const newPhotos = getRandomPhotos(MIN_PHOTOS, MAX_PHOTOS);
+    const destinationElement = this.getElement().querySelector(`input[name=event-destination]`)
+    destinationElement.addEventListener(`change`, (evt) => {
 
-        this._destinationInfo.description = newDescription;
-        this._destinationInfo.photos = newPhotos;
+      if (this._validateDestination(destinationElement)) {
+        if (evt.target.value.toLowerCase() !== this._destination.toLowerCase()) {
+          this._destination = evt.target.value;
+          // Временно
+          const newDescription = getRandomItemsfromArray(destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES).join(` `);
+          const newPhotos = getRandomPhotos(MIN_PHOTOS, MAX_PHOTOS);
+
+          this._destinationInfo.description = newDescription;
+          this._destinationInfo.photos = newPhotos;
+        }
+
+        this.rerender();
       }
-
-      this.rerender();
     });
   }
 
