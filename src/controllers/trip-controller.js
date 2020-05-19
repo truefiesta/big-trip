@@ -8,6 +8,7 @@ import DaysComponent from "../components/days.js";
 import EventsComponent from "../components/events.js";
 import EventItemComponent from "../components/event-item.js";
 import PointController, {generateDefaultEvent} from "./point-controller.js";
+import {HIDDEN_CLASS} from "../const.js";
 import isEqual from "../../node_modules/lodash/isEqual";
 import moment from "moment";
 
@@ -208,6 +209,14 @@ export default class TripController {
     this._eventBeingCreated = new PointController(containerForPointController, this._onDataChange, this._onViewChange);
     this._eventBeingCreated.render(generateDefaultEvent(), Mode.ADDING);
     this._callNewEventFormToggleHandler(OPENED);
+  }
+
+  hide() {
+    this._container.classList.add(HIDDEN_CLASS);
+  }
+
+  show() {
+    this._container.classList.remove(HIDDEN_CLASS);
   }
 
   setNewEventFormToggleHandler(handler) {

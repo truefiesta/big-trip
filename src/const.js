@@ -317,3 +317,4 @@ export const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`
 };
+export const HIDDEN_CLASS = `visually-hidden`;
