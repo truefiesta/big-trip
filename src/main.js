@@ -47,6 +47,7 @@ tripController.setNewEventFormToggleHandler((isOpen) => {
 });
 
 addButtonComponent.setOnClickHandler(() => {
+addButtonComponent.setOnClick(() => {
   filterController.reset();
   tripController.createEvent();
 });

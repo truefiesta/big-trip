@@ -11,7 +11,7 @@ export default class AddButtonComponent extends AbstractComponent {
     return createAddButtonTemplate();
   }
 
-  setOnClickHandler(handler) {
+  setOnClick(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
 
