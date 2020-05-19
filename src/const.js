@@ -317,4 +317,10 @@ export const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`
 };
+
+export const MenuItem = {
+  TABLE: `table`,
+  STATS: `stats`
+};
+
 export const HIDDEN_CLASS = `visually-hidden`;

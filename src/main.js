@@ -4,10 +4,12 @@ import InfoSectionComponent from "./components/info-section.js";
 import InfoComponent from "./components/info.js";
 import CostComponent from "./components/cost.js";
 import MenuComponent from "./components/menu.js";
+import StatisticsComponent from "./components/statistics.js";
 import FilterController from "./controllers/filter-controller.js";
 import {generateEvents} from "./mock/event.js";
 import TripController from "./controllers/trip-controller.js";
 import PointsModel from "./models/points.js";
+import {MenuItem} from "./const.js";
 
 const EVENTS_COUNT = 20;
 
@@ -21,6 +23,7 @@ pointsModel.setEvents(events);
 
 const menuComponent = new MenuComponent();
 render(tripControlsFilterHeaderElement, menuComponent, RenderPosition.BEFORE);
+menuComponent.setActiveItem(MenuItem.TABLE);
 
 const filterController = new FilterController(tripControlsElement, pointsModel);
 filterController.render();
@@ -46,8 +49,29 @@ tripController.setNewEventFormToggleHandler((isOpen) => {
   }
 });
 
-addButtonComponent.setOnClickHandler(() => {
+const statisticsComponent = new StatisticsComponent();
+render(tripEventsElement, statisticsComponent, RenderPosition.AFTER);
+statisticsComponent.hide();
+
+menuComponent.setOnChange((menuItem) => {
+  switch (menuItem) {
+    case MenuItem.TABLE:
+      menuComponent.setActiveItem(MenuItem.TABLE);
+      statisticsComponent.hide();
+      tripController.show();
+      break;
+    case MenuItem.STATS:
+      menuComponent.setActiveItem(MenuItem.STATS);
+      tripController.hide();
+      statisticsComponent.show();
+      break;
+  }
+});
+
 addButtonComponent.setOnClick(() => {
+  statisticsComponent.hide();
   filterController.reset();
+  tripController.show();
   tripController.createEvent();
+  menuComponent.setActiveItem(MenuItem.TABLE);
 });
