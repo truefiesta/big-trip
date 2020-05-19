@@ -1,5 +1,5 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
-import {eventTypeIcons} from "../const.js";
+import {eventTypeIcons, transferTypes} from "../const.js";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
@@ -9,9 +9,9 @@ const calculateCtxHeight = (dataQuantity) => {
   return BAR_HEIGHT * dataQuantity;
 };
 
-const getUniqueItems = (item, index, array) => {
-  return array.indexOf(item) === index;
-};
+// const getUniqueItems = (item, index, array) => {
+//   return array.indexOf(item) === index;
+// };
 
 const renderMoneyChart = (moneyCtx, events) => {
   const moneySpendByEventType = {};
@@ -106,7 +106,102 @@ const renderMoneyChart = (moneyCtx, events) => {
   });
 };
 
-const renderTransportChart = () => {};
+const renderTransportChart = (transportCtx, events) => {
+  const timesTransportTypeUsed = {};
+  events.forEach((event) => {
+    const type = event.type;
+    if (transferTypes.includes(type)) {
+      if (!timesTransportTypeUsed[type]) {
+        timesTransportTypeUsed[type] = 1;
+      } else {
+        ++timesTransportTypeUsed[type];
+      }
+    }
+  });
+
+  const totalTimesTransportTypeUsed = [];
+  for (let [type, timesUsed] of Object.entries(timesTransportTypeUsed)) {
+    totalTimesTransportTypeUsed.push({type, timesUsed});
+  }
+
+  const sortedTimesTransportTypeUsed = totalTimesTransportTypeUsed.slice().sort((a, b) => {
+    return b.timesUsed - a.timesUsed;
+  });
+
+  const types = sortedTimesTransportTypeUsed.map((it) => it.type);
+  const totalTimesByTransportType = sortedTimesTransportTypeUsed.map((it) => it.timesUsed);
+
+  transportCtx.height = calculateCtxHeight(types.length);
+
+  return new Chart(transportCtx, {
+    plugins: [ChartDataLabels],
+    type: `horizontalBar`,
+    data: {
+      labels: types,
+      datasets: [{
+        data: totalTimesByTransportType,
+        backgroundColor: `#ffffff`,
+        hoverBackgroundColor: `#ffffff`,
+        anchor: `start`,
+        barThickness: 44,
+        minBarLength: 50
+      }]
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          font: {
+            size: 13
+          },
+          color: `#000000`,
+          anchor: `end`,
+          align: `start`,
+          formatter: (val) => `${val}x`
+        }
+      },
+      title: {
+        display: true,
+        text: `TRANSPORT`,
+        fontColor: `#000000`,
+        fontSize: 23,
+        position: `left`
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: `#000000`,
+            padding: 5,
+            fontSize: 13,
+            callback: (type) => {
+              return `${eventTypeIcons[type]} ${type.toUpperCase()}`;
+            }
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+        }],
+      },
+      legend: {
+        display: false
+      },
+      tooltips: {
+        enabled: false,
+      }
+    }
+  });
+};
+
 const renderTimeSpendChart = () => {};
 
 const createStatisticsTemplate = () => {
@@ -134,6 +229,7 @@ export default class Statistics extends AbstractSmartComponent {
     super();
     this._pointsModel = pointsModel;
     this._moneyChart = null;
+    this._transportChart = null;
 
     this._onEventsChange = this._onEventsChange.bind(this);
     this._pointsModel.setEventsChangeHandler(this._onEventsChange);
@@ -153,6 +249,7 @@ export default class Statistics extends AbstractSmartComponent {
   _renderAllCharts() {
     const events = this._pointsModel.getAllEvents();
     this._renderMoneyChart(events);
+    this._renderTransportChart(events);
   }
 
   _renderMoneyChart(events) {
@@ -160,8 +257,19 @@ export default class Statistics extends AbstractSmartComponent {
       this._moneyChart.destroy();
       this._moneyChart = null;
     }
+
     const moneyCtx = this.getElement().querySelector(`.statistics__chart--money`);
     this._moneyChart = renderMoneyChart(moneyCtx, events);
+  }
+
+  _renderTransportChart(events) {
+    if (this._transportChart) {
+      this._transportChart.destroy();
+      this._transportChart = null;
+    }
+
+    const transportCtx = this.getElement().querySelector(`.statistics__chart--transport`);
+    this._transportChart = renderTransportChart(transportCtx, events);
   }
 
   _onEventsChange() {
@@ -169,5 +277,4 @@ export default class Statistics extends AbstractSmartComponent {
   }
 
   recoveryListeners() {}
-
 }
