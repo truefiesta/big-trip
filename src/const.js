@@ -260,7 +260,7 @@ export const eventTypeIcons = {
   [EventType.BUS]: `🚌`,
   [EventType.TRAIN]: `🚂`,
   [EventType.SHIP]: `🛳️`,
-  [EventType.TRANSPORT]:`🚊`,
+  [EventType.TRANSPORT]: `🚊`,
   [EventType.DRIVE]: `🚗`,
   [EventType.FLIGHT]: `✈️`,
   [EventType.CHECK]: `🏨`,
