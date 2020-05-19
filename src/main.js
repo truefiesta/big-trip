@@ -49,7 +49,7 @@ tripController.setNewEventFormToggleHandler((isOpen) => {
   }
 });
 
-const statisticsComponent = new StatisticsComponent();
+const statisticsComponent = new StatisticsComponent(pointsModel);
 render(tripEventsElement, statisticsComponent, RenderPosition.AFTER);
 statisticsComponent.hide();
 
