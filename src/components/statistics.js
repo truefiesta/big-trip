@@ -1,5 +1,6 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import {eventTypeIcons, transferTypes} from "../const.js";
+import {getDuration, formatDurationString} from "../utils/common.js";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
@@ -8,10 +9,6 @@ const BAR_HEIGHT = 55;
 const calculateCtxHeight = (dataQuantity) => {
   return BAR_HEIGHT * dataQuantity;
 };
-
-// const getUniqueItems = (item, index, array) => {
-//   return array.indexOf(item) === index;
-// };
 
 const renderMoneyChart = (moneyCtx, events) => {
   const moneySpendByEventType = {};
@@ -202,7 +199,100 @@ const renderTransportChart = (transportCtx, events) => {
   });
 };
 
-const renderTimeSpendChart = () => {};
+const renderTimeSpendChart = (timeSpendCtx, events) => {
+  const timeSpendByEventType = {};
+  events.forEach((event) => {
+    if (!timeSpendByEventType[event.type]) {
+      timeSpendByEventType[event.type] = getDuration(event.time.startTime, event.time.endTime);
+    } else {
+      timeSpendByEventType[event.type] += getDuration(event.time.startTime, event.time.endTime);
+    }
+  });
+
+  const timeSpendAndEventType = [];
+  for (let [type, timeTotal] of Object.entries(timeSpendByEventType)) {
+    timeSpendAndEventType.push({type, timeTotal});
+  }
+
+  const sortedTimeSpendAndEventType = timeSpendAndEventType.slice().sort((a, b) => {
+    return b.timeTotal - a.timeTotal;
+  });
+
+  const types = sortedTimeSpendAndEventType.map((it) => it.type);
+  const totalTimeSpendByType = sortedTimeSpendAndEventType.map((it) => it.timeTotal);
+
+  timeSpendCtx.height = calculateCtxHeight(types.length);
+
+  return new Chart(timeSpendCtx, {
+    plugins: [ChartDataLabels],
+    type: `horizontalBar`,
+    data: {
+      labels: types,
+      datasets: [{
+        data: totalTimeSpendByType,
+        backgroundColor: `#ffffff`,
+        hoverBackgroundColor: `#ffffff`,
+        anchor: `start`,
+        barThickness: 44,
+        minBarLength: 50
+      }]
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          font: {
+            size: 13
+          },
+          color: `#000000`,
+          anchor: `end`,
+          align: `start`,
+          formatter: (val) => {
+            return formatDurationString(val);
+          }
+        }
+      },
+      title: {
+        display: true,
+        text: `TIME SPEND`,
+        fontColor: `#000000`,
+        fontSize: 23,
+        position: `left`
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: `#000000`,
+            padding: 5,
+            fontSize: 13,
+            callback: (type) => {
+              return `${eventTypeIcons[type]} ${type.toUpperCase()}`;
+            }
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+        }],
+      },
+      legend: {
+        display: false
+      },
+      tooltips: {
+        enabled: false,
+      }
+    }
+  });
+};
 
 const createStatisticsTemplate = () => {
   return (
@@ -230,6 +320,7 @@ export default class Statistics extends AbstractSmartComponent {
     this._pointsModel = pointsModel;
     this._moneyChart = null;
     this._transportChart = null;
+    this._timeSpendChart = null;
 
     this._onEventsChange = this._onEventsChange.bind(this);
     this._pointsModel.setEventsChangeHandler(this._onEventsChange);
@@ -250,6 +341,7 @@ export default class Statistics extends AbstractSmartComponent {
     const events = this._pointsModel.getAllEvents();
     this._renderMoneyChart(events);
     this._renderTransportChart(events);
+    this._renderTimeSpendChart(events);
   }
 
   _renderMoneyChart(events) {
@@ -270,6 +362,16 @@ export default class Statistics extends AbstractSmartComponent {
 
     const transportCtx = this.getElement().querySelector(`.statistics__chart--transport`);
     this._transportChart = renderTransportChart(transportCtx, events);
+  }
+
+  _renderTimeSpendChart(events) {
+    if (this._timeSpendChart) {
+      this._timeSpendChart.destroy();
+      this._timeSpendChart = null;
+    }
+
+    const timeSpendCtx = this.getElement().querySelector(`.statistics__chart--time`);
+    this._timeSpendChart = renderTimeSpendChart(timeSpendCtx, events);
   }
 
   _onEventsChange() {
