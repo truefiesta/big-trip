@@ -1,5 +1,5 @@
 import AbstractComponent from "../components/abstract-component.js";
-import {formatTime, formatDate, formatDuration, capitalize} from "../utils/common.js";
+import {formatTime, formatDate, formatDurationFromDates, capitalize} from "../utils/common.js";
 import {activityTypes} from "../const.js";
 
 // В колонке «Offers» отображаются не более 3-х дополнительных опций,
@@ -39,7 +39,7 @@ export const createTripEventItemTemplate = (event) => {
           &mdash;
           <time class="event__end-time" datetime="${formatDate(endTime)}">${formatTime(endTime)}</time>
         </p>
-        <p class="event__duration">${formatDuration(startTime, endTime)}</p>
+        <p class="event__duration">${formatDurationFromDates(startTime, endTime)}</p>
       </div>
 
       <p class="event__price">

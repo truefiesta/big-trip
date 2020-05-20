@@ -22,18 +22,18 @@ export const formatDate = (date) => {
   return moment(date).format(`DD/MM/YY`);
 };
 
-const getDuration = (startDate, endDate) => {
+export const getDuration = (startDate, endDate) => {
   const startMoment = moment(startDate);
   const endMoment = moment(endDate);
   return moment.duration(endMoment.diff(startMoment));
 };
 
-export const formatDuration = (startDate, endDate) => {
-  const duration = getDuration(startDate, endDate);
+const formatDuration = (duration) => {
   const durationInSeconds = duration.as(`seconds`);
   const durationInMinutes = castTimeFormat(duration.get(`minutes`));
   const durationInHours = castTimeFormat(duration.get(`hours`));
   const durationInDays = castTimeFormat(duration.get(`days`));
+
   let formattedDuration = ``;
 
   if (durationInSeconds < SECONDS_IN_HOUR) {
@@ -45,6 +45,16 @@ export const formatDuration = (startDate, endDate) => {
   }
 
   return formattedDuration;
+};
+
+export const formatDurationFromDates = (startDate, endDate) => {
+  const duration = getDuration(startDate, endDate);
+  return formatDuration(duration);
+};
+
+export const formatDurationString = (durationString) => {
+  const duration = moment.duration(durationString);
+  return formatDuration(duration);
 };
 
 export const capitalize = (text) => {
