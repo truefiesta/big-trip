@@ -1,7 +1,6 @@
 import AbstractSmartComponent from "../components/abstract-smart-component.js";
 import {destinations, transferTypes, activityTypes, offersByType, Destinations, Mode, DESTINATION_NAMES} from "../const.js";
 import {capitalize} from "../utils/common.js";
-import {getRandomItemsfromArray, getRandomPhotos, destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES, MIN_PHOTOS, MAX_PHOTOS} from "../mock/event.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
 import moment from "moment";
 import flatpickr from "flatpickr";
@@ -76,8 +75,9 @@ const createDescriptionMarkup = (availableDescription) => {
 
 const createPhotosMarkup = (photos) => {
   return photos.map((photo) => {
+    const {src, description} = photo;
     return (
-      `<img class="event__photo" src="${photo}" alt="Event photo">`
+      `<img class="event__photo" src="${src}" alt="${description}">`
     );
   }).join(`\n`);
 };
@@ -262,10 +262,10 @@ const parseFormData = (formData) => {
   const destinationInformation = getDestinationInformation(destination);
   const destinationPhotos = destinationInformation.pictures;
 
-  const photoUrls = [];
-  for (let {src} of destinationPhotos) {
-    photoUrls.push(src);
-  }
+  // const photoUrls = [];
+  // for (let {src} of destinationPhotos) {
+  //   photoUrls.push(src);
+  // }
 
   return {
     type: eventType,
@@ -273,7 +273,7 @@ const parseFormData = (formData) => {
     offers: selectedOffers,
     destinationInfo: {
       description: destinationInformation.description,
-      photos: photoUrls
+      photos: destinationPhotos
     },
     time: {
       startTime: moment(formData.get(`event-start-time`), `DD/MM/YY HH:mm`),
@@ -492,9 +492,9 @@ export default class EventEdit extends AbstractSmartComponent {
       if (this._validateDestination(destinationElement)) {
         if (evt.target.value.toLowerCase() !== this._destination.toLowerCase()) {
           this._destination = evt.target.value;
-          // Временно
-          const newDescription = getRandomItemsfromArray(destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES).join(` `);
-          const newPhotos = getRandomPhotos(MIN_PHOTOS, MAX_PHOTOS);
+
+          const newDescription = getDestinationInformation(this._destination).description;
+          const newPhotos = getDestinationInformation(this._destination).pictures;
 
           this._destinationInfo.description = newDescription;
           this._destinationInfo.photos = newPhotos;

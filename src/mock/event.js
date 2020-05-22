@@ -81,6 +81,17 @@ const getRandomDateRange = () => {
   };
 };
 
+const photos = [
+  {
+    "src": `http://picsum.photos/300/200?r=0.0762563005163317`,
+    "description": `Chamonix parliament building`
+  },
+  {
+    "src": `http://picsum.photos/300/200?r=0.6737960490195023`,
+    "description": `Chamonix building`
+  }
+];
+
 const allEventTypes = transferTypes.concat(activityTypes);
 
 const generateEvent = () => {
@@ -102,7 +113,7 @@ const generateEvent = () => {
     offers: selectedOffers,
     destinationInfo: {
       description,
-      photos: getRandomPhotos(MIN_PHOTOS, MAX_PHOTOS)
+      photos
     },
     time: {
       startTime: timeRange.startDate,
