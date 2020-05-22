@@ -48,168 +48,345 @@ export const offers = [
   }
 ];
 
-export const offersByType = {
-  "taxi": [
-    {
-      type: `luggage`,
-      title: `Add luggage`,
-      price: 30
-    },
-    {
-      type: `comfort`,
-      title: `Switch to comfort class`,
-      price: 100
-    }
-  ],
-  "bus": [
-    {
-      type: `luggage`,
-      title: `Add luggage`,
-      price: 30
-    },
-    {
-      type: `comfort`,
-      title: `Switch to comfort class`,
-      price: 100
-    },
-    {
-      type: `seats`,
-      title: `Choose seats`,
-      price: 5
-    }
-  ],
-  "train": [
-    {
-      type: `luggage`,
-      title: `Add luggage`,
-      price: 30
-    },
-    {
-      type: `comfort`,
-      title: `Switch to comfort class`,
-      price: 100
-    },
-    {
-      type: `meal`,
-      title: `Add meal`,
-      price: 15
-    },
-    {
-      type: `seats`,
-      title: `Choose seats`,
-      price: 5
-    },
-    {
-      type: `train`,
-      title: `Travel by train`,
-      price: 40
-    }
-  ],
-  "ship": [
-    {
-      type: `luggage`,
-      title: `Add luggage`,
-      price: 30
-    },
-    {
-      type: `comfort`,
-      title: `Switch to comfort class`,
-      price: 100
-    },
-    {
-      type: `meal`,
-      title: `Add meal`,
-      price: 15
-    },
-    {
-      type: `seats`,
-      title: `Choose seats`,
-      price: 5
-    }
-  ],
-  "transport": [
-    {
-      type: `luggage`,
-      title: `Add luggage`,
-      price: 30
-    },
-    {
-      type: `comfort`,
-      title: `Switch to comfort class`,
-      price: 100
-    },
-    {
-      type: `seats`,
-      title: `Choose seats`,
-      price: 5
-    },
-    {
-      type: `train`,
-      title: `Travel by train`,
-      price: 40
-    }
-  ],
-  "drive": [
-    {
-      type: `comfort`,
-      title: `Switch to comfort class`,
-      price: 100
-    }
-  ],
-  "flight": [
-    {
-      type: `luggage`,
-      title: `Add luggage`,
-      price: 30
-    },
-    {
-      type: `comfort`,
-      title: `Switch to comfort class`,
-      price: 100
-    },
-    {
-      type: `seats`,
-      title: `Choose seats`,
-      price: 5
-    },
-    {
-      type: `meal`,
-      title: `Add meal`,
-      price: 15
-    }
-  ],
-  "check-in": [
-    {
-      type: `comfort`,
-      title: `Switch to comfort class`,
-      price: 100
-    },
-    {
-      type: `luggage`,
-      title: `Add luggage`,
-      price: 30
-    },
-  ],
-  "sightseeing": [
-    {
-      type: `train`,
-      title: `Travel by train`,
-      price: 40
-    }
-  ],
-  "restaurant": [
-    {
-      type: `seats`,
-      title: `Choose seats`,
-      price: 5
-    },
-    {
-      type: `meal`,
-      title: `Add meal`,
-      price: 15
-    }
-  ]
-};
+// export const offersByType = {
+//   "taxi": [
+//     {
+//       type: `luggage`,
+//       title: `Add luggage`,
+//       price: 30
+//     },
+//     {
+//       type: `comfort`,
+//       title: `Switch to comfort class`,
+//       price: 100
+//     }
+//   ],
+//   "bus": [
+//     {
+//       type: `luggage`,
+//       title: `Add luggage`,
+//       price: 30
+//     },
+//     {
+//       type: `comfort`,
+//       title: `Switch to comfort class`,
+//       price: 100
+//     },
+//     {
+//       type: `seats`,
+//       title: `Choose seats`,
+//       price: 5
+//     }
+//   ],
+//   "train": [
+//     {
+//       type: `luggage`,
+//       title: `Add luggage`,
+//       price: 30
+//     },
+//     {
+//       type: `comfort`,
+//       title: `Switch to comfort class`,
+//       price: 100
+//     },
+//     {
+//       type: `meal`,
+//       title: `Add meal`,
+//       price: 15
+//     },
+//     {
+//       type: `seats`,
+//       title: `Choose seats`,
+//       price: 5
+//     },
+//     {
+//       type: `train`,
+//       title: `Travel by train`,
+//       price: 40
+//     }
+//   ],
+//   "ship": [
+//     {
+//       type: `luggage`,
+//       title: `Add luggage`,
+//       price: 30
+//     },
+//     {
+//       type: `comfort`,
+//       title: `Switch to comfort class`,
+//       price: 100
+//     },
+//     {
+//       type: `meal`,
+//       title: `Add meal`,
+//       price: 15
+//     },
+//     {
+//       type: `seats`,
+//       title: `Choose seats`,
+//       price: 5
+//     }
+//   ],
+//   "transport": [
+//     {
+//       type: `luggage`,
+//       title: `Add luggage`,
+//       price: 30
+//     },
+//     {
+//       type: `comfort`,
+//       title: `Switch to comfort class`,
+//       price: 100
+//     },
+//     {
+//       type: `seats`,
+//       title: `Choose seats`,
+//       price: 5
+//     },
+//     {
+//       type: `train`,
+//       title: `Travel by train`,
+//       price: 40
+//     }
+//   ],
+//   "drive": [
+//     {
+//       type: `comfort`,
+//       title: `Switch to comfort class`,
+//       price: 100
+//     }
+//   ],
+//   "flight": [
+//     {
+//       type: `luggage`,
+//       title: `Add luggage`,
+//       price: 30
+//     },
+//     {
+//       type: `comfort`,
+//       title: `Switch to comfort class`,
+//       price: 100
+//     },
+//     {
+//       type: `seats`,
+//       title: `Choose seats`,
+//       price: 5
+//     },
+//     {
+//       type: `meal`,
+//       title: `Add meal`,
+//       price: 15
+//     }
+//   ],
+//   "check-in": [
+//     {
+//       type: `comfort`,
+//       title: `Switch to comfort class`,
+//       price: 100
+//     },
+//     {
+//       type: `luggage`,
+//       title: `Add luggage`,
+//       price: 30
+//     },
+//   ],
+//   "sightseeing": [
+//     {
+//       type: `train`,
+//       title: `Travel by train`,
+//       price: 40
+//     }
+//   ],
+//   "restaurant": [
+//     {
+//       type: `seats`,
+//       title: `Choose seats`,
+//       price: 5
+//     },
+//     {
+//       type: `meal`,
+//       title: `Add meal`,
+//       price: 15
+//     }
+//   ]
+// };
+
+export const offersByType = [
+  {
+    type: `taxi`,
+    offers: [
+      {
+        title: `Upgrade to a business class`,
+        price: 190
+      },
+      {
+        title: `Choose the radio station`,
+        price: 30
+      },
+      {
+        title: `Choose temperature`,
+        price: 170
+      },
+      {
+        title: `Drive quickly, I'm in a hurry`,
+        price: 100
+      },
+      {
+        title: `Drive slowly`,
+        price: 110
+      }
+    ]
+  },
+  {
+    type: `bus`,
+    offers: [
+      {
+        title: `Infotainment system`,
+        price: 50
+      },
+      {
+        title: `Order meal`,
+        price: 100
+      },
+      {
+        title: `Choose seats`,
+        price: 190
+      }
+    ]
+  },
+  {
+    type: `train`,
+    offers: [
+      {
+        title: `Book a taxi at the arrival point`,
+        price: 50
+      },
+      {
+        title: `Order a breakfast`,
+        price: 80
+      },
+      {
+        title: `Wake me up`,
+        price: 140
+      }
+    ]
+  },
+  {
+    type: `flight`,
+    offers: [
+      {
+        title: `Book a taxi at the arrival point`,
+        price: 50
+      },
+      {
+        title: `Order a breakfast`,
+        price: 80
+      },
+      {
+        title: `Wake me up`,
+        price: 140
+      }
+    ]
+  },
+  {
+    type: `check-in`,
+    offers: [
+      {
+        title: `Book a taxi at the arrival point`,
+        price: 50
+      },
+      {
+        title: `Order a breakfast`,
+        price: 80
+      },
+      {
+        title: `Wake me up`,
+        price: 140
+      }
+    ]
+  },
+  {
+    type: `sightseeing`,
+    offers: [
+      {
+        title: `Book a taxi at the arrival point`,
+        price: 50
+      },
+      {
+        title: `Order a breakfast`,
+        price: 80
+      },
+      {
+        title: `Wake me up`,
+        price: 140
+      }
+    ]
+  },
+  {
+    type: `ship`,
+    offers: [
+      {
+        title: `Book a taxi at the arrival point`,
+        price: 50
+      },
+      {
+        title: `Order a breakfast`,
+        price: 80
+      },
+      {
+        title: `Wake me up`,
+        price: 140
+      }
+    ]
+  },
+  {
+    type: `transport`,
+    offers: [
+      {
+        title: `Book a taxi at the arrival point`,
+        price: 50
+      },
+      {
+        title: `Order a breakfast`,
+        price: 80
+      },
+      {
+        title: `Wake me up`,
+        price: 140
+      }
+    ]
+  },
+  {
+    type: `drive`,
+    offers: [
+      {
+        title: `Book a taxi at the arrival point`,
+        price: 50
+      },
+      {
+        title: `Order a breakfast`,
+        price: 80
+      },
+      {
+        title: `Wake me up`,
+        price: 140
+      }
+    ]
+  },
+  {
+    type: `restaurant`,
+    offers: [
+      {
+        title: `Choose live music`,
+        price: 150
+      },
+      {
+        title: `Choose VIP area`,
+        price: 70
+      }
+    ]
+  }
+];
 
 export const ESC_KEY = `Esc`;
 export const ESCAPE_KEY = `Escape`;

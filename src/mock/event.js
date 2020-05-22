@@ -98,11 +98,18 @@ const generateEvent = () => {
   const description = getRandomItemsfromArray(destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES).join(` `);
   const type = getRandomArrayItem(allEventTypes);
 
-  const getSelectedOffers = (currentType, offers) => {
-    const maxOffers = offers[currentType.toLowerCase()].length;
-    return getRandomItemsfromArray(offers[currentType.toLowerCase()], MIN_OFFERS, maxOffers);
+  // const getSelectedOffers = (currentType, offers) => {
+  //   const maxOffers = offers[currentType.toLowerCase()].length;
+  //   return getRandomItemsfromArray(offers[currentType.toLowerCase()], MIN_OFFERS, maxOffers);
+  // };
+
+  const getSelectedOffers = (currentType) => {
+    const offersAndCurrentType = offersByType.filter((offerByType) => offerByType.type === currentType);
+    const offers = offersAndCurrentType[0].offers;
+    const maxOffers = offers.length;
+    return getRandomItemsfromArray(offers, MIN_OFFERS, maxOffers);
   };
-  const selectedOffers = getSelectedOffers(type, offersByType);
+  const selectedOffers = getSelectedOffers(type);
 
   const timeRange = getRandomDateRange();
 
