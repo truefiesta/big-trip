@@ -1,5 +1,5 @@
 import AbstractSmartComponent from "../components/abstract-smart-component.js";
-import {DestinationsInformation, transferTypes, activityTypes, Mode} from "../const.js";
+import {transferTypes, activityTypes, Mode} from "../const.js";
 import {capitalize, getOffersByType, getDestinationInformation, getDestinations} from "../utils/common.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
 import moment from "moment";
@@ -396,7 +396,7 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   _subscribeOnOffersChange() {
-    const availableOffersElement = this.getElement().querySelector(`.event__available-offers`)
+    const availableOffersElement = this.getElement().querySelector(`.event__available-offers`);
     if (!availableOffersElement) {
       return;
     }
