@@ -1,8 +1,9 @@
-import {render, RenderPosition, replace} from "../utils/render.js";
+import {render, RenderPosition, replace, remove} from "../utils/render.js";
 import {SortType, Mode} from "../const.js";
 import DayComponent from "../components/day.js";
 import DayInfoComponent from "../components/day-info.js";
 import NoEventsComponent from "../components/no-events.js";
+import LoadingComponent from "../components/loading-component.js";
 import SortComponent from "../components/sort.js";
 import DaysComponent from "../components/days.js";
 import EventsComponent from "../components/events.js";
@@ -166,9 +167,12 @@ export default class TripController {
     this._newEventFormToggleHandler = null;
 
     this._noEventsComponent = new NoEventsComponent();
+    this._loadingComponent = null;
     this._sortComponent = null;
     this._daysComponent = new DaysComponent();
     this._eventBeingCreated = null;
+
+    this._isLoading = true;
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
@@ -179,10 +183,14 @@ export default class TripController {
   }
 
   render() {
-    const events = this._pointsModel.getEvents();
-
     const tripEventsHeaderElement = this._container.querySelector(`h2`);
+    if (this._isLoading) {
+      this._loadingComponent = new LoadingComponent();
+      render(tripEventsHeaderElement, this._loadingComponent, RenderPosition.AFTER);
+      return;
+    }
 
+    const events = this._pointsModel.getEvents();
     if (events.length <= 0) {
       render(tripEventsHeaderElement, this._noEventsComponent, RenderPosition.AFTER);
       return;
@@ -217,6 +225,18 @@ export default class TripController {
 
   show() {
     this._container.classList.remove(HIDDEN_CLASS);
+  }
+
+  setNoLoading() {
+    if (this._isLoading) {
+      this._isLoading = false;
+      if (this._loadingComponent) {
+        remove(this._loadingComponent);
+        this._loadingComponent = null;
+      }
+
+      this.render();
+    }
   }
 
   setNewEventFormToggleHandler(handler) {

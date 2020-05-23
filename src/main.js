@@ -39,6 +39,7 @@ render(tripMainInfoSectionElement, new CostComponent(), RenderPosition.BEFOREEND
 // Trip
 const tripEventsElement = document.querySelector(`.trip-events`);
 const tripController = new TripController(tripEventsElement, pointsModel);
+tripController.render();
 
 tripController.setNewEventFormToggleHandler((isOpen) => {
   if (isOpen) {
@@ -80,5 +81,8 @@ Promise.all([api.getOffers(), api.getDestinations(), api.getEvents()])
     OffersByType.offers = offers;
     DestinationsInformation.destinations = destinations;
     pointsModel.setEvents(events);
-    tripController.render();
+    tripController.setNoLoading();
+  })
+  .catch(() => {
+    tripController.setNoLoading();
   });
