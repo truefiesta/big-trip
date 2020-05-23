@@ -466,7 +466,12 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   _subscribeOnOffersChange() {
-    this.getElement().querySelector(`.event__available-offers`).addEventListener(`change`, (evt) => {
+    const availableOffersElement = this.getElement().querySelector(`.event__available-offers`)
+    if (!availableOffersElement) {
+      return;
+    }
+
+    availableOffersElement.addEventListener(`change`, (evt) => {
       if (evt.target.tagName !== `INPUT`) {
         return;
       }
