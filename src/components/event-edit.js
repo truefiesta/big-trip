@@ -20,15 +20,15 @@ const createEventTypesMarkup = (allTypes, type) => {
 };
 
 const compareOffers = (offerOne, offerTwo) => {
-  if (offerOne.type.toLowerCase() === offerTwo.type.toLowerCase() &&
-    offerOne.title === offerTwo.title &&
+  if (offerOne.title === offerTwo.title &&
     offerOne.price === offerTwo.price) {
     return true;
   }
   return false;
 };
 
-const createAvailableOffersMarkup = (allOffersForEventType, selectedEventOffers) => {
+const createAvailableOffersMarkup = (eventType, allOffersForEventType, selectedEventOffers) => {
+  let count = 0;
   return allOffersForEventType.map((offerForEventType) => {
     let isChecked = ``;
     if (selectedEventOffers.length > 0) {
@@ -54,8 +54,8 @@ const createAvailableOffersMarkup = (allOffersForEventType, selectedEventOffers)
   }).join(`\n`);
 };
 
-const createOffersSectionMarkup = (allOffersForEventType, selectedEventOffers) => {
-  const eventOffersMarkup = createAvailableOffersMarkup(allOffersForEventType, selectedEventOffers);
+const createOffersSectionMarkup = (eventType, allOffersForEventType, selectedEventOffers) => {
+  const eventOffersMarkup = createAvailableOffersMarkup(eventType, allOffersForEventType, selectedEventOffers);
   return (
     `<section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -131,6 +131,18 @@ const checkType = (type) => {
   return types.includes(type) ? ` in` : ` to`;
 };
 
+const getOffersByType = (currentType) => {
+  let offersForCurrentType = [];
+  for (const {type, offers} of offersByType) {
+    if (type === currentType) {
+      offersForCurrentType = offersForCurrentType.concat(offers);
+      break;
+    }
+  }
+
+  return offersForCurrentType;
+};
+
 const createTripEventEditFormTemplate = (options = {}, mode) => {
   const {type, destination, offers, destinationInfo, price, time, isFavorite} = options;
 
@@ -139,8 +151,9 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
   const isActionType = checkType(type);
 
   const {startTime, endTime} = time;
-  const availableOffersForEventType = offersByType[type.toLowerCase()];
-  const offersSectionMarkup = availableOffersForEventType.length > 0 ? createOffersSectionMarkup(availableOffersForEventType, offers) : ``;
+
+  const availableOffersForEventType = getOffersByType(type.toLowerCase());
+  const offersSectionMarkup = availableOffersForEventType.length > 0 ? createOffersSectionMarkup(type, availableOffersForEventType, offers) : ``;
 
   let isDescription = false;
   let isPhotos = false;
@@ -224,10 +237,10 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
   );
 };
 
-const getOfferByOfferType = (eventType, offerType) => {
-  const offers = offersByType[eventType];
+const getOfferByOfferTitle = (eventType, offerTitle) => {
+  const offers = getOffersByType(eventType);
   for (const offer of offers) {
-    if (offer.type === offerType) {
+    if (offer.title === offerTitle) {
       return offer;
     }
   }
@@ -249,9 +262,10 @@ const parseFormData = (formData) => {
   const eventType = formData.get(`event-type`);
   const selectedOffers = [];
   for (const [key, value] of formData.entries()) {
+
     if (key.startsWith(`event-offer-`)) {
-      const offerType = value;
-      const offer = getOfferByOfferType(eventType, offerType);
+      const offerTitle = value;
+      const offer = getOfferByOfferTitle(eventType, offerTitle);
       if (offer) {
         selectedOffers.push(offer);
       }
@@ -456,14 +470,15 @@ export default class EventEdit extends AbstractSmartComponent {
         return;
       }
 
-      const availableOffers = offersByType[this._type.toLowerCase()];
-      const typeOfClickedOffer = evt.target.dataset.offerType;
+      const availableOffers = getOffersByType(this._type.toLowerCase());
+      const valueOfClickedOffer = evt.target.value;
+      const priceOfClickedOffer = parseInt(evt.target.dataset.offerPrice, 10);
 
       if (evt.target.checked) {
-        const selectedOffer = availableOffers.filter((availableOffer) => availableOffer.type === typeOfClickedOffer);
+        const selectedOffer = availableOffers.filter((availableOffer) => (availableOffer.title === valueOfClickedOffer) && (availableOffer.price === priceOfClickedOffer));
         this._selectedOffers = this._selectedOffers.concat(selectedOffer);
       } else {
-        this._selectedOffers = this._selectedOffers.filter((selectedOffer) => selectedOffer.type !== typeOfClickedOffer);
+        this._selectedOffers = this._selectedOffers.filter((selectedOffer) => (selectedOffer.title !== valueOfClickedOffer) || (selectedOffer.price !== priceOfClickedOffer));
       }
 
       this.rerender();
