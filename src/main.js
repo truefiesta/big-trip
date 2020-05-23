@@ -31,6 +31,7 @@ render(tripControlsElement, new InfoSectionComponent(), RenderPosition.BEFORE);
 
 const addButtonComponent = new AddButtonComponent();
 render(tripMainElement, addButtonComponent, RenderPosition.BEFOREEND);
+addButtonComponent.disableElement();
 
 const tripMainInfoSectionElement = tripMainElement.querySelector(`.trip-info`);
 render(tripMainInfoSectionElement, new InfoComponent(), RenderPosition.BEFOREEND);
@@ -82,7 +83,9 @@ Promise.all([api.getOffers(), api.getDestinations(), api.getEvents()])
     DestinationsInformation.destinations = destinations;
     pointsModel.setEvents(events);
     tripController.setNoLoading();
+    addButtonComponent.enableElement();
   })
   .catch(() => {
     tripController.setNoLoading();
+    addButtonComponent.enableElement();
   });
