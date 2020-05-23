@@ -1,3 +1,5 @@
+import {getDestinationInformation} from "../utils/common.js";
+
 export default class Point {
   constructor(event) {
     this.id = event[`id`];
@@ -16,11 +18,34 @@ export default class Point {
     this.isFavorite = Boolean(event[`is_favorite`]);
   }
 
+  toRAW() {
+    const destinationInfo = getDestinationInformation(this.destination);
+
+    return {
+      // "id": this.id,
+      "type": this.type,
+      "destination": {
+        "name": this.destination,
+        "description": destinationInfo.description,
+        "pictures": destinationInfo.pictures
+      },
+      "offers": this.offers,
+      "date_from": this.time.startTime.toISOString(),
+      "date_to": this.time.endTime.toISOString(),
+      "base_price": this.price,
+      "is_favorite": this.isFavorite
+    };
+  }
+
   static parseEvent(event) {
     return new Point(event);
   }
 
   static parseEvents(events) {
     return events.map(Point.parseEvent);
+  }
+
+  static clone(event) {
+    return new Point(event.toRAW);
   }
 }

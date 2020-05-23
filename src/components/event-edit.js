@@ -212,7 +212,7 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" step="0.01" name="event-price" value="${price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" step="1" name="event-price" value="${price}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -226,66 +226,6 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
       </section>
     </form>`
   );
-};
-
-const getOfferByOfferTitle = (eventType, offerTitle) => {
-  const offers = getOffersByType(eventType);
-  for (const offer of offers) {
-    if (offer.title === offerTitle) {
-      return offer;
-    }
-  }
-
-  return null;
-};
-
-const getDestinationInformation = (destinationName) => {
-  for (const destinationElement of destinations) {
-    if (destinationElement.name === destinationName) {
-      return destinationElement;
-    }
-  }
-
-  return null;
-};
-
-const parseFormData = (formData) => {
-  const eventType = formData.get(`event-type`);
-  const selectedOffers = [];
-  for (const [key, value] of formData.entries()) {
-
-    if (key.startsWith(`event-offer-`)) {
-      const offerTitle = value;
-      const offer = getOfferByOfferTitle(eventType, offerTitle);
-      if (offer) {
-        selectedOffers.push(offer);
-      }
-    }
-  }
-
-  const destination = formData.get(`event-destination`);
-  const destinationInformation = getDestinationInformation(destination);
-  const destinationPhotos = destinationInformation.pictures;
-
-  // const photoUrls = [];
-  // for (let {src} of destinationPhotos) {
-  //   photoUrls.push(src);
-  // }
-
-  return {
-    type: eventType,
-    destination,
-    offers: selectedOffers,
-    destinationInfo: {
-      description: destinationInformation.description,
-      photos: destinationPhotos
-    },
-    time: {
-      startTime: moment(formData.get(`event-start-time`), `DD/MM/YY HH:mm`),
-      endTime: moment(formData.get(`event-end-time`), `DD/MM/YY HH:mm`)
-    },
-    price: parseInt(formData.get(`event-price`), 10)
-  };
 };
 
 export default class EventEdit extends AbstractSmartComponent {
@@ -353,12 +293,12 @@ export default class EventEdit extends AbstractSmartComponent {
 
   getData() {
     const form = this.getElement();
-    const formData = new FormData(form);
-    const event = parseFormData(formData);
-    event.id = this._event.id;
-    event.isFavorite = this._event.isFavorite;
+    // const formData = new FormData(form);
+    // const event = parseFormData(formData);
+    // event.id = this._event.id;
+    // event.isFavorite = this._event.isFavorite;
 
-    return event;
+    return new FormData(form);
   }
 
   getTemplate() {

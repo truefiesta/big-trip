@@ -3,6 +3,8 @@ import {render, RenderPosition, replace, remove} from "../utils/render.js";
 import {ESCAPE_KEY, ESC_KEY, EventType, Mode} from "../const.js";
 import EventComponent from "../components/event.js";
 import EventEditComponent from "../components/event-edit.js";
+import PointModel from "../models/point.js";
+import moment from "moment";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
 
 const generateId = () => {
@@ -29,6 +31,48 @@ export const generateDefaultEvent = () => {
   defauldEvent.id = generateId();
   defauldEvent.offers = getOffersByType(EventType.FLIGHT);
   return defauldEvent;
+};
+
+const getOfferByOfferTitle = (eventType, offerTitle) => {
+  const offers = getOffersByType(eventType);
+  for (const offer of offers) {
+    if (offer.title === offerTitle) {
+      return offer;
+    }
+  }
+
+  return null;
+};
+
+const parseFormData = (formData) => {
+  const eventType = formData.get(`event-type`);
+  const selectedOffers = [];
+  for (const [key, value] of formData.entries()) {
+
+    if (key.startsWith(`event-offer-`)) {
+      const offerTitle = value;
+      const offer = getOfferByOfferTitle(eventType, offerTitle);
+      if (offer) {
+        selectedOffers.push(offer);
+      }
+    }
+  }
+
+  const destination = formData.get(`event-destination`);
+  const startDate = formData.get(`event-start-time`);
+  const endDate = formData.get(`event-end-time`);
+
+  return new PointModel({
+    "type": eventType,
+    "destination": {
+      "name": destination
+    },
+    "offers": selectedOffers,
+    "date_from": moment(startDate, `DD/MM/YY HH:mm`).toDate().toISOString(),
+    "date_to": moment(endDate, `DD/MM/YY HH:mm`).toDate().toISOString(),
+    "base_price": parseInt(formData.get(`event-price`), 10),
+    "is_favorite": false
+  });
 };
 
 /**
@@ -78,13 +122,17 @@ export default class PointController {
     });
 
     this._eventEditComponent.setEventEditFormSubmitHandler(() => {
-      const newEvent = this._eventEditComponent.getData();
+      const formData = this._eventEditComponent.getData();
+      const newEvent = parseFormData(formData);
+
       this._onDataChange(this, event, newEvent);
     });
 
     this._eventEditComponent.setEventFavoriteClickHandler(() => {
-      const newEvent = cloneDeep(event);
-      newEvent.isFavorite = !event.isFavorite;
+      // const newEvent = cloneDeep(event);
+      const newEvent = PointModel.clone(event);
+      newEvent.isFavorite = !newEvent.isFavorite;
+
       this._onDataChange(this, event, newEvent);
     });
 
