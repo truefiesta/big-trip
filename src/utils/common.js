@@ -1,5 +1,5 @@
 import moment from "moment";
-import {OffersByType} from "../const.js";
+import {DestinationsInformation, OffersByType} from "../const.js";
 
 const MILLISECONDS_IN_SECOND = 1000;
 const SECONDS_IN_MINUTE = 60;
@@ -77,4 +77,22 @@ export const getOffersByType = (currentEventType) => {
   }
 
   return offersForCurrentType;
+};
+
+export const getDestinationInformation = (destinationName) => {
+  const destinations = DestinationsInformation.destinations;
+  for (const destinationElement of destinations) {
+    if (destinationElement.name === destinationName) {
+      return destinationElement;
+    }
+  }
+
+  return null;
+};
+
+
+export const getDestinations = () => {
+  return DestinationsInformation.destinations.map((destinationsItem) => {
+    return destinationsItem.name;
+  });
 };

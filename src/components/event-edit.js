@@ -1,12 +1,10 @@
 import AbstractSmartComponent from "../components/abstract-smart-component.js";
-import {DestinationsInformation, transferTypes, activityTypes, Mode, DESTINATION_NAMES} from "../const.js";
-import {capitalize, getOffersByType} from "../utils/common.js";
+import {DestinationsInformation, transferTypes, activityTypes, Mode} from "../const.js";
+import {capitalize, getOffersByType, getDestinationInformation, getDestinations} from "../utils/common.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
 import moment from "moment";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
-
-const destinations = DestinationsInformation.destinations;
 
 const createEventTypesMarkup = (allTypes, type) => {
   return allTypes.map((eventType) => {
@@ -119,8 +117,10 @@ const createFavoriteButtonTemplate = (isFavorite) => {
   );
 };
 
+
 const createDestinationOptionsMarkup = () => {
-  return destinations.map((destination) => {
+  const destinationNames = getDestinations();
+  return destinationNames.map((destination) => {
     return (
       `<option value="${destination}"></option>`
     );
@@ -482,8 +482,9 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   _validateDestination(destinationElement) {
+    const destinationNames = getDestinations();
     const destinationElementValue = destinationElement.value;
-    const validationResult = !!DESTINATION_NAMES.find((destinationName) =>
+    const validationResult = !!destinationNames.find((destinationName) =>
       destinationName.toLocaleLowerCase() === destinationElementValue.toLowerCase()
     );
 
