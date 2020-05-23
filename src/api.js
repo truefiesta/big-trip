@@ -11,7 +11,6 @@ export default class API {
 
     return fetch(`https://11.ecmascript.pages.academy/big-trip/points`, {headers})
       .then((events) => events.json())
-      .then((events) => {console.log(events); return events })
       .then(PointModel.parseEvents);
   }
 
