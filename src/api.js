@@ -51,7 +51,7 @@ export default class API {
       headers
     })
       .then(checkStatus)
-      .then((response) => response.json())
+      .then((updatedEvent) => updatedEvent.json())
       .then(PointModel.parseEvent);
   }
 }

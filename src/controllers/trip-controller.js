@@ -159,9 +159,10 @@ const renderDaysWithEvents = (tripDaysComponent, allEvents, sortType, onDataChan
 };
 
 export default class TripController {
-  constructor(container, pointsModel) {
+  constructor(container, pointsModel, api) {
     this._container = container;
     this._pointsModel = pointsModel;
+    this._api = api;
 
     this._pointControllers = [];
     this._newEventFormToggleHandler = null;
@@ -293,16 +294,20 @@ export default class TripController {
       this._pointsModel.removeEvent(oldEvent.id);
       this._updateEvents();
     } else {
-      // Обновление
-      const isSuccess = this._pointsModel.updateEvent(oldEvent.id, newEvent);
-      if (isSuccess) {
-        const eventWithRevertedFavorite = Object.assign({}, newEvent, {isFavorite: !newEvent.isFavorite});
-        if (isEqual(oldEvent, eventWithRevertedFavorite)) {
-          // no rerender
-        } else {
-          pointController.render(newEvent, Mode.DEFAULT);
-        }
-      }
+      this._api.updateEvent(oldEvent.id, newEvent)
+        .then((updatedEvent) => {
+          // Обновление
+          const isSuccess = this._pointsModel.updateEvent(oldEvent.id, updatedEvent);
+
+          if (isSuccess) {
+            const eventWithRevertedFavorite = Object.assign({}, updatedEvent, {isFavorite: !updatedEvent.isFavorite});
+            if (isEqual(oldEvent, eventWithRevertedFavorite)) {
+              // no rerender
+            } else {
+              pointController.render(updatedEvent, Mode.DEFAULT);
+            }
+          }
+        });
     }
   }
 

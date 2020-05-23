@@ -39,7 +39,7 @@ render(tripMainInfoSectionElement, new CostComponent(), RenderPosition.BEFOREEND
 
 // Trip
 const tripEventsElement = document.querySelector(`.trip-events`);
-const tripController = new TripController(tripEventsElement, pointsModel);
+const tripController = new TripController(tripEventsElement, pointsModel, api);
 tripController.render();
 
 tripController.setNewEventFormToggleHandler((isOpen) => {
