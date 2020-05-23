@@ -39,12 +39,13 @@ const createAvailableOffersMarkup = (eventType, allOffersForEventType, selectedE
       }
     }
 
-    const {type, title, price} = offerForEventType;
+    count++;
+    const {title, price} = offerForEventType;
 
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" data-offer-type=${type} type="checkbox" name="event-offer-${type}" value="${type}" ${isChecked}>
-        <label class="event__offer-label" for="event-offer-${type}-1">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${eventType}-${count}" data-offer-price="${price}" type="checkbox" name="event-offer-${eventType}" value="${title}" ${isChecked}>
+        <label class="event__offer-label" for="event-offer-${eventType}-${count}">
           <span class="event__offer-title">${title}</span>
           &plus;
           &euro;&nbsp;<span class="event__offer-price">${price}</span>
