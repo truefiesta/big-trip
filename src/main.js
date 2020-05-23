@@ -1,3 +1,4 @@
+import API from "./api.js";
 import {render, RenderPosition} from "./utils/render.js";
 import AddButtonComponent from "./components/add-button.js";
 import InfoSectionComponent from "./components/info-section.js";
@@ -6,20 +7,18 @@ import CostComponent from "./components/cost.js";
 import MenuComponent from "./components/menu.js";
 import StatisticsComponent from "./components/statistics.js";
 import FilterController from "./controllers/filter-controller.js";
-import {generateEvents} from "./mock/event.js";
 import TripController from "./controllers/trip-controller.js";
 import PointsModel from "./models/points.js";
-import {MenuItem} from "./const.js";
+import {MenuItem, OffersByType, DestinationsInformation} from "./const.js";
 
-const EVENTS_COUNT = 20;
+const AUTHORIZATION = `Basic hljo1hgHKG9dlPQsdaHIo=`;
+const api = new API(AUTHORIZATION);
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 const tripControlsFilterHeaderElement = tripControlsElement.querySelector(`h2:nth-of-type(2)`);
 
-const events = generateEvents(EVENTS_COUNT);
 const pointsModel = new PointsModel();
-pointsModel.setEvents(events);
 
 const menuComponent = new MenuComponent();
 render(tripControlsFilterHeaderElement, menuComponent, RenderPosition.BEFORE);
@@ -40,7 +39,7 @@ render(tripMainInfoSectionElement, new CostComponent(), RenderPosition.BEFOREEND
 // Trip
 const tripEventsElement = document.querySelector(`.trip-events`);
 const tripController = new TripController(tripEventsElement, pointsModel);
-tripController.render();
+
 tripController.setNewEventFormToggleHandler((isOpen) => {
   if (isOpen) {
     addButtonComponent.disableElement();
@@ -75,3 +74,11 @@ addButtonComponent.setOnClick(() => {
   tripController.createEvent();
   menuComponent.setActiveItem(MenuItem.TABLE);
 });
+
+Promise.all([api.getOffers(), api.getDestinations(), api.getEvents()])
+  .then(([offers, destinations, events]) => {
+    OffersByType.offers = offers;
+    DestinationsInformation.destinations = destinations;
+    pointsModel.setEvents(events);
+    tripController.render();
+  });
