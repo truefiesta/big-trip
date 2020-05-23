@@ -1,5 +1,6 @@
+import {getOffersByType} from "../utils/common.js";
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
-import {ESCAPE_KEY, ESC_KEY, EventType, offersByType, Mode} from "../const.js";
+import {ESCAPE_KEY, ESC_KEY, EventType, Mode} from "../const.js";
 import EventComponent from "../components/event.js";
 import EventEditComponent from "../components/event-edit.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
@@ -11,7 +12,6 @@ const generateId = () => {
 const DefaultEvent = {
   type: EventType.FLIGHT,
   destination: ``,
-  offers: offersByType[EventType.FLIGHT],
   destinationInfo: {
     description: ``,
     photos: []
@@ -27,6 +27,7 @@ const DefaultEvent = {
 export const generateDefaultEvent = () => {
   const defauldEvent = cloneDeep(DefaultEvent);
   defauldEvent.id = generateId();
+  defauldEvent.offers = getOffersByType(EventType.FLIGHT);
   return defauldEvent;
 };
 
@@ -142,7 +143,7 @@ export default class PointController {
 
     if (isEscKey) {
       if (this._mode === Mode.ADDING) {
-        this._onDataChange(this, DefaultEvent, null);
+        this._onDataChange(this, null, null);
       }
       this._replaceEditToEvent();
       document.removeEventListener(`keydown`, this._onEscKeyDown);

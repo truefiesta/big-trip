@@ -1,10 +1,12 @@
 import AbstractSmartComponent from "../components/abstract-smart-component.js";
-import {destinations, transferTypes, activityTypes, offersByType, Destinations, Mode, DESTINATION_NAMES} from "../const.js";
-import {capitalize} from "../utils/common.js";
+import {DestinationsInformation, transferTypes, activityTypes, Mode, DESTINATION_NAMES} from "../const.js";
+import {capitalize, getOffersByType} from "../utils/common.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
 import moment from "moment";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+
+const destinations = DestinationsInformation.destinations;
 
 const createEventTypesMarkup = (allTypes, type) => {
   return allTypes.map((eventType) => {
@@ -132,18 +134,6 @@ const checkType = (type) => {
   return types.includes(type) ? ` in` : ` to`;
 };
 
-const getOffersByType = (currentType) => {
-  let offersForCurrentType = [];
-  for (const {type, offers} of offersByType) {
-    if (type === currentType) {
-      offersForCurrentType = offersForCurrentType.concat(offers);
-      break;
-    }
-  }
-
-  return offersForCurrentType;
-};
-
 const createTripEventEditFormTemplate = (options = {}, mode) => {
   const {type, destination, offers, destinationInfo, price, time, isFavorite} = options;
 
@@ -250,7 +240,7 @@ const getOfferByOfferTitle = (eventType, offerTitle) => {
 };
 
 const getDestinationInformation = (destinationName) => {
-  for (const destinationElement of Destinations) {
+  for (const destinationElement of destinations) {
     if (destinationElement.name === destinationName) {
       return destinationElement;
     }

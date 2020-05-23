@@ -1,4 +1,6 @@
 import moment from "moment";
+import {OffersByType} from "../const.js";
+
 const MILLISECONDS_IN_SECOND = 1000;
 const SECONDS_IN_MINUTE = 60;
 const MINUTES_IN_HOUR = 60;
@@ -62,4 +64,17 @@ export const capitalize = (text) => {
     return ``;
   }
   return text.charAt(0).toUpperCase() + text.slice(1);
+};
+
+export const getOffersByType = (currentEventType) => {
+  const offersByType = OffersByType.offers;
+  let offersForCurrentType = [];
+  for (const {type, offers} of offersByType) {
+    if (type === currentEventType) {
+      offersForCurrentType = offersForCurrentType.concat(offers);
+      break;
+    }
+  }
+
+  return offersForCurrentType;
 };
