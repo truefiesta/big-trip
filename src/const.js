@@ -13,8 +13,21 @@ export const MONTH_NAMES = [
   `DEC`,
 ];
 
+export const OffersByType = {
+  offer: []
+};
 
+export const DestinationsInformation = {
+  destinations: []
+};
 
+const getDestinations = () => {
+  return DestinationsInformation.destinations.map((destinationsItem) => {
+    return destinationsItem.name;
+  });
+};
+
+export const DESTINATION_NAMES = getDestinations();
 
 export const ESC_KEY = `Esc`;
 export const ESCAPE_KEY = `Escape`;
