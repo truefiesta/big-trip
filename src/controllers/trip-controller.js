@@ -275,11 +275,15 @@ export default class TripController {
     this._pointControllers = renderDaysWithEvents(this._daysComponent, events, SortType.SORT_EVENT, this._onDataChange, this._onViewChange);
   }
 
+  _removeEventBeingCreated() {
+    this._eventBeingCreated.destroy();
+    this._eventBeingCreated = null;
+    this._callNewEventFormToggleHandler(CLOSED);
+  }
+
   _onDataChange(pointController, oldEvent, newEvent) {
     if (this._eventBeingCreated) {
-      this._eventBeingCreated.destroy();
-      this._eventBeingCreated = null;
-      this._callNewEventFormToggleHandler(CLOSED);
+      this._removeEventBeingCreated();
       if (newEvent === null) {
         // Если расхотели создавать событие.
         pointController.destroy();
@@ -312,6 +316,9 @@ export default class TripController {
   }
 
   _onViewChange() {
+    if (this._eventBeingCreated) {
+      this._removeEventBeingCreated();
+    }
     this._pointControllers.forEach((it) => it.setDefaultView());
   }
 
