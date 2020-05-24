@@ -92,3 +92,5 @@ export const MenuItem = {
 };
 
 export const HIDDEN_CLASS = `visually-hidden`;
+
+export const EMPTY_STRING = ``;

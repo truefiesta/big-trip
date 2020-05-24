@@ -1,5 +1,5 @@
 import AbstractSmartComponent from "../components/abstract-smart-component.js";
-import {transferTypes, activityTypes, Mode} from "../const.js";
+import {transferTypes, activityTypes, Mode, EMPTY_STRING} from "../const.js";
 import {capitalize, getOffersByType, getDestinationInformation, getDestinations} from "../utils/common.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
 import moment from "moment";
@@ -212,7 +212,7 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" step="1" name="event-price" value="${price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" step="1" min="0" name="event-price" value="${price}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -390,8 +390,15 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   _subscribeOnPriceChange() {
-    this.getElement().querySelector(`input[name=event-price]`).addEventListener(`change`, (evt) => {
-      this._price = parseInt(evt.target.value, 10);
+    const priceElement = this.getElement().querySelector(`input[name=event-price]`);
+    priceElement.addEventListener(`change`, (evt) => {
+
+      if (evt.target.value === EMPTY_STRING) {
+        priceElement.setCustomValidity(`Price should be a number.`);
+      } else {
+        priceElement.setCustomValidity(``);
+        this._price = parseInt(evt.target.value, 10);
+      }
     });
   }
 
