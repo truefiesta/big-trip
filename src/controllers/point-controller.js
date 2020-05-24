@@ -7,9 +7,9 @@ import PointModel from "../models/point.js";
 import moment from "moment";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
 
-const generateId = () => {
-  return String(new Date() + Math.random());
-};
+// const generateId = () => {
+//   return String(new Date() + Math.random());
+// };
 
 const DefaultEvent = {
   type: EventType.FLIGHT,
@@ -18,6 +18,7 @@ const DefaultEvent = {
     description: ``,
     photos: []
   },
+  offers: [],
   time: {
     startTime: new Date(),
     endTime: new Date()
@@ -28,8 +29,8 @@ const DefaultEvent = {
 
 export const generateDefaultEvent = () => {
   const defauldEvent = cloneDeep(DefaultEvent);
-  defauldEvent.id = generateId();
-  defauldEvent.offers = getOffersByType(EventType.FLIGHT);
+  // defauldEvent.id = generateId();
+  // defauldEvent.offers = getOffersByType(EventType.FLIGHT);
   return defauldEvent;
 };
 
