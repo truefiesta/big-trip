@@ -279,7 +279,7 @@ const parseFormData = (formData) => {
       startTime: moment(formData.get(`event-start-time`), `DD/MM/YY HH:mm`),
       endTime: moment(formData.get(`event-end-time`), `DD/MM/YY HH:mm`)
     },
-    price: formData.get(`event-price`)
+    price: parseInt(formData.get(`event-price`), 10)
   };
 };
 
@@ -446,7 +446,7 @@ export default class EventEdit extends AbstractSmartComponent {
 
   _subscribeOnPriceChange() {
     this.getElement().querySelector(`input[name=event-price]`).addEventListener(`change`, (evt) => {
-      this._price = evt.target.value;
+      this._price = parseInt(evt.target.value, 10);
     });
   }
 

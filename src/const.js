@@ -255,6 +255,19 @@ export const EventType = {
   RESTAURANT: `restaurant`
 };
 
+export const eventTypeIcons = {
+  [EventType.TAXI]: `🚕`,
+  [EventType.BUS]: `🚌`,
+  [EventType.TRAIN]: `🚂`,
+  [EventType.SHIP]: `🛳️`,
+  [EventType.TRANSPORT]: `🚊`,
+  [EventType.DRIVE]: `🚗`,
+  [EventType.FLIGHT]: `✈️`,
+  [EventType.CHECK]: `🏨`,
+  [EventType.SIGHTSEEING]: `🏛️`,
+  [EventType.RESTAURANT]: `🍴`
+};
+
 export const EVENT_TYPES = Object.values(EventType);
 
 export const Destinations = [
@@ -317,3 +330,10 @@ export const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`
 };
+
+export const MenuItem = {
+  TABLE: `table`,
+  STATS: `stats`
+};
+
+export const HIDDEN_CLASS = `visually-hidden`;
