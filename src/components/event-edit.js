@@ -1,5 +1,5 @@
 import AbstractSmartComponent from "../components/abstract-smart-component.js";
-import {transferTypes, activityTypes, Mode, EMPTY_STRING} from "../const.js";
+import {transferTypes, activityTypes, Mode} from "../const.js";
 import {capitalize, getOffersByType, getDestinationInformation, getDestinations} from "../utils/common.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
 import moment from "moment";
@@ -189,7 +189,7 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${capitalize(type)} ${isActionType}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1" required>
           <datalist id="destination-list-1">
             ${destinationOptions}
           </datalist>
@@ -212,7 +212,7 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" step="1" min="0" name="event-price" value="${price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" step="1" min="0" name="event-price" value="${price}" required>
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -293,10 +293,6 @@ export default class EventEdit extends AbstractSmartComponent {
 
   getData() {
     const form = this.getElement();
-    // const formData = new FormData(form);
-    // const event = parseFormData(formData);
-    // event.id = this._event.id;
-    // event.isFavorite = this._event.isFavorite;
 
     return new FormData(form);
   }
@@ -392,12 +388,9 @@ export default class EventEdit extends AbstractSmartComponent {
   _subscribeOnPriceChange() {
     const priceElement = this.getElement().querySelector(`input[name=event-price]`);
     priceElement.addEventListener(`change`, (evt) => {
-
-      if (evt.target.value === EMPTY_STRING) {
-        priceElement.setCustomValidity(`Price should be a number.`);
-      } else {
-        priceElement.setCustomValidity(``);
-        this._price = parseInt(evt.target.value, 10);
+      this._price = parseInt(evt.target.value, 10);
+      if (isNaN(this._price)) {
+        this._price = evt.target.value;
       }
     });
   }
