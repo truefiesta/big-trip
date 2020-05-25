@@ -293,7 +293,6 @@ export default class EventEdit extends AbstractSmartComponent {
 
   getData() {
     const form = this.getElement();
-
     return new FormData(form);
   }
 
