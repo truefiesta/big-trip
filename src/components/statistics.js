@@ -322,6 +322,8 @@ export default class Statistics extends AbstractSmartComponent {
     this._transportChart = null;
     this._timeSpendChart = null;
 
+    this._isHidden = true;
+
     this._onEventsChange = this._onEventsChange.bind(this);
     this._pointsModel.setEventsChangeHandler(this._onEventsChange);
 
@@ -332,8 +334,23 @@ export default class Statistics extends AbstractSmartComponent {
     return createStatisticsTemplate();
   }
 
+  hide() {
+    this._isHidden = true;
+    super.hide();
+  }
+
+  show() {
+    this._isHidden = false;
+    super.show();
+  }
+
   _rerender() {
     super.rerender();
+
+    if (this._isHidden) {
+      this.hide();
+    }
+
     this._renderAllCharts();
   }
 

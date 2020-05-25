@@ -1,7 +1,6 @@
 import AbstractSmartComponent from "../components/abstract-smart-component.js";
-import {destinations, transferTypes, activityTypes, offersByType, Destinations, Mode, DESTINATION_NAMES} from "../const.js";
-import {capitalize} from "../utils/common.js";
-import {getRandomItemsfromArray, getRandomPhotos, destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES, MIN_PHOTOS, MAX_PHOTOS} from "../mock/event.js";
+import {transferTypes, activityTypes, Mode} from "../const.js";
+import {capitalize, getOffersByType, getDestinationInformation, getDestinations} from "../utils/common.js";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
 import moment from "moment";
 import flatpickr from "flatpickr";
@@ -21,15 +20,15 @@ const createEventTypesMarkup = (allTypes, type) => {
 };
 
 const compareOffers = (offerOne, offerTwo) => {
-  if (offerOne.type.toLowerCase() === offerTwo.type.toLowerCase() &&
-    offerOne.title === offerTwo.title &&
+  if (offerOne.title === offerTwo.title &&
     offerOne.price === offerTwo.price) {
     return true;
   }
   return false;
 };
 
-const createAvailableOffersMarkup = (allOffersForEventType, selectedEventOffers) => {
+const createAvailableOffersMarkup = (eventType, allOffersForEventType, selectedEventOffers) => {
+  let count = 0;
   return allOffersForEventType.map((offerForEventType) => {
     let isChecked = ``;
     if (selectedEventOffers.length > 0) {
@@ -40,12 +39,13 @@ const createAvailableOffersMarkup = (allOffersForEventType, selectedEventOffers)
       }
     }
 
-    const {type, title, price} = offerForEventType;
+    count++;
+    const {title, price} = offerForEventType;
 
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" data-offer-type=${type} type="checkbox" name="event-offer-${type}" value="${type}" ${isChecked}>
-        <label class="event__offer-label" for="event-offer-${type}-1">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${eventType}-${count}" data-offer-price="${price}" type="checkbox" name="event-offer-${eventType}" value="${title}" ${isChecked}>
+        <label class="event__offer-label" for="event-offer-${eventType}-${count}">
           <span class="event__offer-title">${title}</span>
           &plus;
           &euro;&nbsp;<span class="event__offer-price">${price}</span>
@@ -55,8 +55,8 @@ const createAvailableOffersMarkup = (allOffersForEventType, selectedEventOffers)
   }).join(`\n`);
 };
 
-const createOffersSectionMarkup = (allOffersForEventType, selectedEventOffers) => {
-  const eventOffersMarkup = createAvailableOffersMarkup(allOffersForEventType, selectedEventOffers);
+const createOffersSectionMarkup = (eventType, allOffersForEventType, selectedEventOffers) => {
+  const eventOffersMarkup = createAvailableOffersMarkup(eventType, allOffersForEventType, selectedEventOffers);
   return (
     `<section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -76,8 +76,9 @@ const createDescriptionMarkup = (availableDescription) => {
 
 const createPhotosMarkup = (photos) => {
   return photos.map((photo) => {
+    const {src, description} = photo;
     return (
-      `<img class="event__photo" src="${photo}" alt="Event photo">`
+      `<img class="event__photo" src="${src}" alt="${description}">`
     );
   }).join(`\n`);
 };
@@ -116,8 +117,10 @@ const createFavoriteButtonTemplate = (isFavorite) => {
   );
 };
 
+
 const createDestinationOptionsMarkup = () => {
-  return destinations.map((destination) => {
+  const destinationNames = getDestinations();
+  return destinationNames.map((destination) => {
     return (
       `<option value="${destination}"></option>`
     );
@@ -139,8 +142,9 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
   const isActionType = checkType(type);
 
   const {startTime, endTime} = time;
-  const availableOffersForEventType = offersByType[type.toLowerCase()];
-  const offersSectionMarkup = availableOffersForEventType.length > 0 ? createOffersSectionMarkup(availableOffersForEventType, offers) : ``;
+
+  const availableOffersForEventType = getOffersByType(type.toLowerCase());
+  const offersSectionMarkup = availableOffersForEventType.length > 0 ? createOffersSectionMarkup(type, availableOffersForEventType, offers) : ``;
 
   let isDescription = false;
   let isPhotos = false;
@@ -208,7 +212,7 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" step="0.01" name="event-price" value="${price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" step="1" name="event-price" value="${price}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -222,65 +226,6 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
       </section>
     </form>`
   );
-};
-
-const getOfferByOfferType = (eventType, offerType) => {
-  const offers = offersByType[eventType];
-  for (const offer of offers) {
-    if (offer.type === offerType) {
-      return offer;
-    }
-  }
-
-  return null;
-};
-
-const getDestinationInformation = (destinationName) => {
-  for (const destinationElement of Destinations) {
-    if (destinationElement.name === destinationName) {
-      return destinationElement;
-    }
-  }
-
-  return null;
-};
-
-const parseFormData = (formData) => {
-  const eventType = formData.get(`event-type`);
-  const selectedOffers = [];
-  for (const [key, value] of formData.entries()) {
-    if (key.startsWith(`event-offer-`)) {
-      const offerType = value;
-      const offer = getOfferByOfferType(eventType, offerType);
-      if (offer) {
-        selectedOffers.push(offer);
-      }
-    }
-  }
-
-  const destination = formData.get(`event-destination`);
-  const destinationInformation = getDestinationInformation(destination);
-  const destinationPhotos = destinationInformation.pictures;
-
-  const photoUrls = [];
-  for (let {src} of destinationPhotos) {
-    photoUrls.push(src);
-  }
-
-  return {
-    type: eventType,
-    destination,
-    offers: selectedOffers,
-    destinationInfo: {
-      description: destinationInformation.description,
-      photos: photoUrls
-    },
-    time: {
-      startTime: moment(formData.get(`event-start-time`), `DD/MM/YY HH:mm`),
-      endTime: moment(formData.get(`event-end-time`), `DD/MM/YY HH:mm`)
-    },
-    price: parseInt(formData.get(`event-price`), 10)
-  };
 };
 
 export default class EventEdit extends AbstractSmartComponent {
@@ -348,12 +293,12 @@ export default class EventEdit extends AbstractSmartComponent {
 
   getData() {
     const form = this.getElement();
-    const formData = new FormData(form);
-    const event = parseFormData(formData);
-    event.id = this._event.id;
-    event.isFavorite = this._event.isFavorite;
+    // const formData = new FormData(form);
+    // const event = parseFormData(formData);
+    // event.id = this._event.id;
+    // event.isFavorite = this._event.isFavorite;
 
-    return event;
+    return new FormData(form);
   }
 
   getTemplate() {
@@ -451,19 +396,25 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   _subscribeOnOffersChange() {
-    this.getElement().querySelector(`.event__available-offers`).addEventListener(`change`, (evt) => {
+    const availableOffersElement = this.getElement().querySelector(`.event__available-offers`);
+    if (!availableOffersElement) {
+      return;
+    }
+
+    availableOffersElement.addEventListener(`change`, (evt) => {
       if (evt.target.tagName !== `INPUT`) {
         return;
       }
 
-      const availableOffers = offersByType[this._type.toLowerCase()];
-      const typeOfClickedOffer = evt.target.dataset.offerType;
+      const availableOffers = getOffersByType(this._type.toLowerCase());
+      const valueOfClickedOffer = evt.target.value;
+      const priceOfClickedOffer = parseInt(evt.target.dataset.offerPrice, 10);
 
       if (evt.target.checked) {
-        const selectedOffer = availableOffers.filter((availableOffer) => availableOffer.type === typeOfClickedOffer);
+        const selectedOffer = availableOffers.filter((availableOffer) => (availableOffer.title === valueOfClickedOffer) && (availableOffer.price === priceOfClickedOffer));
         this._selectedOffers = this._selectedOffers.concat(selectedOffer);
       } else {
-        this._selectedOffers = this._selectedOffers.filter((selectedOffer) => selectedOffer.type !== typeOfClickedOffer);
+        this._selectedOffers = this._selectedOffers.filter((selectedOffer) => (selectedOffer.title !== valueOfClickedOffer) || (selectedOffer.price !== priceOfClickedOffer));
       }
 
       this.rerender();
@@ -471,8 +422,9 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   _validateDestination(destinationElement) {
+    const destinationNames = getDestinations();
     const destinationElementValue = destinationElement.value;
-    const validationResult = !!DESTINATION_NAMES.find((destinationName) =>
+    const validationResult = !!destinationNames.find((destinationName) =>
       destinationName.toLocaleLowerCase() === destinationElementValue.toLowerCase()
     );
 
@@ -492,9 +444,9 @@ export default class EventEdit extends AbstractSmartComponent {
       if (this._validateDestination(destinationElement)) {
         if (evt.target.value.toLowerCase() !== this._destination.toLowerCase()) {
           this._destination = evt.target.value;
-          // Временно
-          const newDescription = getRandomItemsfromArray(destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES).join(` `);
-          const newPhotos = getRandomPhotos(MIN_PHOTOS, MAX_PHOTOS);
+
+          const newDescription = getDestinationInformation(this._destination).description;
+          const newPhotos = getDestinationInformation(this._destination).pictures;
 
           this._destinationInfo.description = newDescription;
           this._destinationInfo.photos = newPhotos;

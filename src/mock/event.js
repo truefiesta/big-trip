@@ -81,17 +81,35 @@ const getRandomDateRange = () => {
   };
 };
 
+const photos = [
+  {
+    "src": `http://picsum.photos/300/200?r=0.0762563005163317`,
+    "description": `Chamonix parliament building`
+  },
+  {
+    "src": `http://picsum.photos/300/200?r=0.6737960490195023`,
+    "description": `Chamonix building`
+  }
+];
+
 const allEventTypes = transferTypes.concat(activityTypes);
 
 const generateEvent = () => {
   const description = getRandomItemsfromArray(destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES).join(` `);
   const type = getRandomArrayItem(allEventTypes);
 
-  const getSelectedOffers = (currentType, offers) => {
-    const maxOffers = offers[currentType.toLowerCase()].length;
-    return getRandomItemsfromArray(offers[currentType.toLowerCase()], MIN_OFFERS, maxOffers);
+  // const getSelectedOffers = (currentType, offers) => {
+  //   const maxOffers = offers[currentType.toLowerCase()].length;
+  //   return getRandomItemsfromArray(offers[currentType.toLowerCase()], MIN_OFFERS, maxOffers);
+  // };
+
+  const getSelectedOffers = (currentType) => {
+    const offersAndCurrentType = offersByType.filter((offerByType) => offerByType.type === currentType);
+    const offers = offersAndCurrentType[0].offers;
+    const maxOffers = offers.length;
+    return getRandomItemsfromArray(offers, MIN_OFFERS, maxOffers);
   };
-  const selectedOffers = getSelectedOffers(type, offersByType);
+  const selectedOffers = getSelectedOffers(type);
 
   const timeRange = getRandomDateRange();
 
@@ -102,7 +120,7 @@ const generateEvent = () => {
     offers: selectedOffers,
     destinationInfo: {
       description,
-      photos: getRandomPhotos(MIN_PHOTOS, MAX_PHOTOS)
+      photos
     },
     time: {
       startTime: timeRange.startDate,
