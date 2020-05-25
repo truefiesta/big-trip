@@ -294,6 +294,9 @@ export default class TripController {
           .then((pointModel) => {
             this._pointsModel.addEvent(pointModel);
             this._updateEvents();
+          })
+          .catch(() => {
+            pointController.shake();
           });
       }
     } else if (newEvent === null) {
@@ -302,6 +305,9 @@ export default class TripController {
         .then(() => {
           this._pointsModel.removeEvent(oldEvent.id);
           this._updateEvents();
+        })
+        .catch(() => {
+          pointController.shake();
         });
     } else {
       // Обновление
@@ -317,6 +323,9 @@ export default class TripController {
               pointController.render(updatedEvent, Mode.DEFAULT);
             }
           }
+        })
+        .catch(() => {
+          pointController.shake();
         });
     }
   }

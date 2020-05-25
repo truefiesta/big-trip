@@ -6,6 +6,14 @@ import moment from "moment";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 
+const DefaultData = {
+  deleteButtonText: `Delete`,
+  saveButtonText: `Save`,
+  resetButtonText: `Cancel`,
+  formState: ``,
+  isError: false
+};
+
 const createEventTypesMarkup = (allTypes, type) => {
   return allTypes.map((eventType) => {
     eventType = eventType.toLowerCase();
@@ -135,7 +143,7 @@ const checkType = (type) => {
 };
 
 const createTripEventEditFormTemplate = (options = {}, mode) => {
-  const {type, destination, offers, destinationInfo, price, time, isFavorite} = options;
+  const {type, destination, offers, destinationInfo, price, time, isFavorite, externalData} = options;
 
   const transferTypeEventsMarkup = createEventTypesMarkup(transferTypes, type);
   const activityTypeEventsMarkup = createEventTypesMarkup(activityTypes, type);
@@ -159,11 +167,16 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
   const destinationInfoSectionMarkup = (isDescription || isPhotos) ? createDestinationInfoMarkup(destinationInfo) : ``;
   const destinationOptions = createDestinationOptionsMarkup();
 
-  const resetButtonName = mode === Mode.ADDING ? `Cancel` : `Delete`;
-  const favoriteAndRollupButtonsMarkup = mode === Mode.ADDING ? `` : createFavoriteButtonTemplate(isFavorite);
+  const isModeAdding = mode === Mode.ADDING;
+  const favoriteAndRollupButtonsMarkup = isModeAdding ? `` : createFavoriteButtonTemplate(isFavorite);
+
+  const deleteButtonText = isModeAdding ? externalData.resetButtonText : externalData.deleteButtonText;
+  const saveButtonText = externalData.saveButtonText;
+  const formState = externalData.formState;
+  const eventErrorStyle = externalData.isError ? `event--error` : ``;
 
   return (
-    `<form class="event trip-events__item event--edit" action="#" method="post">
+    `<form class="event trip-events__item event--edit ${eventErrorStyle}" action="#" method="post" ${formState}>
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -215,8 +228,8 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
           <input class="event__input  event__input--price" id="event-price-1" type="number" step="1" min="0" name="event-price" value="${price}" required>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">${resetButtonName}</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit">${saveButtonText}</button>
+        <button class="event__reset-btn" type="reset">${deleteButtonText}</button>
 
         ${favoriteAndRollupButtonsMarkup}
       </header>
@@ -235,6 +248,7 @@ export default class EventEdit extends AbstractSmartComponent {
     this._mode = mode;
     this._copyEventFields(event);
     this._isFavorite = event.isFavorite;
+    this._externalData = DefaultData;
     this._submitHandler = null;
     this._favoriteHandler = null;
     this._closeHandler = null;
@@ -275,6 +289,12 @@ export default class EventEdit extends AbstractSmartComponent {
     this._deleteButtonClickHandler = handler;
   }
 
+  setData(data) {
+    this._externalData = Object.assign({}, DefaultData, data);
+    this.rerender();
+  }
+
+
   setCloseButtonClickHandler(handler) {
     const closeButtonElement = this.getElement().querySelector(`.event__rollup-btn`);
 
@@ -307,7 +327,8 @@ export default class EventEdit extends AbstractSmartComponent {
         startTime: this._startTime,
         endTime: this._endTime
       },
-      isFavorite: this._isFavorite
+      isFavorite: this._isFavorite,
+      externalData: this._externalData
     }, this._mode);
   }
 
