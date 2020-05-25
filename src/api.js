@@ -21,6 +21,18 @@ export default class API {
     this._authorization = authorization;
   }
 
+  createEvent(event) {
+    return this._load({
+      url: `points`,
+      method: Method.POST,
+      body: JSON.stringify(event.toRAW()),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then((response) => response.json())
+      .then(PointModel.parseEvent);
+  }
+
+
   getEvents() {
     return this._load({url: `points`})
       .then((events) => events.json())

@@ -290,17 +290,20 @@ export default class TripController {
         this._updateEvents();
       } else {
         // Создание
-        this._pointsModel.addEvent(newEvent);
-        this._updateEvents();
+        this._api.createEvent(newEvent)
+          .then((pointModel) => {
+            this._pointsModel.addEvent(pointModel);
+            this._updateEvents();
+          });
       }
     } else if (newEvent === null) {
       // Удаление
       this._pointsModel.removeEvent(oldEvent.id);
       this._updateEvents();
     } else {
+      // Обновление
       this._api.updateEvent(oldEvent.id, newEvent)
         .then((updatedEvent) => {
-          // Обновление
           const isSuccess = this._pointsModel.updateEvent(oldEvent.id, updatedEvent);
 
           if (isSuccess) {
