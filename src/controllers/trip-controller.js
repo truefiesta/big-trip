@@ -298,8 +298,11 @@ export default class TripController {
       }
     } else if (newEvent === null) {
       // Удаление
-      this._pointsModel.removeEvent(oldEvent.id);
-      this._updateEvents();
+      this._api.deleteEvent(oldEvent.id)
+        .then(() => {
+          this._pointsModel.removeEvent(oldEvent.id);
+          this._updateEvents();
+        });
     } else {
       // Обновление
       this._api.updateEvent(oldEvent.id, newEvent)

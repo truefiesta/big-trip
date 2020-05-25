@@ -32,6 +32,9 @@ export default class API {
       .then(PointModel.parseEvent);
   }
 
+  deleteEvent(id) {
+    return this._load({url: `points/${id}`, method: Method.DELETE});
+  }
 
   getEvents() {
     return this._load({url: `points`})
