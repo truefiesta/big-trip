@@ -11,8 +11,9 @@ import TripController from "./controllers/trip-controller.js";
 import PointsModel from "./models/points.js";
 import {MenuItem, OffersByType, DestinationsInformation} from "./const.js";
 
+const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 const AUTHORIZATION = `Basic hljo1hgHKG9dlPQsdaHIo=`;
-const api = new API(AUTHORIZATION);
+const api = new API(END_POINT, AUTHORIZATION);
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);

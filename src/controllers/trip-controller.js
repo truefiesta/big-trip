@@ -275,28 +275,44 @@ export default class TripController {
     this._pointControllers = renderDaysWithEvents(this._daysComponent, events, SortType.SORT_EVENT, this._onDataChange, this._onViewChange);
   }
 
+  _removeEventBeingCreated() {
+    this._eventBeingCreated.destroy();
+    this._eventBeingCreated = null;
+    this._callNewEventFormToggleHandler(CLOSED);
+  }
+
   _onDataChange(pointController, oldEvent, newEvent) {
     if (this._eventBeingCreated) {
-      this._eventBeingCreated.destroy();
-      this._eventBeingCreated = null;
-      this._callNewEventFormToggleHandler(CLOSED);
+      this._removeEventBeingCreated();
       if (newEvent === null) {
         // Если расхотели создавать событие.
         pointController.destroy();
         this._updateEvents();
       } else {
         // Создание
-        this._pointsModel.addEvent(newEvent);
-        this._updateEvents();
+        this._api.createEvent(newEvent)
+          .then((pointModel) => {
+            this._pointsModel.addEvent(pointModel);
+            this._updateEvents();
+          })
+          .catch(() => {
+            pointController.shake();
+          });
       }
     } else if (newEvent === null) {
       // Удаление
-      this._pointsModel.removeEvent(oldEvent.id);
-      this._updateEvents();
+      this._api.deleteEvent(oldEvent.id)
+        .then(() => {
+          this._pointsModel.removeEvent(oldEvent.id);
+          this._updateEvents();
+        })
+        .catch(() => {
+          pointController.shake();
+        });
     } else {
+      // Обновление
       this._api.updateEvent(oldEvent.id, newEvent)
         .then((updatedEvent) => {
-          // Обновление
           const isSuccess = this._pointsModel.updateEvent(oldEvent.id, updatedEvent);
 
           if (isSuccess) {
@@ -307,11 +323,17 @@ export default class TripController {
               pointController.render(updatedEvent, Mode.DEFAULT);
             }
           }
+        })
+        .catch(() => {
+          pointController.shake();
         });
     }
   }
 
   _onViewChange() {
+    if (this._eventBeingCreated) {
+      this._removeEventBeingCreated();
+    }
     this._pointControllers.forEach((it) => it.setDefaultView());
   }
 

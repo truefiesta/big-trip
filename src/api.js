@@ -1,5 +1,12 @@
 import PointModel from "./models/point.js";
 
+const Method = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+};
+
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return response;
@@ -9,49 +16,60 @@ const checkStatus = (response) => {
 };
 
 export default class API {
-  constructor(authorization) {
+  constructor(endPoint, authorization) {
+    this._endPoint = endPoint;
     this._authorization = authorization;
   }
 
-  getEvents() {
-    const headers = new Headers();
-    headers.append(`Authorization`, this._authorization);
+  createEvent(event) {
+    return this._load({
+      url: `points`,
+      method: Method.POST,
+      body: JSON.stringify(event.toRAW()),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then((response) => response.json())
+      .then(PointModel.parseEvent);
+  }
 
-    return fetch(`https://11.ecmascript.pages.academy/big-trip/points`, {headers})
-      .then(checkStatus)
+  deleteEvent(id) {
+    return this._load({url: `points/${id}`, method: Method.DELETE});
+  }
+
+  getEvents() {
+    return this._load({url: `points`})
       .then((events) => events.json())
       .then(PointModel.parseEvents);
   }
 
   getDestinations() {
-    const headers = new Headers();
-    headers.append(`Authorization`, this._authorization);
-
-    return fetch(`https://11.ecmascript.pages.academy/big-trip/destinations`, {headers})
-    .then(checkStatus)
-    .then((destinations) => destinations.json());
+    return this._load({url: `destinations`})
+      .then((destinations) => destinations.json());
   }
 
   getOffers() {
-    const headers = new Headers();
-    headers.append(`Authorization`, this._authorization);
-    return fetch(`https://11.ecmascript.pages.academy/big-trip/offers`, {headers})
-    .then(checkStatus)
-    .then((offers) => offers.json());
+    return this._load({url: `offers`})
+      .then((offers) => offers.json());
   }
 
   updateEvent(id, event) {
-    const headers = new Headers();
-    headers.append(`Authorization`, this._authorization);
-    headers.append(`Content-Type`, `application/json`);
-
-    return fetch(`https://11.ecmascript.pages.academy/big-trip/points/${id}`, {
+    return this._load({
+      url: `points/${id}`,
       method: `PUT`,
       body: JSON.stringify(event.toRAW()),
-      headers
+      headers: new Headers({"Content-Type": `application/json`})
     })
-      .then(checkStatus)
       .then((updatedEvent) => updatedEvent.json())
       .then(PointModel.parseEvent);
+  }
+
+  _load({url, method = Method.GET, body = null, headers = new Headers()}) {
+    headers.append(`Authorization`, this._authorization);
+
+    return fetch(`${this._endPoint}/${url}`, {method, body, headers})
+      .then(checkStatus)
+      .catch((err) => {
+        throw err;
+      });
   }
 }

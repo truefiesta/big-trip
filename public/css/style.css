@@ -1,6 +1,28 @@
 html {
   height: 100%; }
 
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
 body {
   padding: 0;
   margin: 0;
@@ -529,6 +551,9 @@ main {
     border-radius: 18px;
     -webkit-box-shadow: 0 11px 20px rgba(0, 0, 0, 0.043);
             box-shadow: 0 11px 20px rgba(0, 0, 0, 0.043); }
+  .event--error {
+    border: 1px solid red;
+    box-shadow: 0 2px 20px 0 rgba(240, 0, 0, 0.19); }
 
 .event__header {
   display: -ms-flexbox;

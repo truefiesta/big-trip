@@ -7,9 +7,7 @@ import PointModel from "../models/point.js";
 import moment from "moment";
 import cloneDeep from "../../node_modules/lodash/cloneDeep";
 
-const generateId = () => {
-  return String(new Date() + Math.random());
-};
+const SHAKE_ANIMATION_TIMEOUT = 600;
 
 const DefaultEvent = {
   type: EventType.FLIGHT,
@@ -18,6 +16,7 @@ const DefaultEvent = {
     description: ``,
     photos: []
   },
+  offers: [],
   time: {
     startTime: new Date(),
     endTime: new Date()
@@ -28,8 +27,6 @@ const DefaultEvent = {
 
 export const generateDefaultEvent = () => {
   const defauldEvent = cloneDeep(DefaultEvent);
-  defauldEvent.id = generateId();
-  defauldEvent.offers = getOffersByType(EventType.FLIGHT);
   return defauldEvent;
 };
 
@@ -125,11 +122,16 @@ export default class PointController {
       const formData = this._eventEditComponent.getData();
       const newEvent = parseFormData(formData);
 
+      this._eventEditComponent.setData({
+        saveButtonText: `Saving...`,
+        formState: `disabled`,
+        isError: false
+      });
+
       this._onDataChange(this, event, newEvent);
     });
 
     this._eventEditComponent.setEventFavoriteClickHandler(() => {
-      // const newEvent = cloneDeep(event);
       const newEvent = PointModel.clone(event);
       newEvent.isFavorite = !newEvent.isFavorite;
 
@@ -137,6 +139,12 @@ export default class PointController {
     });
 
     this._eventEditComponent.setDeleteButtonClickHandler(() => {
+      this._eventEditComponent.setData({
+        deleteButtonText: `Deleting...`,
+        formState: `disabled`,
+        isError: false
+      });
+
       this._onDataChange(this, event, null);
     });
 
@@ -161,6 +169,23 @@ export default class PointController {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToEvent();
     }
+  }
+
+  shake() {
+    this._eventEditComponent.getElement().style.animation = `shake 0.6s infinite`;
+    this._eventComponent.getElement().style.animation = `shake 0.6s infinite`;
+
+    setTimeout(() => {
+      this._eventEditComponent.getElement().style.animation = ``;
+      this._eventComponent.getElement().style.animation = ``;
+
+      this._eventEditComponent.setData({
+        saveButtonText: `Save`,
+        deleteButtonText: `Delete`,
+        formState: ``,
+        isError: true
+      });
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   destroy() {
