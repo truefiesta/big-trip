@@ -14,7 +14,7 @@ import {MenuItem, OffersByType, DestinationsInformation} from "./const.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
-const AUTHORIZATION = `Basic hljo1hgHKG9dlPQsdaHIo=`;
+const AUTHORIZATION = `Basic hljokjhk1PQsmnmdaHIo=`;
 const StorePrefix = {
   EVENTS: `bigtrip-events-localstorage`,
   DESTINATIONS: `bigtrip-destinations-localstorage`,
