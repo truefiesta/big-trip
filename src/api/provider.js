@@ -1,6 +1,9 @@
 export default class Provider {
-  constructor(api) {
+  constructor(api, eventsStore, destinationsStore, offersStore) {
     this._api = api;
+    this._eventsStore = eventsStore;
+    this._destinationsStore = destinationsStore;
+    this._offersStore = offersStore;
   }
 
   createEvent(event) {

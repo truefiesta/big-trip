@@ -8,14 +8,32 @@ import MenuComponent from "./components/menu.js";
 import PointsModel from "./models/points.js";
 import Provider from "./api/provider.js";
 import StatisticsComponent from "./components/statistics.js";
+import Store from "./api/store.js";
 import TripController from "./controllers/trip-controller.js";
 import {MenuItem, OffersByType, DestinationsInformation} from "./const.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 const AUTHORIZATION = `Basic hljo1hgHKG9dlPQsdaHIo=`;
+const StorePrefix = {
+  EVENTS: `bigtrip-events-localstorage`,
+  DESTINATIONS: `bigtrip-destinations-localstorage`,
+  OFFERS: `bigtrip-offers-localstorage`
+};
+const StoreVersion = {
+  EVENTS: `v1`,
+  DESTINATIONS: `v1`,
+  OFFERS: `v1`
+};
+const EVENTS_STORE_NAME = `${StorePrefix.EVENTS}-${StoreVersion.EVENTS}`;
+const DESTINATIONS_STORE_NAME = `${StorePrefix.DESTINATIONS}-${StoreVersion.DESTINATIONS}`;
+const OFFERS_STORE_NAME = `${StorePrefix.OFFERS}-${StoreVersion.OFFERS}`;
+
 const api = new API(END_POINT, AUTHORIZATION);
-const apiWithProvider = new Provider(api);
+const eventsStore = new Store(EVENTS_STORE_NAME, window.localStorage);
+const destinationsStore = new Store(DESTINATIONS_STORE_NAME, window.localStorage);
+const offersStore = new Store(OFFERS_STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, eventsStore, destinationsStore, offersStore);
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
