@@ -50,6 +50,6 @@ export default class Point {
   }
 
   static clone(event) {
-    return new Point(event.toRAW);
+    return new Point(event.toRAW());
   }
 }
