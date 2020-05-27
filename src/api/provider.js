@@ -49,7 +49,7 @@ export default class Provider {
         .then((events) => {
           const items = events.reduce((acc, currentEvent) => {
             return Object.assign({}, acc, {
-              [currentEvent.id]: currentEvent,
+              [currentEvent.id]: currentEvent.toRAW(),
             });
           }, {});
 
