@@ -61,11 +61,8 @@ export default class Provider {
     if (this._isOnline()) {
       return this._api.getEvents()
         .then((events) => {
-          const items = events.reduce((acc, currentEvent) => {
-            return Object.assign({}, acc, {
-              [currentEvent.id]: currentEvent.toRAW(),
-            });
-          }, {});
+
+          const items = createEventsStoreStructure(events.map((event) => event.toRAW()));
 
           this._eventsStore.setItems(items);
 
