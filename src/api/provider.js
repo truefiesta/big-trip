@@ -78,10 +78,20 @@ export default class Provider {
 
   updateEvent(id, event) {
     if (this._isOnline()) {
-      return this._api.updateEvent(id, event);
+      return this._api.updateEvent(id, event)
+        .then((newEvent) => {
+          this._eventsStore.setItem(newEvent.id, newEvent.toRAW());
+
+          return newEvent;
+        });
     }
 
-    return Promise.reject(`offline logic is not implemented`);
+    event.setId(id);
+    const localEvent = PointModel.clone(event);
+    this._eventsStore.setItem(id, localEvent.toRAW());
+    this._isSyncRequired = true;
+
+    return Promise.resolve(localEvent);
   }
 
   _isOnline() {
