@@ -101,12 +101,18 @@ addButtonComponent.setOnClick(() => {
 Promise
   .all([
     apiWithProvider.getOffers(),
-    apiWithProvider.getDestinations(),
-    apiWithProvider.getEvents()
+    apiWithProvider.getDestinations()
   ])
-  .then(([offers, destinations, events]) => {
+  .then(([offers, destinations]) => {
     OffersByType.offers = offers;
     DestinationsInformation.destinations = destinations;
+
+    return Promise.resolve();
+  })
+  .then(() => {
+    return apiWithProvider.getEvents();
+  })
+  .then((events) => {
     pointsModel.setEvents(events);
     tripController.setNoLoading();
     addButtonComponent.enableElement();
