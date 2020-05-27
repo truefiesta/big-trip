@@ -21,9 +21,9 @@ export default class Provider {
     }
 
     const localNewEventId = nanoid();
-  console.log(localNewEventId);
+
     event.setId(localNewEventId);
-console.log(event);
+
     const localNewEvent = PointModel.clone(event);
     this._eventsStore.setItem(localNewEvent.id, localNewEvent.toRAW());
     this._isSyncRequired = true;
