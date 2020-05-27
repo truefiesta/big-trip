@@ -18,11 +18,15 @@ export default class Point {
     this.isFavorite = Boolean(event[`is_favorite`]);
   }
 
+  setId(id) {
+    this.id = id;
+  }
+
   toRAW() {
     const destinationInfo = getDestinationInformation(this.destination);
 
     return {
-      // "id": this.id,
+      "id": this.id,
       "type": this.type,
       "destination": {
         "name": this.destination,
@@ -46,6 +50,6 @@ export default class Point {
   }
 
   static clone(event) {
-    return new Point(event.toRAW);
+    return new Point(event.toRAW());
   }
 }

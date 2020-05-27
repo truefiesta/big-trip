@@ -1,4 +1,4 @@
-import PointModel from "./models/point.js";
+import PointModel from "../models/point.js";
 
 const Method = {
   GET: `GET`,
@@ -50,6 +50,16 @@ export default class API {
   getOffers() {
     return this._load({url: `offers`})
       .then((offers) => offers.json());
+  }
+
+  sync(events) {
+    return this._load({
+      url: `points/sync`,
+      method: Method.POST,
+      body: JSON.stringify(events),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then((response) => response.json());
   }
 
   updateEvent(id, event) {
