@@ -6,6 +6,7 @@ export default class Provider {
     this._eventsStore = eventsStore;
     this._destinationsStore = destinationsStore;
     this._offersStore = offersStore;
+    this._isSyncRequired = false;
   }
 
   createEvent(event) {
