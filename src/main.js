@@ -1,4 +1,4 @@
-import API from "./api.js";
+import API from "./api/index.js";
 import {render, RenderPosition} from "./utils/render.js";
 import AddButtonComponent from "./components/add-button.js";
 import InfoSectionComponent from "./components/info-section.js";
