@@ -18,6 +18,10 @@ export default class Point {
     this.isFavorite = Boolean(event[`is_favorite`]);
   }
 
+  setId(id) {
+    this.id = id;
+  }
+
   toRAW() {
     const destinationInfo = getDestinationInformation(this.destination);
 
