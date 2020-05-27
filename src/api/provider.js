@@ -1,6 +1,20 @@
 import PointModel from "../models/point.js";
 import {nanoid} from "nanoid";
 
+const getSyncedEvents = (items) => {
+  return items.filter(({success}) => success)
+    .map(({payload}) => payload.point);
+};
+
+const createEventsStoreStructure = (items) => {
+  return items.reduce((acc, current) => {
+    return Object.assign({}, acc, {
+      [current.id]: current,
+    });
+  }, {});
+};
+
+
 export default class Provider {
   constructor(api, eventsStore, destinationsStore, offersStore) {
     this._api = api;
@@ -92,6 +106,27 @@ export default class Provider {
     const storeOffers = this._offersStore.getItems();
 
     return Promise.resolve(storeOffers);
+  }
+
+  sync() {
+    if (this._isOnline() && this._isSyncRequired) {
+      const storeEvents = Object.values(this._eventsStore.getItems());
+
+      return this._api.sync(storeEvents)
+        .then((response) => {
+          const createdEvents = response.created;
+          const updatedEvents = getSyncedEvents(response.updated);
+
+          const items = createEventsStoreStructure([...createdEvents, ...updatedEvents]);
+
+          this._eventsStore.setItems(items);
+          this._isSyncRequired = false;
+
+          return response;
+        });
+    }
+
+    return Promise.resolve();
   }
 
   updateEvent(id, event) {

@@ -52,6 +52,16 @@ export default class API {
       .then((offers) => offers.json());
   }
 
+  sync(events) {
+    return this._load({
+      url: `points/sync`,
+      method: Method.POST,
+      body: JSON.stringify(events),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then((response) => response.json());
+  }
+
   updateEvent(id, event) {
     return this._load({
       url: `points/${id}`,
