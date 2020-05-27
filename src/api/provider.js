@@ -1,4 +1,5 @@
 import PointModel from "../models/point.js";
+import {nanoid} from "nanoid";
 
 export default class Provider {
   constructor(api, eventsStore, destinationsStore, offersStore) {
@@ -11,10 +12,23 @@ export default class Provider {
 
   createEvent(event) {
     if (this._isOnline()) {
-      return this._api.createEvent(event);
+      return this._api.createEvent(event)
+        .then((newEvent) => {
+          this._eventsStore.setItem(newEvent.id, newEvent.toRAW());
+
+          return newEvent;
+        });
     }
 
-    return Promise.reject(`offline logic is not implemented`);
+    const localNewEventId = nanoid();
+  console.log(localNewEventId);
+    event.setId(localNewEventId);
+console.log(event);
+    const localNewEvent = PointModel.clone(event);
+    this._eventsStore.setItem(localNewEvent.id, localNewEvent.toRAW());
+    this._isSyncRequired = true;
+
+    return Promise.resolve(localNewEvent);
   }
 
   deleteEvent(id) {

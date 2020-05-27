@@ -26,7 +26,7 @@ export default class Point {
     const destinationInfo = getDestinationInformation(this.destination);
 
     return {
-      // "id": this.id,
+      "id": this.id,
       "type": this.type,
       "destination": {
         "name": this.destination,
