@@ -19,10 +19,14 @@ export default class Provider {
 
   deleteEvent(id) {
     if (this._isOnline()) {
-      return this._api.deleteEvent(id);
+      return this._api.deleteEvent(id)
+        .then(() => this._eventsStore.removeItem(id));
     }
 
-    return Promise.reject(`offline logic is not implemented`);
+    this._eventsStore.removeItem(id);
+    this._isSyncRequired = true;
+
+    return Promise.resolve();
   }
 
   getEvents() {
