@@ -1,19 +1,21 @@
 import API from "./api/index.js";
-import {render, RenderPosition} from "./utils/render.js";
 import AddButtonComponent from "./components/add-button.js";
+import CostComponent from "./components/cost.js";
+import FilterController from "./controllers/filter-controller.js";
 import InfoSectionComponent from "./components/info-section.js";
 import InfoComponent from "./components/info.js";
-import CostComponent from "./components/cost.js";
 import MenuComponent from "./components/menu.js";
-import StatisticsComponent from "./components/statistics.js";
-import FilterController from "./controllers/filter-controller.js";
-import TripController from "./controllers/trip-controller.js";
 import PointsModel from "./models/points.js";
+import Provider from "./api/provider.js";
+import StatisticsComponent from "./components/statistics.js";
+import TripController from "./controllers/trip-controller.js";
 import {MenuItem, OffersByType, DestinationsInformation} from "./const.js";
+import {render, RenderPosition} from "./utils/render.js";
 
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 const AUTHORIZATION = `Basic hljo1hgHKG9dlPQsdaHIo=`;
 const api = new API(END_POINT, AUTHORIZATION);
+const apiWithProvider = new Provider(api);
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
@@ -78,7 +80,12 @@ addButtonComponent.setOnClick(() => {
   menuComponent.setActiveItem(MenuItem.TABLE);
 });
 
-Promise.all([api.getOffers(), api.getDestinations(), api.getEvents()])
+Promise
+  .all([
+    apiWithProvider.getOffers(),
+    apiWithProvider.getDestinations(),
+    apiWithProvider.getEvents()
+  ])
   .then(([offers, destinations, events]) => {
     OffersByType.offers = offers;
     DestinationsInformation.destinations = destinations;
