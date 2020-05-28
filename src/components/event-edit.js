@@ -142,17 +142,9 @@ const checkType = (type) => {
   return types.includes(type) ? ` in` : ` to`;
 };
 
-const createTripEventEditFormTemplate = (options = {}, mode) => {
-  const {type, destination, offers, destinationInfo, price, time, isFavorite, externalData} = options;
-
-  const transferTypeEventsMarkup = createEventTypesMarkup(transferTypes, type);
-  const activityTypeEventsMarkup = createEventTypesMarkup(activityTypes, type);
-  const isActionType = checkType(type);
-
-  const {startTime, endTime} = time;
-
+const createEventDetailsTemplate = (type, offers, destinationInfo) => {
   const availableOffersForEventType = getOffersByType(type.toLowerCase());
-  const offersSectionMarkup = availableOffersForEventType.length > 0 ? createOffersSectionMarkup(type, availableOffersForEventType, offers) : ``;
+  let offersSectionMarkup = availableOffersForEventType.length > 0 ? createOffersSectionMarkup(type, availableOffersForEventType, offers) : ``;
 
   let isDescription = false;
   let isPhotos = false;
@@ -165,9 +157,29 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
     }
   }
   const destinationInfoSectionMarkup = (isDescription || isPhotos) ? createDestinationInfoMarkup(destinationInfo) : ``;
-  const destinationOptions = createDestinationOptionsMarkup();
+
+  return (
+    `<section class="event__details">
+      ${offersSectionMarkup}
+      ${destinationInfoSectionMarkup}
+    </section>`
+  );
+};
+
+const createTripEventEditFormTemplate = (options = {}, mode, isInitialView) => {
+  const {type, destination, offers, destinationInfo, price, time, isFavorite, externalData} = options;
+
+  const transferTypeEventsMarkup = createEventTypesMarkup(transferTypes, type);
+  const activityTypeEventsMarkup = createEventTypesMarkup(activityTypes, type);
+  const isActionType = checkType(type);
+
+  const {startTime, endTime} = time;
 
   const isModeAdding = mode === Mode.ADDING;
+
+  const eventDetailsMarkup = (isInitialView && isModeAdding) ? `` : createEventDetailsTemplate(type, offers, destinationInfo);
+  const destinationOptions = createDestinationOptionsMarkup();
+
   const favoriteAndRollupButtonsMarkup = isModeAdding ? `` : createFavoriteButtonTemplate(isFavorite);
 
   const deleteButtonText = isModeAdding ? externalData.resetButtonText : externalData.deleteButtonText;
@@ -233,10 +245,7 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
 
         ${favoriteAndRollupButtonsMarkup}
       </header>
-      <section class="event__details">
-        ${offersSectionMarkup}
-        ${destinationInfoSectionMarkup}
-      </section>
+      ${eventDetailsMarkup}
     </form>`
   );
 };
@@ -246,6 +255,7 @@ export default class EventEdit extends AbstractSmartComponent {
     super();
     this._event = event;
     this._mode = mode;
+    this._isInitialView = true;
     this._copyEventFields(event);
     this._isFavorite = event.isFavorite;
     this._externalData = DefaultData;
@@ -329,7 +339,7 @@ export default class EventEdit extends AbstractSmartComponent {
       },
       isFavorite: this._isFavorite,
       externalData: this._externalData
-    }, this._mode);
+    }, this._mode, this._isInitialView);
   }
 
   recoveryListeners() {
@@ -400,6 +410,7 @@ export default class EventEdit extends AbstractSmartComponent {
   _subscribeOnTypeChange() {
     this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
       this._type = evt.target.value;
+      this._isInitialView = false;
 
       this.rerender();
     });
