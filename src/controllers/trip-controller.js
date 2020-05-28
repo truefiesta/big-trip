@@ -330,16 +330,16 @@ export default class TripController {
     }
   }
 
+  _onFilterChange() {
+    this._updateEvents();
+    this._renderSortComponent();
+  }
+
   _onViewChange() {
     if (this._eventBeingCreated) {
       this._removeEventBeingCreated();
     }
     this._pointControllers.forEach((it) => it.setDefaultView());
-  }
-
-  _onFilterChange() {
-    this._updateEvents();
-    this._renderSortComponent();
   }
 
   _onSortTypeChange(sortType) {
