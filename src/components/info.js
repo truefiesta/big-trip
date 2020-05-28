@@ -1,5 +1,4 @@
 import AbstractComponent from "../components/abstract-component.js";
-import {castTimeFormat} from "../utils/common.js";
 import {MONTH_NAMES} from "../const.js";
 const MDASH = `&nbsp;&mdash;&nbsp;`;
 const HELLIP = `&nbsp;&mdash;&nbsp;&hellip;&nbsp;&mdash;&nbsp;`;
@@ -25,9 +24,9 @@ const createTripMainInfoElement = (info) => {
   const endMonth = endDate.getMonth();
   let dates;
   if (startMonth === endMonth) {
-    dates = `${MONTH_NAMES[startMonth]} ${castTimeFormat(startDay)}${MDASH}${castTimeFormat(endDay)}`;
+    dates = `${MONTH_NAMES[startMonth]} ${startDay}${MDASH}${endDay}`;
   } else {
-    dates = `${MONTH_NAMES[startMonth]} ${castTimeFormat(startDay)}${MDASH}${MONTH_NAMES[endMonth]} ${castTimeFormat(endDay)}`;
+    dates = `${MONTH_NAMES[startMonth]} ${startDay}${MDASH}${MONTH_NAMES[endMonth]} ${endDay}`;
   }
 
   return (
