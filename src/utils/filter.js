@@ -7,7 +7,7 @@ const getFutureEvents = (events) => {
   return events.filter((event) => {
     const {startTime} = event.time;
     const startMoment = moment(startTime);
-    return startMoment.diff(today, `days`) > 0;
+    return today.isBefore(startMoment, `day`);
   });
 };
 
@@ -17,7 +17,7 @@ const getPastEvents = (events) => {
   return events.filter((event) => {
     const {endTime} = event.time;
     const endMoment = moment(endTime);
-    return today.diff(endMoment, `days`) > 0;
+    return today.isAfter(endMoment, `day`);
   });
 };
 
