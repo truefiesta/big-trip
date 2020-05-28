@@ -3,7 +3,7 @@ import AddButtonComponent from "./components/add-button.js";
 import CostComponent from "./components/cost.js";
 import FilterController from "./controllers/filter-controller.js";
 import InfoSectionComponent from "./components/info-section.js";
-import InfoComponent from "./components/info.js";
+import InfoController from "./controllers/info-controller.js";
 import MenuComponent from "./components/menu.js";
 import PointsModel from "./models/points.js";
 import Provider from "./api/provider.js";
@@ -14,7 +14,7 @@ import {MenuItem, OffersByType, DestinationsInformation} from "./const.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
-const AUTHORIZATION = `Basic hljokjhk1PQsmnmdaHIo=`;
+const AUTHORIZATION = `Basic hljok1PQsmnmgdaHIo=`;
 const StorePrefix = {
   EVENTS: `bigtrip-events-localstorage`,
   DESTINATIONS: `bigtrip-destinations-localstorage`,
@@ -55,7 +55,9 @@ render(tripMainElement, addButtonComponent, RenderPosition.BEFOREEND);
 addButtonComponent.disableElement();
 
 const tripMainInfoSectionElement = tripMainElement.querySelector(`.trip-info`);
-render(tripMainInfoSectionElement, new InfoComponent(), RenderPosition.BEFOREEND);
+const infoController = new InfoController(tripMainInfoSectionElement, pointsModel);
+infoController.render();
+// render(tripMainInfoSectionElement, infoComponent, RenderPosition.BEFOREEND);
 render(tripMainInfoSectionElement, new CostComponent(), RenderPosition.BEFOREEND);
 
 // Trip
@@ -114,6 +116,7 @@ Promise
   })
   .then((events) => {
     pointsModel.setEvents(events);
+    infoController.render();
     tripController.setNoLoading();
     filterController.reset();
     addButtonComponent.enableElement();

@@ -1,5 +1,6 @@
 import {FilterType, SortType} from "../const.js";
-import {getEventsByFilter, getSortedEvents} from "../utils/filter.js";
+import {getEventsByFilter} from "../utils/filter.js";
+import {getSortedEvents} from "../utils/common.js";
 
 export default class PointsModel {
   constructor() {
@@ -21,8 +22,8 @@ export default class PointsModel {
     return this._events;
   }
 
-  getEventsSortedByTime() {
-    return getSortedEvents(this._events, SortType.SORT_TIME);
+  getEventsSortedByStartTime() {
+    return getSortedEvents(this._events, SortType.SORT_EVENT);
   }
 
   hasEventsByFilterType(filterType) {
