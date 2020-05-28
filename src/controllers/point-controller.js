@@ -10,7 +10,7 @@ import cloneDeep from "../../node_modules/lodash/cloneDeep";
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
 const DefaultEvent = {
-  type: EventType.FLIGHT,
+  type: EventType.BUS,
   destination: ``,
   destinationInfo: {
     description: ``,
