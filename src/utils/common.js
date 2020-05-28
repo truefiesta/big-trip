@@ -1,5 +1,5 @@
 import moment from "moment";
-import {DestinationsInformation, OffersByType} from "../const.js";
+import {DestinationsInformation, OffersByType, SortType} from "../const.js";
 
 const MILLISECONDS_IN_SECOND = 1000;
 const SECONDS_IN_MINUTE = 60;
@@ -90,9 +90,27 @@ export const getDestinationInformation = (destinationName) => {
   return null;
 };
 
-
 export const getDestinations = () => {
   return DestinationsInformation.destinations.map((destinationsItem) => {
     return destinationsItem.name;
   });
+};
+
+export const getSortedEvents = (events, sortType) => {
+  let sortedEvents = [];
+  const allEvents = events.slice();
+
+  switch (sortType) {
+    case SortType.SORT_EVENT: sortedEvents = allEvents.sort((a, b) =>
+      a.time.startTime - b.time.startTime);
+      break;
+    case SortType.SORT_TIME: sortedEvents = allEvents.sort((a, b) =>
+      (b.time.endTime - b.time.startTime) - (a.time.endTime - a.time.startTime));
+      break;
+    case SortType.SORT_PRICE: sortedEvents = allEvents.sort((a, b) =>
+      b.price - a.price);
+      break;
+  }
+
+  return sortedEvents;
 };

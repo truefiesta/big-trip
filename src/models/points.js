@@ -1,5 +1,5 @@
-import {FilterType} from "../const.js";
-import {getEventsByFilter} from "../utils/filter.js";
+import {FilterType, SortType} from "../const.js";
+import {getEventsByFilter, getSortedEvents} from "../utils/filter.js";
 
 export default class PointsModel {
   constructor() {
@@ -19,6 +19,10 @@ export default class PointsModel {
   // Метод для получения всех точек маршрута.
   getAllEvents() {
     return this._events;
+  }
+
+  getEventsSortedByTime() {
+    return getSortedEvents(this._events, SortType.SORT_TIME);
   }
 
   hasEventsByFilterType(filterType) {

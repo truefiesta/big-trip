@@ -1,4 +1,5 @@
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
+import {getSortedEvents} from "../utils/common.js";
 import {SortType, Mode} from "../const.js";
 import DayComponent from "../components/day.js";
 import DayInfoComponent from "../components/day-info.js";
@@ -61,24 +62,6 @@ const groupEventsByStartDate = (dateString, eventsArray) => {
   });
 };
 
-const getSortedEvents = (events, sortType) => {
-  let sortedEvents = [];
-  const allEvents = events.slice();
-
-  switch (sortType) {
-    case SortType.SORT_EVENT: sortedEvents = allEvents.sort((a, b) =>
-      a.time.startTime - b.time.startTime);
-      break;
-    case SortType.SORT_TIME: sortedEvents = allEvents.sort((a, b) =>
-      (b.time.endTime - b.time.startTime) - (a.time.endTime - a.time.startTime));
-      break;
-    case SortType.SORT_PRICE: sortedEvents = allEvents.sort((a, b) =>
-      b.price - a.price);
-      break;
-  }
-
-  return sortedEvents;
-};
 // Для каждого дня (уникальной начальной даты) нужно сформировать разметку с выводом
 // шаблона для дня и шаблона событий, соответствующих дню.
 // Если сортировка не по event, то числа нужно спрятать. Все события будут выводиться в один
