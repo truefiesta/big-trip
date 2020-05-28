@@ -72,34 +72,19 @@ const parseFormData = (formData) => {
   });
 };
 
-/**
- * Отвечает за смену точки маршрута на форму редактирования.
-*/
 export default class PointController {
   constructor(container, onDataChange, onViewChange) {
-    /** @private Элемент, в который контроллер будет отрисовывать точку маршрута */
     this._container = container;
-    /** @private Функция получает на вход точку маршрута и измененную точку маршрута */
     this._onDataChange = onDataChange;
-    /** @private Функция вызывается при смене точки маршрута на форму редактирования */
     this._onViewChange = onViewChange;
-    /** @private Режим */
+
     this._mode = Mode.DEFAULT;
-    /** @private Точка маршрута */
     this._eventComponent = null;
-    /** @private Форма редактирования */
     this._eventEditComponent = null;
-    /** @private Обработчик нажатия на клавишу Escape */
+
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  /**
-   * Render method - принимает данные одной точки маршрута (события).
-   * Отвечает за отрисовку точки маршрута, ее замену на форму редактирования и
-   * наоборот.
-   * @param {object} event - Данные одной точки марштура.
-   * @param {string} mode - Режим задачи.
-   */
   render(event, mode) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
