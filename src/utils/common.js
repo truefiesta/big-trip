@@ -17,7 +17,7 @@ export const castTimeFormat = (value) => {
 };
 
 export const formatTime = (date) => {
-  return moment(date).format(`hh:mm`);
+  return moment(date).format(`HH:mm`);
 };
 
 export const formatDate = (date) => {
