@@ -115,6 +115,7 @@ Promise
   .then((events) => {
     pointsModel.setEvents(events);
     tripController.setNoLoading();
+    filterController.reset();
     addButtonComponent.enableElement();
   })
   .catch(() => {

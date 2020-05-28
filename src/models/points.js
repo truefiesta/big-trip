@@ -21,6 +21,10 @@ export default class PointsModel {
     return this._events;
   }
 
+  hasEventsByFilterType(filterType) {
+    return getEventsByFilter(this._events, filterType).length > 0;
+  }
+
   // Метод для записи точек маршрута
   setEvents(events) {
     this._events = Array.from(events);
