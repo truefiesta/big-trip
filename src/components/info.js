@@ -2,7 +2,7 @@ import AbstractComponent from "../components/abstract-component.js";
 import {castTimeFormat} from "../utils/common.js";
 import {MONTH_NAMES} from "../const.js";
 const MDASH = `&nbsp;&mdash;&nbsp;`;
-const HELLIP = `&nbsp;&hellip;&nbsp;`;
+const HELLIP = `&nbsp;&mdash;&nbsp;&hellip;&nbsp;&mdash;&nbsp;`;
 
 const createTripMainInfoElement = (info) => {
   const {destinations, startDate, endDate} = info;
