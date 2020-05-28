@@ -1,6 +1,6 @@
 import API from "./api/index.js";
 import AddButtonComponent from "./components/add-button.js";
-import CostComponent from "./components/cost.js";
+import CostController from "./controllers/cost-controller.js";
 import FilterController from "./controllers/filter-controller.js";
 import InfoSectionComponent from "./components/info-section.js";
 import InfoController from "./controllers/info-controller.js";
@@ -58,7 +58,9 @@ const tripMainInfoSectionElement = tripMainElement.querySelector(`.trip-info`);
 const infoController = new InfoController(tripMainInfoSectionElement, pointsModel);
 infoController.render();
 // render(tripMainInfoSectionElement, infoComponent, RenderPosition.BEFOREEND);
-render(tripMainInfoSectionElement, new CostComponent(), RenderPosition.BEFOREEND);
+const costController = new CostController(tripMainInfoSectionElement, pointsModel);
+costController.render();
+// render(tripMainInfoSectionElement, new CostComponent(), RenderPosition.BEFOREEND);
 
 // Trip
 const tripEventsElement = document.querySelector(`.trip-events`);
@@ -117,6 +119,7 @@ Promise
   .then((events) => {
     pointsModel.setEvents(events);
     infoController.render();
+    costController.render();
     tripController.setNoLoading();
     filterController.reset();
     addButtonComponent.enableElement();
