@@ -101,17 +101,17 @@ export const getSortedEvents = (events, sortType) => {
   const allEvents = events.slice();
 
   switch (sortType) {
-    case SortType.SORT_EVENT:
+    case SortType.EVENT:
       sortedEvents = allEvents.sort((a, b) => {
         return a.time.startTime - b.time.startTime;
       });
       break;
-    case SortType.SORT_TIME:
+    case SortType.TIME:
       sortedEvents = allEvents.sort((a, b) => {
         return (b.time.endTime - b.time.startTime) - (a.time.endTime - a.time.startTime);
       });
       break;
-    case SortType.SORT_PRICE:
+    case SortType.PRICE:
       sortedEvents = allEvents.sort((a, b) => {
         return b.price - a.price;
       });

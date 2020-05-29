@@ -1,4 +1,4 @@
-import API from "./api/index.js";
+import API from "./api/api.js";
 import AddButtonComponent from "./components/add-button.js";
 import CostController from "./controllers/cost-controller.js";
 import FilterController from "./controllers/filter-controller.js";

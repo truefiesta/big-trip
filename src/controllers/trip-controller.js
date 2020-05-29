@@ -85,7 +85,7 @@ const prepareDaysWithEventsBeforeRendering = (events, sortType) => {
 
   const sortedEvents = getSortedEvents(events, sortType);
 
-  if (sortType === SortType.SORT_EVENT) {
+  if (sortType === SortType.EVENT) {
     const startDates = getEventsStartDates(sortedEvents);
     const uniqDates = getEventsUniqueDates(startDates);
 
@@ -158,7 +158,7 @@ export default class TripController {
     this._sortComponent = null;
     this._daysComponent = new DaysComponent();
     this._eventBeingCreated = null;
-    this._currentSortType = SortType.SORT_EVENT;
+    this._currentSortType = SortType.EVENT;
 
     this._isLoading = true;
 
@@ -238,7 +238,7 @@ export default class TripController {
   }
 
   resetSorting() {
-    this._setSortTypeAndRerender(SortType.SORT_EVENT);
+    this._setSortTypeAndRerender(SortType.EVENT);
   }
 
   _callNewEventFormToggleHandler(openCloseMode) {
