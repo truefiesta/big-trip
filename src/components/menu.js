@@ -27,7 +27,7 @@ export default class Menu extends AbstractComponent {
     }
   }
 
-  setOnChange(handler) {
+  setChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
 

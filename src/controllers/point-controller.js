@@ -23,7 +23,6 @@ const parseFormData = (formData) => {
   const eventType = formData.get(`event-type`);
   const selectedOffers = [];
   for (const [key, value] of formData.entries()) {
-
     if (key.startsWith(`event-offer-`)) {
       const offerTitle = value;
       const offer = getOfferByOfferTitle(eventType, offerTitle);
@@ -82,7 +81,7 @@ export default class PointController {
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    this._eventEditComponent.setEventEditFormSubmitHandler(() => {
+    this._eventEditComponent.setSubmitHandler(() => {
       const formData = this._eventEditComponent.getData();
       const newEvent = parseFormData(formData);
       newEvent.isFavorite = this._event.isFavorite;
@@ -96,7 +95,7 @@ export default class PointController {
       this._onDataChange(this, event, newEvent);
     });
 
-    this._eventEditComponent.setEventFavoriteClickHandler(() => {
+    this._eventEditComponent.setFavoriteEventClickHandler(() => {
       const newEvent = PointModel.clone(this._event);
       newEvent.isFavorite = !newEvent.isFavorite;
 

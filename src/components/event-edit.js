@@ -281,7 +281,7 @@ export default class EventEdit extends AbstractSmartComponent {
     this._applyFlatpickrEndDate();
   }
 
-  setEventEditFormSubmitHandler(handler) {
+  setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, (evt) => {
       evt.preventDefault();
       handler();
@@ -290,7 +290,7 @@ export default class EventEdit extends AbstractSmartComponent {
     this._submitHandler = handler;
   }
 
-  setEventFavoriteClickHandler(handler) {
+  setFavoriteEventClickHandler(handler) {
     const favoriteButtonElement = this.getElement().querySelector(`input[name=event-favorite]`);
 
     if (favoriteButtonElement) {
@@ -357,9 +357,9 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   recoverListeners() {
-    this.setEventEditFormSubmitHandler(this._submitHandler);
+    this.setSubmitHandler(this._submitHandler);
     this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
-    this.setEventFavoriteClickHandler(this._favoriteHandler);
+    this.setFavoriteEventClickHandler(this._favoriteHandler);
     this.setCloseButtonClickHandler(this._closeHandler);
     this._subscribeOnEvents();
   }

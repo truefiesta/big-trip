@@ -76,7 +76,7 @@ const statisticsComponent = new StatisticsComponent(pointsModel);
 render(tripEventsElement, statisticsComponent, RenderPosition.AFTER);
 statisticsComponent.hide();
 
-menuComponent.setOnChange((menuItem) => {
+menuComponent.setChangeHandler((menuItem) => {
   switch (menuItem) {
     case MenuItem.TABLE:
       menuComponent.setActiveItem(MenuItem.TABLE);
@@ -92,7 +92,7 @@ menuComponent.setOnChange((menuItem) => {
   }
 });
 
-addButtonComponent.setOnClick(() => {
+addButtonComponent.setClickHandler(() => {
   statisticsComponent.hide();
   filterController.reset();
   tripController.show();
