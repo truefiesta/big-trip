@@ -1,8 +1,8 @@
 import AbstractComponent from "./abstract-component.js";
 
 export default class AbstractSmartComponent extends AbstractComponent {
-  recoveryListeners() {
-    throw new Error(`Abstract method not implemented: recoveryListeners`);
+  recoverListeners() {
+    throw new Error(`Abstract method not implemented: recoverListeners`);
   }
 
   rerender() {
@@ -15,6 +15,6 @@ export default class AbstractSmartComponent extends AbstractComponent {
 
     parent.replaceChild(newElement, oldElement);
 
-    this.recoveryListeners();
+    this.recoverListeners();
   }
 }

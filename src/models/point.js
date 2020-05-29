@@ -22,7 +22,7 @@ export default class Point {
     this.id = id;
   }
 
-  toRAW() {
+  convertToRaw() {
     const destinationInfo = getDestinationInformation(this.destination);
 
     return {
@@ -50,6 +50,6 @@ export default class Point {
   }
 
   static clone(event) {
-    return new Point(event.toRAW());
+    return new Point(event.convertToRaw());
   }
 }

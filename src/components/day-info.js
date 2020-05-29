@@ -2,7 +2,7 @@ import AbstractComponent from "../components/abstract-component.js";
 import {castTimeFormat} from "../utils/common.js";
 import {MONTH_NAMES} from "../const.js";
 
-const tripDayInfoElementsTemplate = (count, dateToParse) => {
+const createTripDayInfoElementsTemplate = (count, dateToParse) => {
   const parsedDate = JSON.parse(dateToParse);
   const {date, month, year} = parsedDate;
   const newDate = `${year}-${month}-${date}`;
@@ -14,8 +14,8 @@ const tripDayInfoElementsTemplate = (count, dateToParse) => {
   );
 };
 
-const tripDayInfoElementTemplate = (eventSort, count, date) => {
-  const dayInfoMarkup = eventSort ? tripDayInfoElementsTemplate(count, date) : ``;
+const createTripDayInfoElementTemplate = (eventSort, count, date) => {
+  const dayInfoMarkup = eventSort ? createTripDayInfoElementsTemplate(count, date) : ``;
   return (
     `<div class="day__info">
       ${dayInfoMarkup}
@@ -32,6 +32,6 @@ export default class DayInfo extends AbstractComponent {
   }
 
   getTemplate() {
-    return tripDayInfoElementTemplate(this._eventSort, this._count, this._date);
+    return createTripDayInfoElementTemplate(this._eventSort, this._count, this._date);
   }
 }

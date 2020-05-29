@@ -395,5 +395,5 @@ export default class Statistics extends AbstractSmartComponent {
     this._rerender();
   }
 
-  recoveryListeners() {}
+  recoverListeners() {}
 }

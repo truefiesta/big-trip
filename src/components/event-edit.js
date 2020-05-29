@@ -356,7 +356,7 @@ export default class EventEdit extends AbstractSmartComponent {
     }, this._mode, this._isInitialView);
   }
 
-  recoveryListeners() {
+  recoverListeners() {
     this.setEventEditFormSubmitHandler(this._submitHandler);
     this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
     this.setEventFavoriteClickHandler(this._favoriteHandler);
