@@ -15,16 +15,19 @@ import {render, RenderPosition} from "./utils/render.js";
 
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 const AUTHORIZATION = `Basic hljok1PQsmnmgdaHIo=`;
+
 const StorePrefix = {
   EVENTS: `bigtrip-events-localstorage`,
   DESTINATIONS: `bigtrip-destinations-localstorage`,
   OFFERS: `bigtrip-offers-localstorage`
 };
+
 const StoreVersion = {
   EVENTS: `v1`,
   DESTINATIONS: `v1`,
   OFFERS: `v1`
 };
+
 const EVENTS_STORE_NAME = `${StorePrefix.EVENTS}-${StoreVersion.EVENTS}`;
 const DESTINATIONS_STORE_NAME = `${StorePrefix.DESTINATIONS}-${StoreVersion.DESTINATIONS}`;
 const OFFERS_STORE_NAME = `${StorePrefix.OFFERS}-${StoreVersion.OFFERS}`;
@@ -57,12 +60,17 @@ addButtonComponent.disableElement();
 const tripMainInfoSectionElement = tripMainElement.querySelector(`.trip-info`);
 const infoController = new InfoController(tripMainInfoSectionElement, pointsModel);
 infoController.render();
+
 const costController = new CostController(tripMainInfoSectionElement, pointsModel);
 costController.render();
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 const tripController = new TripController(tripEventsElement, pointsModel, apiWithProvider);
 tripController.render();
+
+const statisticsComponent = new StatisticsComponent(pointsModel);
+render(tripEventsElement, statisticsComponent, RenderPosition.AFTER);
+statisticsComponent.hide();
 
 tripController.setNewEventFormToggleHandler((isOpen) => {
   if (isOpen) {
@@ -71,10 +79,6 @@ tripController.setNewEventFormToggleHandler((isOpen) => {
     addButtonComponent.enableElement();
   }
 });
-
-const statisticsComponent = new StatisticsComponent(pointsModel);
-render(tripEventsElement, statisticsComponent, RenderPosition.AFTER);
-statisticsComponent.hide();
 
 menuComponent.setChangeHandler((menuItem) => {
   switch (menuItem) {
