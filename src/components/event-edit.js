@@ -405,12 +405,12 @@ export default class EventEdit extends AbstractSmartComponent {
 
   _applyFlatpickrStartDate() {
     const startDateElement = this.getElement().querySelector(`input[name=event-start-time]`);
-    this._applyFlatpickr(`_flatpickrStartDate`, this._event.time.startTime.valueOf(), startDateElement);
+    this._applyFlatpickr(`_flatpickrStartDate`, this._startTime.valueOf(), startDateElement);
   }
 
   _applyFlatpickrEndDate() {
     const endDateElement = this.getElement().querySelector(`input[name=event-end-time]`);
-    this._applyFlatpickr(`_flatpickrEndDate`, this._event.time.endTime.valueOf(), endDateElement);
+    this._applyFlatpickr(`_flatpickrEndDate`, this._endTime.valueOf(), endDateElement);
   }
 
   _subscribeOnTypeChange() {
