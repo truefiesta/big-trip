@@ -148,7 +148,7 @@ const checkType = (type) => {
 
 const createEventDetailsTemplate = (type, offers, destinationInfo) => {
   const availableOffersForEventType = getOffersByType(type.toLowerCase());
-  let offersSectionMarkup = availableOffersForEventType.length > 0 ? createOffersSectionMarkup(type, availableOffersForEventType, offers) : ``;
+  const offersSectionMarkup = availableOffersForEventType.length > 0 ? createOffersSectionMarkup(type, availableOffersForEventType, offers) : ``;
 
   let isDescription = false;
   let isPhotos = false;

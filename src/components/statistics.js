@@ -21,7 +21,7 @@ const renderMoneyChart = (moneyCtx, events) => {
   });
 
   const moneySpendAndEventType = [];
-  for (let [type, moneyTotal] of Object.entries(moneySpendByEventType)) {
+  for (const [type, moneyTotal] of Object.entries(moneySpendByEventType)) {
     moneySpendAndEventType.push({type, moneyTotal});
   }
 
@@ -117,7 +117,7 @@ const renderTransportChart = (transportCtx, events) => {
   });
 
   const totalTimesTransportTypeUsed = [];
-  for (let [type, timesUsed] of Object.entries(timesTransportTypeUsed)) {
+  for (const [type, timesUsed] of Object.entries(timesTransportTypeUsed)) {
     totalTimesTransportTypeUsed.push({type, timesUsed});
   }
 
@@ -210,7 +210,7 @@ const renderTimeSpendChart = (timeSpendCtx, events) => {
   });
 
   const timeSpendAndEventType = [];
-  for (let [type, timeTotal] of Object.entries(timeSpendByEventType)) {
+  for (const [type, timeTotal] of Object.entries(timeSpendByEventType)) {
     timeSpendAndEventType.push({type, timeTotal});
   }
 

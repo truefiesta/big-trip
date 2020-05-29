@@ -35,7 +35,7 @@ export const getRandomItemsfromArray = (array, min, max) => {
   const newArray = [];
 
   while (newArray.length < arrayLength) {
-    let randomItem = getRandomArrayItem(array);
+    const randomItem = getRandomArrayItem(array);
 
     if (!newArray.includes(randomItem)) {
       newArray.push(randomItem);

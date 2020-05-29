@@ -19,7 +19,7 @@ const OPENED = true;
 const CLOSED = false;
 
 const getEventsStartDates = (events) => {
-  let startDates = [];
+  const startDates = [];
   for (const event of events) {
     startDates.push(event.time.startTime);
   }
@@ -39,7 +39,7 @@ const getFullDate = (date) => {
 
 const getEventsUniqueDates = (dates) => {
   const datesWithoutTime = dates.map((date) => getFullDate(date));
-  let uniqueDates = new Set();
+  const uniqueDates = new Set();
   for (const date of datesWithoutTime) {
     uniqueDates.add(JSON.stringify(date));
   }
