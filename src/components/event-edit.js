@@ -129,7 +129,6 @@ const createFavoriteButtonTemplate = (isFavorite, externalData) => {
   );
 };
 
-
 const createDestinationOptionsMarkup = () => {
   const destinationNames = getDestinations();
   return destinationNames.map((destination) => {

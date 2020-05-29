@@ -1,7 +1,7 @@
 import moment from "moment";
 import {FilterType} from "../const.js";
 
-const getFutureEvents = (events) => {
+export const getFutureEvents = (events) => {
   const today = moment();
   return events.filter((event) => {
     const {startTime} = event.time;
@@ -10,7 +10,7 @@ const getFutureEvents = (events) => {
   });
 };
 
-const getPastEvents = (events) => {
+export const getPastEvents = (events) => {
   const today = moment();
   return events.filter((event) => {
     const {endTime} = event.time;

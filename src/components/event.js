@@ -16,7 +16,7 @@ const createOffersMarkup = (offers) => {
   }).join(`\n`);
 };
 
-export const createTripEventItemTemplate = (event) => {
+const createTripEventItemTemplate = (event) => {
   const {type, destination, offers, time, price} = event;
   const isActivityType = activityTypes.includes(type.toLowerCase()) ? ` in` : ` to`;
   const selectedOffers = offers.slice(0, SELECTED_OFFERS_COUNT);

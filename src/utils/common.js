@@ -1,15 +1,15 @@
 import moment from "moment";
 import {DestinationsInformation, OffersByType, SortType} from "../const.js";
 
-const MILLISECONDS_IN_SECOND = 1000;
-const SECONDS_IN_MINUTE = 60;
-const MINUTES_IN_HOUR = 60;
-const HOURS_IN_DAY = 24;
-const DAYS_IN_WEEK = 7;
-const SECONDS_IN_HOUR = SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
-const SECONDS_IN_DAY = SECONDS_IN_HOUR * HOURS_IN_DAY;
-const MILLISECONDS_IN_HOUR = MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
-const MILLISECONDS_IN_DAY = MILLISECONDS_IN_HOUR * HOURS_IN_DAY;
+export const MILLISECONDS_IN_SECOND = 1000;
+export const SECONDS_IN_MINUTE = 60;
+export const MINUTES_IN_HOUR = 60;
+export const HOURS_IN_DAY = 24;
+export const DAYS_IN_WEEK = 7;
+export const SECONDS_IN_HOUR = SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
+export const SECONDS_IN_DAY = SECONDS_IN_HOUR * HOURS_IN_DAY;
+export const MILLISECONDS_IN_HOUR = MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
+export const MILLISECONDS_IN_DAY = MILLISECONDS_IN_HOUR * HOURS_IN_DAY;
 export const MILLISECONDS_IN_WEEK = DAYS_IN_WEEK * MILLISECONDS_IN_DAY;
 
 export const castTimeFormat = (value) => {
@@ -30,7 +30,7 @@ export const getDuration = (startDate, endDate) => {
   return moment.duration(endMoment.diff(startMoment));
 };
 
-const formatDuration = (duration) => {
+export const formatDuration = (duration) => {
   const durationInSeconds = duration.as(`seconds`);
   const durationInMinutes = castTimeFormat(duration.get(`minutes`));
   const durationInHours = castTimeFormat(duration.get(`hours`));

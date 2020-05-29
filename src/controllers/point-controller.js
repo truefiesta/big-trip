@@ -1,34 +1,12 @@
 import {getOffersByType} from "../utils/common.js";
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
-import {ESCAPE_KEY, ESC_KEY, EventType, Mode} from "../const.js";
+import {ESCAPE_KEY, ESC_KEY, Mode} from "../const.js";
 import EventComponent from "../components/event.js";
 import EventEditComponent from "../components/event-edit.js";
 import PointModel from "../models/point.js";
 import moment from "moment";
-import cloneDeep from "../../node_modules/lodash/cloneDeep";
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
-
-const DefaultEvent = {
-  type: EventType.BUS,
-  destination: ``,
-  destinationInfo: {
-    description: ``,
-    photos: []
-  },
-  offers: [],
-  time: {
-    startTime: new Date(),
-    endTime: new Date()
-  },
-  price: ``,
-  isFavorite: false
-};
-
-export const generateDefaultEvent = () => {
-  const defauldEvent = cloneDeep(DefaultEvent);
-  return defauldEvent;
-};
 
 const getOfferByOfferTitle = (eventType, offerTitle) => {
   const offers = getOffersByType(eventType);

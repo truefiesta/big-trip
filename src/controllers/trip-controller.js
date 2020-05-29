@@ -9,14 +9,36 @@ import SortComponent from "../components/sort.js";
 import DaysComponent from "../components/days.js";
 import EventsComponent from "../components/events.js";
 import EventItemComponent from "../components/event-item.js";
-import PointController, {generateDefaultEvent} from "./point-controller.js";
+import PointController from "./point-controller.js";
 import PointModel from "../models/point.js";
-import {HIDDEN_CLASS} from "../const.js";
+import {HIDDEN_CLASS, EventType} from "../const.js";
 import isEqual from "../../node_modules/lodash/isEqual";
+import cloneDeep from "../../node_modules/lodash/cloneDeep";
 import moment from "moment";
 
 const OPENED = true;
 const CLOSED = false;
+
+const DefaultEvent = {
+  type: EventType.BUS,
+  destination: ``,
+  destinationInfo: {
+    description: ``,
+    photos: []
+  },
+  offers: [],
+  time: {
+    startTime: new Date(),
+    endTime: new Date()
+  },
+  price: ``,
+  isFavorite: false
+};
+
+const generateDefaultEvent = () => {
+  const defauldEvent = cloneDeep(DefaultEvent);
+  return defauldEvent;
+};
 
 const getEventsStartDates = (events) => {
   const startDates = [];

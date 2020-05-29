@@ -1,4 +1,5 @@
 import AbstractComponent from "../components/abstract-component.js";
+
 const sortNames = [`Event`, `Time`, `Price`];
 
 const createSortItemTemplate = (sortType, currentSortType) => {

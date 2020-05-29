@@ -1,5 +1,6 @@
 import AbstractComponent from "../components/abstract-component.js";
 import {MONTH_NAMES} from "../const.js";
+
 const MDASH = `&nbsp;&mdash;&nbsp;`;
 const HELLIP = `&nbsp;&mdash;&nbsp;&hellip;&nbsp;&mdash;&nbsp;`;
 
@@ -22,6 +23,7 @@ const createTripMainInfoElement = (info) => {
   const startMonth = startDate.getMonth();
   const endDay = endDate.getDate();
   const endMonth = endDate.getMonth();
+
   let dates;
   if (startMonth === endMonth) {
     dates = `${MONTH_NAMES[startMonth]} ${startDay}${MDASH}${endDay}`;

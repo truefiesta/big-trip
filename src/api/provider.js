@@ -14,7 +14,6 @@ const createEventsStoreStructure = (items) => {
   }, {});
 };
 
-
 export default class Provider {
   constructor(api, eventsStore, destinationsStore, offersStore) {
     this._api = api;
