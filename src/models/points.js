@@ -12,12 +12,10 @@ export default class PointsModel {
     this._eventDataChangeHandlers = [];
   }
 
-  // Метод для получения отфильтрованных точек маршрута.
   getEvents() {
     return getEventsByFilter(this._events, this._activeFilterType);
   }
 
-  // Метод для получения всех точек маршрута.
   getAllEvents() {
     return this._events;
   }
@@ -30,25 +28,21 @@ export default class PointsModel {
     return getEventsByFilter(this._events, filterType).length > 0;
   }
 
-  // Метод для записи точек маршрута
   setEvents(events) {
     this._events = Array.from(events);
     this._callHandlers(this._eventDataChangeHandlers);
   }
 
-  // Метод для установки выбранного фильтра.
   setFilter(filterType) {
     this._activeFilterType = filterType;
     this._callHandlers(this._filterChangeHandlers);
   }
 
-  // Метод для добавления точки маршрута.
   addEvent(event) {
     this._events = [].concat(event, this._events);
     this._callHandlers(this._eventDataChangeHandlers);
   }
 
-  // Метод для удаления конкретной точки маршрута.
   removeEvent(id) {
     const index = this._events.findIndex((it) => it.id === id);
 
@@ -63,7 +57,6 @@ export default class PointsModel {
     return true;
   }
 
-  // Метод для обновления конкретной точки маршрута.
   updateEvent(id, event) {
     const index = this._events.findIndex((it) => it.id === id);
 

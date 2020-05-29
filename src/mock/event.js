@@ -6,7 +6,6 @@ export const MAX_PHOTOS = 5;
 export const MIN_DESCRIPTION_PHRASES = 1;
 export const MAX_DESCRIPTION_PHRASES = 5;
 const MIN_OFFERS = 0;
-// const MAX_OFFERS = 5;
 const MIN_PRICE = 15;
 const MAX_PRICE = 200;
 
@@ -57,7 +56,6 @@ export const getRandomPhotos = (min, max) => {
   return newArray;
 };
 
-// Ограничение: плюс-минус неделя от текущей даты.
 const getRandomDate = () => {
   const targetDate = new Date();
   const sign = Math.random() > 0.5 ? 1 : -1;
@@ -68,7 +66,6 @@ const getRandomDate = () => {
   return targetDate;
 };
 
-// Дата окончания не может быть меньше даты начала события.
 const getRandomDateRange = () => {
   const startDate = getRandomDate();
   const diffValue = getRandomInteger(0, MILLISECONDS_IN_WEEK);
@@ -97,11 +94,6 @@ const allEventTypes = transferTypes.concat(activityTypes);
 const generateEvent = () => {
   const description = getRandomItemsfromArray(destinationDescriptions, MIN_DESCRIPTION_PHRASES, MAX_DESCRIPTION_PHRASES).join(` `);
   const type = getRandomArrayItem(allEventTypes);
-
-  // const getSelectedOffers = (currentType, offers) => {
-  //   const maxOffers = offers[currentType.toLowerCase()].length;
-  //   return getRandomItemsfromArray(offers[currentType.toLowerCase()], MIN_OFFERS, maxOffers);
-  // };
 
   const getSelectedOffers = (currentType) => {
     const offersAndCurrentType = offersByType.filter((offerByType) => offerByType.type === currentType);

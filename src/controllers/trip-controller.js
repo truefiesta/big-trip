@@ -18,8 +18,6 @@ import moment from "moment";
 const OPENED = true;
 const CLOSED = false;
 
-// Логика для формирования дней
-// Формирует массив с начальными датами событий.
 const getEventsStartDates = (events) => {
   let startDates = [];
   for (const event of events) {
@@ -28,7 +26,6 @@ const getEventsStartDates = (events) => {
   return startDates;
 };
 
-// Возвращает объект с данными о дне, месяце и годe.
 const getFullDate = (date) => {
   if (moment.isMoment(date)) {
     date = date.toDate();
@@ -39,7 +36,7 @@ const getFullDate = (date) => {
     year: date.getFullYear()
   };
 };
-// Возвращает массив строк с уникальными датами в виде строк.
+
 const getEventsUniqueDates = (dates) => {
   const datesWithoutTime = dates.map((date) => getFullDate(date));
   let uniqueDates = new Set();
@@ -49,9 +46,6 @@ const getEventsUniqueDates = (dates) => {
   return Array.from(uniqueDates);
 };
 
-// Получает дату в виде строки "{"date": "1", "month": "11", "year": "2020"}"
-// и массив с объектами-событиями.
-// Возвращает массив объектов-событий, соответствующих дате.
 const groupEventsByStartDate = (dateToParse, eventsArray) => {
   const parsedDate = JSON.parse(dateToParse);
   const {date, month, year} = parsedDate;
@@ -63,13 +57,6 @@ const groupEventsByStartDate = (dateToParse, eventsArray) => {
   });
 };
 
-// Для каждого дня (уникальной начальной даты) нужно сформировать разметку с выводом
-// шаблона для дня и шаблона событий, соответствующих дню.
-// Если сортировка не по event, то числа нужно спрятать. Все события будут выводиться в один
-// шаблон дня.
-
-// Events выводятся в days
-// Сформируем структуру данных, в которой будут события по дате, фильтр, начальные даты.
 const prepareDaysWithEventsBeforeRendering = (events, sortType) => {
   const daysAndEvents = [];
   let daysCount = 0;
@@ -119,22 +106,15 @@ const renderEvents = (dayComponent, events, onDataChange, onViewChange) => {
   });
 };
 
-// отрисовать DayComponent (<li class="trip-days__item  day"></li>)
-//   - в DayComponent отрисовать DayInfoComponent (<div class="day__info"> (count, dateString) </div>)
-//   - в DayComponent же отрисовть EventsComponent (<ul class="trip-events__list"></ul>)
-//      - в EventsComponent отрисовать EventComponent (<li class="trip-events__item"> (events) </li>)
 const renderDaysWithEvents = (tripDaysComponent, allEvents, sortType, onDataChange, onViewChange) => {
   const daysWithEvents = prepareDaysWithEventsBeforeRendering(allEvents, sortType);
   const allPointControllers = [];
 
   daysWithEvents.map((dayWithEvents) => {
     const {eventSort, daysCount, uniqDate, events} = dayWithEvents;
-    // отрисовать DayComponent (<li class="trip-days__item day"></li>)
     const dayComponent = new DayComponent();
     render(tripDaysComponent.getElement(), dayComponent, RenderPosition.BEFOREEND);
-    //    в DayComponent отрисовать DayInfoComponent (<div class="day__info"> (count, dateString) </div>)
     renderDayInfo(dayComponent, eventSort, daysCount, uniqDate);
-    //    в DayComponent отрисовть EventsComponent (<ul class="trip-events__list"></ul>)
     const dayPointControllers = renderEvents(dayComponent, events, onDataChange, onViewChange);
     allPointControllers.push(...dayPointControllers);
   });
@@ -322,14 +302,12 @@ export default class TripController {
   _onDataChange(pointController, oldEvent, newEvent) {
     if (this._eventBeingCreated) {
       if (newEvent === null) {
-        // Если расхотели создавать событие.
         if (this._pointsModel.getEvents().length <= 0) {
           this._renderNoEventsComponent();
         }
         this._removeEventBeingCreated();
         pointController.destroy();
       } else {
-        // Создание
         this._api.createEvent(newEvent)
           .then((pointModel) => {
             this._removeEventBeingCreated();
@@ -341,7 +319,6 @@ export default class TripController {
           });
       }
     } else if (newEvent === null) {
-      // Удаление
       this._api.deleteEvent(oldEvent.id)
         .then(() => {
           this._pointsModel.removeEvent(oldEvent.id);
@@ -351,7 +328,6 @@ export default class TripController {
           pointController.shake();
         });
     } else {
-      // Обновление
       this._api.updateEvent(oldEvent.id, newEvent)
         .then((updatedEvent) => {
           const isSuccess = this._pointsModel.updateEvent(oldEvent.id, updatedEvent);
@@ -360,7 +336,6 @@ export default class TripController {
             const eventWithRevertedFavorite = PointModel.clone(updatedEvent);
             eventWithRevertedFavorite.isFavorite = !eventWithRevertedFavorite.isFavorite;
             if (isEqual(oldEvent, eventWithRevertedFavorite)) {
-              // no rerender
               pointController.setEventIsFavorite(updatedEvent.isFavorite);
               pointController.enableFavoriteButton();
             } else {

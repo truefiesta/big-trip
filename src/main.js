@@ -57,12 +57,9 @@ addButtonComponent.disableElement();
 const tripMainInfoSectionElement = tripMainElement.querySelector(`.trip-info`);
 const infoController = new InfoController(tripMainInfoSectionElement, pointsModel);
 infoController.render();
-// render(tripMainInfoSectionElement, infoComponent, RenderPosition.BEFOREEND);
 const costController = new CostController(tripMainInfoSectionElement, pointsModel);
 costController.render();
-// render(tripMainInfoSectionElement, new CostComponent(), RenderPosition.BEFOREEND);
 
-// Trip
 const tripEventsElement = document.querySelector(`.trip-events`);
 const tripController = new TripController(tripEventsElement, pointsModel, apiWithProvider);
 tripController.render();

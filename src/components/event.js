@@ -2,9 +2,6 @@ import AbstractComponent from "../components/abstract-component.js";
 import {formatTime, formatDate, formatDurationFromDates, capitalize} from "../utils/common.js";
 import {activityTypes} from "../const.js";
 
-// В колонке «Offers» отображаются не более 3-х дополнительных опций,
-// применённых к точке маршрута. Остальные опции пользователь может
-// посмотреть открыв карточку точки маршрута.
 const SELECTED_OFFERS_COUNT = 3;
 
 const createOffersMarkup = (offers) => {

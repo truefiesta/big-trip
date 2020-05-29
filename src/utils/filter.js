@@ -1,7 +1,6 @@
 import moment from "moment";
 import {FilterType} from "../const.js";
 
-// Точки, у которых дата начала больше, чем текущая;
 const getFutureEvents = (events) => {
   const today = moment();
   return events.filter((event) => {
@@ -11,7 +10,6 @@ const getFutureEvents = (events) => {
   });
 };
 
-// Точки, у которых дата окончания маршрута меньше, чем текущая.
 const getPastEvents = (events) => {
   const today = moment();
   return events.filter((event) => {
