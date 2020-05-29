@@ -34,10 +34,6 @@ export default class Sort extends AbstractComponent {
     this._currentSortType = sortType;
   }
 
-  getTemplate() {
-    return createTripSortTemplate(sortNames, this._currentSortType);
-  }
-
   getSortName() {
     return this._currentSortType;
   }
@@ -62,5 +58,9 @@ export default class Sort extends AbstractComponent {
       this._currentSortType = sortName;
       handler(this._currentSortType);
     });
+  }
+
+  getTemplate() {
+    return createTripSortTemplate(sortNames, this._currentSortType);
   }
 }

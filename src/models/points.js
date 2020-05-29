@@ -24,10 +24,6 @@ export default class Points {
     return getSortedEvents(this._events, SortType.EVENT);
   }
 
-  hasEventsByFilterType(filterType) {
-    return getEventsByFilter(this._events, filterType).length > 0;
-  }
-
   setEvents(events) {
     this._events = Array.from(events);
     this._callHandlers(this._eventDataChangeHandlers);
@@ -36,6 +32,18 @@ export default class Points {
   setFilter(filterType) {
     this._activeFilterType = filterType;
     this._callHandlers(this._filterChangeHandlers);
+  }
+
+  setFilterChangeHandler(handler) {
+    this._filterChangeHandlers.push(handler);
+  }
+
+  setEventsChangeHandler(handler) {
+    this._eventDataChangeHandlers.push(handler);
+  }
+
+  hasEventsByFilterType(filterType) {
+    return getEventsByFilter(this._events, filterType).length > 0;
   }
 
   addEvent(event) {
@@ -69,14 +77,6 @@ export default class Points {
     this._callHandlers(this._eventDataChangeHandlers);
 
     return true;
-  }
-
-  setFilterChangeHandler(handler) {
-    this._filterChangeHandlers.push(handler);
-  }
-
-  setEventsChangeHandler(handler) {
-    this._eventDataChangeHandlers.push(handler);
   }
 
   _callHandlers(handlers) {

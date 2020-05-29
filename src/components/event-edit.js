@@ -309,16 +309,6 @@ export default class EventEdit extends AbstractSmartComponent {
     this._deleteButtonClickHandler = handler;
   }
 
-  setData(data) {
-    this._externalData = Object.assign({}, DefaultData, data);
-    this.rerender();
-  }
-
-  updateData(data) {
-    this._externalData = Object.assign({}, this._externalData, data);
-    this.rerender();
-  }
-
   setCloseButtonClickHandler(handler) {
     const closeButtonElement = this.getElement().querySelector(`.event__rollup-btn`);
 
@@ -329,15 +319,19 @@ export default class EventEdit extends AbstractSmartComponent {
     }
   }
 
-  removeElement() {
-    this._removeFlatpickrStartDate();
-    this._removeFlatpickrEndDate();
-    super.removeElement();
-  }
-
   getData() {
     const form = this.getElement();
     return new FormData(form);
+  }
+
+  setData(data) {
+    this._externalData = Object.assign({}, DefaultData, data);
+    this.rerender();
+  }
+
+  updateData(data) {
+    this._externalData = Object.assign({}, this._externalData, data);
+    this.rerender();
   }
 
   getTemplate() {
@@ -368,6 +362,12 @@ export default class EventEdit extends AbstractSmartComponent {
     super.rerender();
     this._applyFlatpickrStartDate();
     this._applyFlatpickrEndDate();
+  }
+
+  removeElement() {
+    this._removeFlatpickrStartDate();
+    this._removeFlatpickrEndDate();
+    super.removeElement();
   }
 
   reset() {

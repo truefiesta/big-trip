@@ -62,6 +62,10 @@ export default class PointController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
+  setEventIsFavorite(isFavorite) {
+    this._event.isFavorite = isFavorite;
+  }
+
   render(event, mode) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
@@ -131,10 +135,6 @@ export default class PointController {
         render(this._container, this._eventEditComponent, RenderPosition.AFTER);
         break;
     }
-  }
-
-  setEventIsFavorite(isFavorite) {
-    this._event.isFavorite = isFavorite;
   }
 
   enableFavoriteButton() {

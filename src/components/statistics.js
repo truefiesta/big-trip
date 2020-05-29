@@ -344,6 +344,8 @@ export default class Statistics extends AbstractSmartComponent {
     super.show();
   }
 
+  recoverListeners() {}
+
   _rerender() {
     super.rerender();
 
@@ -394,6 +396,4 @@ export default class Statistics extends AbstractSmartComponent {
   _onEventsChange() {
     this._rerender();
   }
-
-  recoverListeners() {}
 }

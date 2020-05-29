@@ -30,14 +30,14 @@ export default class Filter extends AbstractComponent {
     this._filters = filters;
   }
 
-  getTemplate() {
-    return createSiteFilterTemplate(this._filters);
-  }
-
   setChangeHandler(handler) {
     this.getElement().addEventListener(`change`, (evt) => {
       const filterType = evt.target.dataset.filterType;
       handler(filterType);
     });
+  }
+
+  getTemplate() {
+    return createSiteFilterTemplate(this._filters);
   }
 }

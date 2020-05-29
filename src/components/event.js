@@ -61,11 +61,11 @@ export default class Event extends AbstractComponent {
     this._event = event;
   }
 
-  getTemplate() {
-    return createTripEventItemTemplate(this._event);
-  }
-
   setOpenButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
+  }
+
+  getTemplate() {
+    return createTripEventItemTemplate(this._event);
   }
 }

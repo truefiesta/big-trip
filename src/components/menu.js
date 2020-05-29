@@ -13,20 +13,6 @@ const createSiteMenuTemplate = () => {
 };
 
 export default class Menu extends AbstractComponent {
-  getTemplate() {
-    return createSiteMenuTemplate();
-  }
-
-  setActiveItem(menuItem) {
-    const items = this.getElement().querySelectorAll(`.trip-tabs__btn`);
-
-    if (items) {
-      Array.from(items).forEach((item) => item.classList.remove(MENU_ACTIVE_ITEM_CLASS));
-      const newActiveItemElement = this.getElement().querySelector(`[data-menu-item=${menuItem}]`);
-      newActiveItemElement.classList.add(MENU_ACTIVE_ITEM_CLASS);
-    }
-  }
-
   setChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
@@ -39,5 +25,19 @@ export default class Menu extends AbstractComponent {
 
       handler(menuItem);
     });
+  }
+
+  getTemplate() {
+    return createSiteMenuTemplate();
+  }
+
+  setActiveItem(menuItem) {
+    const items = this.getElement().querySelectorAll(`.trip-tabs__btn`);
+
+    if (items) {
+      Array.from(items).forEach((item) => item.classList.remove(MENU_ACTIVE_ITEM_CLASS));
+      const newActiveItemElement = this.getElement().querySelector(`[data-menu-item=${menuItem}]`);
+      newActiveItemElement.classList.add(MENU_ACTIVE_ITEM_CLASS);
+    }
   }
 }

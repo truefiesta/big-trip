@@ -47,6 +47,11 @@ export default class FilterController {
     this.render();
   }
 
+  _resetFilterType() {
+    this._pointsModel.setFilter(FilterType.ALL);
+    this._activeFilterType = FilterType.ALL;
+  }
+
   _onEventsChange() {
     this.render();
   }
@@ -54,10 +59,5 @@ export default class FilterController {
   _onFilterChange(filterType) {
     this._pointsModel.setFilter(filterType);
     this._activeFilterType = filterType;
-  }
-
-  _resetFilterType() {
-    this._pointsModel.setFilter(FilterType.ALL);
-    this._activeFilterType = FilterType.ALL;
   }
 }
