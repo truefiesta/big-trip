@@ -189,6 +189,7 @@ const createTripEventEditFormTemplate = (options = {}, mode, isInitialView) => {
   const deleteButtonText = isModeAdding ? externalData.resetButtonText : externalData.deleteButtonText;
   const saveButtonText = externalData.saveButtonText;
   const formState = externalData.formState;
+  const buttonState = formState;
   const eventErrorStyle = externalData.isError ? `event--error` : ``;
 
   return (
@@ -244,8 +245,8 @@ const createTripEventEditFormTemplate = (options = {}, mode, isInitialView) => {
           <input class="event__input  event__input--price" id="event-price-1" type="number" step="1" min="0" name="event-price" value="${price}" required>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">${saveButtonText}</button>
-        <button class="event__reset-btn" type="reset">${deleteButtonText}</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${buttonState}>${saveButtonText}</button>
+        <button class="event__reset-btn" type="reset" ${buttonState}>${deleteButtonText}</button>
 
         ${favoriteAndRollupButtonsMarkup}
       </header>
@@ -308,7 +309,6 @@ export default class EventEdit extends AbstractSmartComponent {
     this._externalData = Object.assign({}, DefaultData, data);
     this.rerender();
   }
-
 
   setCloseButtonClickHandler(handler) {
     const closeButtonElement = this.getElement().querySelector(`.event__rollup-btn`);
