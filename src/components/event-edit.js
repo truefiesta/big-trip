@@ -44,6 +44,7 @@ const createAvailableOffersMarkup = (eventType, allOffersForEventType, selectedE
       for (const selectedEventOffer of selectedEventOffers) {
         if (compareOffers(offerForEventType, selectedEventOffer)) {
           isChecked = `checked`;
+          break;
         }
       }
     }
