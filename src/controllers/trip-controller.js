@@ -156,6 +156,7 @@ export default class TripController {
     this._sortComponent = null;
     this._daysComponent = new DaysComponent();
     this._eventBeingCreated = null;
+    this._currentSortType = SortType.SORT_EVENT;
 
     this._isLoading = true;
 
@@ -168,6 +169,8 @@ export default class TripController {
   }
 
   render() {
+    this._removeEvents();
+
     const tripEventsHeaderElement = this._container.querySelector(`h2`);
     if (this._isLoading) {
       this._loadingComponent = new LoadingComponent();
@@ -184,7 +187,7 @@ export default class TripController {
     this._renderSortComponent();
     render(this._container, this._daysComponent, RenderPosition.BEFOREEND);
 
-    this._pointControllers = renderDaysWithEvents(this._daysComponent, events, SortType.SORT_EVENT, this._onDataChange, this._onViewChange);
+    this._pointControllers = renderDaysWithEvents(this._daysComponent, events, this._currentSortType, this._onDataChange, this._onViewChange);
   }
 
   createEvent() {
@@ -229,8 +232,7 @@ export default class TripController {
   }
 
   resetSorting() {
-    this._updateEvents();
-    this._renderSortComponent();
+    this._setSortTypeAndRerender(SortType.SORT_EVENT);
   }
 
   _callNewEventFormToggleHandler(openCloseMode) {
@@ -241,7 +243,8 @@ export default class TripController {
 
   _renderSortComponent() {
     const oldSortComponent = this._sortComponent;
-    this._sortComponent = new SortComponent();
+
+    this._sortComponent = new SortComponent(this._currentSortType);
     this._sortComponent.setSortNameChangeHandler(this._onSortTypeChange);
     const tripEventsHeaderElement = this._container.querySelector(`h2`);
 
@@ -258,10 +261,9 @@ export default class TripController {
     this._daysComponent.getElement().innerHTML = ``;
   }
 
-  _updateEvents() {
-    this._removeEvents();
-    const events = this._pointsModel.getEvents();
-    this._pointControllers = renderDaysWithEvents(this._daysComponent, events, SortType.SORT_EVENT, this._onDataChange, this._onViewChange);
+  _setSortTypeAndRerender(sortType) {
+    this._currentSortType = sortType;
+    this.render();
   }
 
   _removeEventBeingCreated() {
@@ -276,14 +278,13 @@ export default class TripController {
         // Если расхотели создавать событие.
         this._removeEventBeingCreated();
         pointController.destroy();
-        this._updateEvents();
       } else {
         // Создание
         this._api.createEvent(newEvent)
           .then((pointModel) => {
             this._removeEventBeingCreated();
             this._pointsModel.addEvent(pointModel);
-            this._updateEvents();
+            this.render();
           })
           .catch(() => {
             pointController.shake();
@@ -294,7 +295,7 @@ export default class TripController {
       this._api.deleteEvent(oldEvent.id)
         .then(() => {
           this._pointsModel.removeEvent(oldEvent.id);
-          this._updateEvents();
+          this.render();
         })
         .catch(() => {
           pointController.shake();
@@ -311,7 +312,7 @@ export default class TripController {
             if (isEqual(oldEvent, eventWithRevertedFavorite)) {
               // no rerender
             } else {
-              pointController.render(updatedEvent, Mode.DEFAULT);
+              this.render();
             }
           }
         })
@@ -333,8 +334,6 @@ export default class TripController {
   }
 
   _onSortTypeChange(sortType) {
-    this._removeEvents();
-    const events = this._pointsModel.getEvents();
-    this._pointControllers = renderDaysWithEvents(this._daysComponent, events, sortType, this._onDataChange, this._onViewChange);
+    this._setSortTypeAndRerender(sortType);
   }
 }
