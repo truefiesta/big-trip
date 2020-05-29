@@ -417,6 +417,7 @@ export default class EventEdit extends AbstractSmartComponent {
     this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
       this._type = evt.target.value;
       this._isInitialView = false;
+      this._selectedOffers = [];
 
       this.rerender();
     });
