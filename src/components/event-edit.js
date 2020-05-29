@@ -158,6 +158,10 @@ const createEventDetailsTemplate = (type, offers, destinationInfo) => {
   }
   const destinationInfoSectionMarkup = (isDescription || isPhotos) ? createDestinationInfoMarkup(destinationInfo) : ``;
 
+  if (!offersSectionMarkup && !destinationInfoSectionMarkup) {
+    return ``;
+  }
+
   return (
     `<section class="event__details">
       ${offersSectionMarkup}
