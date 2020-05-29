@@ -2,14 +2,14 @@ import AbstractComponent from "../components/abstract-component.js";
 const sortNames = [`Event`, `Time`, `Price`];
 
 const createSortItemTemplate = (sortType, currentSortType) => {
-  const sortTypeString = `sort-${sortType.toLowerCase()}`;
-  const isChecked = sortTypeString === currentSortType ? `checked` : ``;
+  const sortTypeWithPrefix = `sort-${sortType.toLowerCase()}`;
+  const isChecked = sortTypeWithPrefix === currentSortType ? `checked` : ``;
 
   return (
     `<div class="trip-sort__item  trip-sort__item--${sortType.toLowerCase()}">
-      <input id="${sortTypeString}" class="trip-sort__input  visually-hidden" type="radio"
-        name="trip-sort" value="${sortTypeString}" ${isChecked}>
-      <label class="trip-sort__btn" for="${sortTypeString}">${sortType}</label>
+      <input id="${sortTypeWithPrefix}" class="trip-sort__input  visually-hidden" type="radio"
+        name="trip-sort" value="${sortTypeWithPrefix}" ${isChecked}>
+      <label class="trip-sort__btn" for="${sortTypeWithPrefix}">${sortType}</label>
     </div>`
   );
 };

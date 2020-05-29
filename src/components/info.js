@@ -12,10 +12,10 @@ const createTripMainInfoElement = (info) => {
     const lastDestination = destinations[destinations.length - 1];
     title = `${firstDestination}${HELLIP}${lastDestination}`;
   } else {
-    const titleString = destinations.reduce((acc, destination) => {
+    const fullTitle = destinations.reduce((acc, destination) => {
       return acc.concat(destination, MDASH);
     }, ``);
-    title = titleString.slice(0, titleString.length - MDASH.length);
+    title = fullTitle.slice(0, fullTitle.length - MDASH.length);
   }
 
   const startDay = startDate.getDate();

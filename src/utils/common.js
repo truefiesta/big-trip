@@ -54,8 +54,8 @@ export const formatDurationFromDates = (startDate, endDate) => {
   return formatDuration(duration);
 };
 
-export const formatDurationString = (durationString) => {
-  const duration = moment.duration(durationString);
+export const formatDurationString = (durationToParse) => {
+  const duration = moment.duration(durationToParse);
   return formatDuration(duration);
 };
 

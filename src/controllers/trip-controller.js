@@ -52,9 +52,9 @@ const getEventsUniqueDates = (dates) => {
 // Получает дату в виде строки "{"date": "1", "month": "11", "year": "2020"}"
 // и массив с объектами-событиями.
 // Возвращает массив объектов-событий, соответствующих дате.
-const groupEventsByStartDate = (dateString, eventsArray) => {
-  const dateObj = JSON.parse(dateString);
-  const {date, month, year} = dateObj;
+const groupEventsByStartDate = (dateToParse, eventsArray) => {
+  const parsedDate = JSON.parse(dateToParse);
+  const {date, month, year} = parsedDate;
   const properDate = new Date(year, month, date);
   const nextDate = new Date(year, month, date + 1);
 
