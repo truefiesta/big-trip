@@ -151,7 +151,7 @@ export default class TripController {
     this._pointControllers = [];
     this._newEventFormToggleHandler = null;
 
-    this._noEventsComponent = new NoEventsComponent();
+    this._noEventsComponent = null;
     this._loadingComponent = null;
     this._sortComponent = null;
     this._daysComponent = new DaysComponent();
@@ -171,22 +171,23 @@ export default class TripController {
   render() {
     this._removeEvents();
 
-    const tripEventsHeaderElement = this._container.querySelector(`h2`);
     if (this._isLoading) {
-      this._loadingComponent = new LoadingComponent();
-      render(tripEventsHeaderElement, this._loadingComponent, RenderPosition.AFTER);
+      this._renderLoadingComponent();
+
       return;
     }
 
     const events = this._pointsModel.getEvents();
     if (events.length <= 0) {
-      render(tripEventsHeaderElement, this._noEventsComponent, RenderPosition.AFTER);
-      this._renderSortComponent(events);
+      this._removeSortComponent();
+      this._renderNoEventsComponent();
 
       return;
     }
 
-    this._renderSortComponent(events);
+    this._removeLoadingComponent();
+    this._removeNoEventsComponent();
+    this._renderSortComponent();
     render(this._container, this._daysComponent, RenderPosition.BEFOREEND);
 
     this._pointControllers = renderDaysWithEvents(this._daysComponent, events, this._currentSortType, this._onDataChange, this._onViewChange);
@@ -207,6 +208,7 @@ export default class TripController {
     this._eventBeingCreated = new PointController(containerForPointController, this._onDataChange, this._onViewChange);
     this._eventBeingCreated.render(generateDefaultEvent(), Mode.ADDING);
     this._callNewEventFormToggleHandler(OPENED);
+    this._removeNoEventsComponent();
   }
 
   hide() {
@@ -243,24 +245,59 @@ export default class TripController {
     }
   }
 
-  _renderSortComponent(events) {
-    const oldSortComponent = this._sortComponent;
-    if (events.length === 0) {
-      if (oldSortComponent) {
-        remove(oldSortComponent);
-        this._sortComponent = null;
-      }
+  _removeLoadingComponent() {
+    const oldLoadingComponent = this._loadingComponent;
+    if (oldLoadingComponent) {
+      remove(oldLoadingComponent);
+      this._loadingComponent = null;
+    }
+  }
 
+  _renderLoadingComponent() {
+    if (this._loadingComponent) {
       return;
     }
 
+    this._loadingComponent = new LoadingComponent();
+    const tripEventsHeaderElement = this._container.querySelector(`h2`);
+    render(tripEventsHeaderElement, this._loadingComponent, RenderPosition.AFTER);
+  }
+
+  _removeNoEventsComponent() {
+    const oldNoEventsComponent = this._noEventsComponent;
+    if (oldNoEventsComponent) {
+      remove(oldNoEventsComponent);
+      this._noEventsComponent = null;
+    }
+  }
+
+  _renderNoEventsComponent() {
+    if (this._noEventsComponent) {
+      return;
+    }
+
+    this._noEventsComponent = new NoEventsComponent();
+    const tripEventsHeaderElement = this._container.querySelector(`h2`);
+    render(tripEventsHeaderElement, this._noEventsComponent, RenderPosition.AFTER);
+  }
+
+  _removeSortComponent() {
+    const oldSortComponent = this._sortComponent;
+    if (oldSortComponent) {
+      remove(oldSortComponent);
+      this._sortComponent = null;
+    }
+  }
+
+  _renderSortComponent() {
+    const oldSortComponent = this._sortComponent;
     this._sortComponent = new SortComponent(this._currentSortType);
     this._sortComponent.setSortNameChangeHandler(this._onSortTypeChange);
-    const tripEventsHeaderElement = this._container.querySelector(`h2`);
 
     if (oldSortComponent) {
       replace(this._sortComponent, oldSortComponent);
     } else {
+      const tripEventsHeaderElement = this._container.querySelector(`h2`);
       render(tripEventsHeaderElement, this._sortComponent, RenderPosition.AFTER);
     }
   }
@@ -286,6 +323,9 @@ export default class TripController {
     if (this._eventBeingCreated) {
       if (newEvent === null) {
         // Если расхотели создавать событие.
+        if (this._pointsModel.getEvents().length <= 0) {
+          this._renderNoEventsComponent();
+        }
         this._removeEventBeingCreated();
         pointController.destroy();
       } else {
