@@ -1,5 +1,5 @@
 import InfoComponent from "../components/info.js";
-import {render, replace, RenderPosition} from "../utils/render.js";
+import {remove, render, replace, RenderPosition} from "../utils/render.js";
 
 const getTripDestinations = (events) => {
   return events.map(({destination}) => {
@@ -29,7 +29,14 @@ export default class InfoController {
 
   render() {
     const events = this._pointsModel.getEventsSortedByStartTime();
+    const oldInfoComponent = this._infoComponent;
+
     if (events.length === 0) {
+      if (oldInfoComponent) {
+        remove(oldInfoComponent);
+        this._infoComponent = null;
+      }
+
       return;
     }
 
@@ -39,9 +46,7 @@ export default class InfoController {
       endDate: getTripEndDate(events)
     };
 
-    const oldInfoComponent = this._infoComponent;
     this._infoComponent = new InfoComponent(info);
-
     if (oldInfoComponent) {
       replace(this._infoComponent, oldInfoComponent);
     } else {
@@ -53,3 +58,4 @@ export default class InfoController {
     this.render();
   }
 }
+
