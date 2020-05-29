@@ -367,8 +367,8 @@ export default class Statistics extends AbstractSmartComponent {
       this._moneyChart = null;
     }
 
-    const moneyCtx = this.getElement().querySelector(`.statistics__chart--money`);
-    this._moneyChart = renderMoneyChart(moneyCtx, events);
+    const moneyCtxElement = this.getElement().querySelector(`.statistics__chart--money`);
+    this._moneyChart = renderMoneyChart(moneyCtxElement, events);
   }
 
   _renderTransportChart(events) {
@@ -377,8 +377,8 @@ export default class Statistics extends AbstractSmartComponent {
       this._transportChart = null;
     }
 
-    const transportCtx = this.getElement().querySelector(`.statistics__chart--transport`);
-    this._transportChart = renderTransportChart(transportCtx, events);
+    const transportCtxElement = this.getElement().querySelector(`.statistics__chart--transport`);
+    this._transportChart = renderTransportChart(transportCtxElement, events);
   }
 
   _renderTimeSpendChart(events) {
@@ -387,8 +387,8 @@ export default class Statistics extends AbstractSmartComponent {
       this._timeSpendChart = null;
     }
 
-    const timeSpendCtx = this.getElement().querySelector(`.statistics__chart--time`);
-    this._timeSpendChart = renderTimeSpendChart(timeSpendCtx, events);
+    const timeSpendCtxElement = this.getElement().querySelector(`.statistics__chart--time`);
+    this._timeSpendChart = renderTimeSpendChart(timeSpendCtxElement, events);
   }
 
   _onEventsChange() {

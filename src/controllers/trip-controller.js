@@ -200,14 +200,14 @@ export default class TripController {
       return;
     }
 
-    let containerForPointController = null;
+    let containerForPointControllerElement = null;
     if (!this._sortComponent) {
-      containerForPointController = this._container.querySelector(`h2`);
+      containerForPointControllerElement = this._container.querySelector(`h2`);
     } else {
-      containerForPointController = this._sortComponent.getElement();
+      containerForPointControllerElement = this._sortComponent.getElement();
     }
 
-    this._eventBeingCreated = new PointController(containerForPointController, this._onDataChange, this._onViewChange);
+    this._eventBeingCreated = new PointController(containerForPointControllerElement, this._onDataChange, this._onViewChange);
     this._eventBeingCreated.render(generateDefaultEvent(), Mode.ADDING);
     this._callNewEventFormToggleHandler(OPENED);
     this._removeNoEventsComponent();

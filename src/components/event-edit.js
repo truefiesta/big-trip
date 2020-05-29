@@ -507,7 +507,7 @@ export default class EventEdit extends AbstractSmartComponent {
   _subscribeOnStartTimeChange() {
     const endTimeElement = this.getElement().querySelector(`input[name=event-end-time]`);
     const startTimeElement = this.getElement().querySelector(`input[name=event-start-time]`);
-    const saveButton = this.getElement().querySelector(`.event__save-btn`);
+    const saveButtonElement = this.getElement().querySelector(`.event__save-btn`);
 
     startTimeElement.addEventListener(`change`, (evt) => {
       this._startTime = evt.target.value;
@@ -516,9 +516,9 @@ export default class EventEdit extends AbstractSmartComponent {
       const endMoment = moment(endTimeElement.value, `DD-MM-YYYY HH:mm`);
 
       if (moment(startMoment).isAfter(endMoment)) {
-        saveButton.setAttribute(`disabled`, ``);
+        saveButtonElement.setAttribute(`disabled`, ``);
       } else {
-        saveButton.removeAttribute(`disabled`);
+        saveButtonElement.removeAttribute(`disabled`);
       }
     });
   }
@@ -526,7 +526,7 @@ export default class EventEdit extends AbstractSmartComponent {
   _subscribeOnEndTimeChange() {
     const endTimeElement = this.getElement().querySelector(`input[name=event-end-time]`);
     const startTimeElement = this.getElement().querySelector(`input[name=event-start-time]`);
-    const saveButton = this.getElement().querySelector(`.event__save-btn`);
+    const saveButtonElement = this.getElement().querySelector(`.event__save-btn`);
 
     endTimeElement.addEventListener(`change`, (evt) => {
       this._endTime = evt.target.value;
@@ -535,9 +535,9 @@ export default class EventEdit extends AbstractSmartComponent {
       const endMoment = moment(endTimeElement.value, `DD-MM-YYYY HH:mm`);
 
       if (moment(endMoment).isBefore(startMoment)) {
-        saveButton.setAttribute(`disabled`, ``);
+        saveButtonElement.setAttribute(`disabled`, ``);
       } else {
-        saveButton.removeAttribute(`disabled`);
+        saveButtonElement.removeAttribute(`disabled`);
       }
     });
   }

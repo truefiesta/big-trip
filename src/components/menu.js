@@ -22,8 +22,8 @@ export default class Menu extends AbstractComponent {
 
     if (items) {
       Array.from(items).forEach((item) => item.classList.remove(MENU_ACTIVE_ITEM_CLASS));
-      const newActiveItem = this.getElement().querySelector(`[data-menu-item=${menuItem}]`);
-      newActiveItem.classList.add(MENU_ACTIVE_ITEM_CLASS);
+      const newActiveItemElement = this.getElement().querySelector(`[data-menu-item=${menuItem}]`);
+      newActiveItemElement.classList.add(MENU_ACTIVE_ITEM_CLASS);
     }
   }
 
