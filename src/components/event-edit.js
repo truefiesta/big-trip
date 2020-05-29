@@ -293,6 +293,7 @@ export default class EventEdit extends AbstractSmartComponent {
         this._isFavorite = !this._isFavorite;
         handler();
       });
+
       this._favoriteHandler = handler;
     }
   }

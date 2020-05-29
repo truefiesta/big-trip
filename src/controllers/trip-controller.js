@@ -10,6 +10,7 @@ import DaysComponent from "../components/days.js";
 import EventsComponent from "../components/events.js";
 import EventItemComponent from "../components/event-item.js";
 import PointController, {generateDefaultEvent} from "./point-controller.js";
+import PointModel from "../models/point.js";
 import {HIDDEN_CLASS} from "../const.js";
 import isEqual from "../../node_modules/lodash/isEqual";
 import moment from "moment";
@@ -304,7 +305,8 @@ export default class TripController {
           const isSuccess = this._pointsModel.updateEvent(oldEvent.id, updatedEvent);
 
           if (isSuccess) {
-            const eventWithRevertedFavorite = Object.assign({}, updatedEvent, {isFavorite: !updatedEvent.isFavorite});
+            const eventWithRevertedFavorite = PointModel.clone(updatedEvent);
+            eventWithRevertedFavorite.isFavorite = !eventWithRevertedFavorite.isFavorite;
             if (isEqual(oldEvent, eventWithRevertedFavorite)) {
               // no rerender
             } else {
