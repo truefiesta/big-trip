@@ -227,6 +227,11 @@ export default class TripController {
     this._newEventFormToggleHandler = handler;
   }
 
+  resetSorting() {
+    this._updateEvents();
+    this._renderSortComponent();
+  }
+
   _callNewEventFormToggleHandler(openCloseMode) {
     if (this._newEventFormToggleHandler) {
       this._newEventFormToggleHandler(openCloseMode);
@@ -314,8 +319,7 @@ export default class TripController {
   }
 
   _onFilterChange() {
-    this._updateEvents();
-    this._renderSortComponent();
+    this.resetSorting();
   }
 
   _onViewChange() {

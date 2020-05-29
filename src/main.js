@@ -84,6 +84,7 @@ menuComponent.setOnChange((menuItem) => {
     case MenuItem.TABLE:
       menuComponent.setActiveItem(MenuItem.TABLE);
       statisticsComponent.hide();
+      tripController.resetSorting();
       tripController.show();
       break;
     case MenuItem.STATS:
