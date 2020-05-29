@@ -88,6 +88,7 @@ export default class PointController {
   render(event, mode) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
+    this._event = event;
     this._mode = mode;
 
     this._eventComponent = new EventComponent(event);
@@ -106,6 +107,7 @@ export default class PointController {
     this._eventEditComponent.setEventEditFormSubmitHandler(() => {
       const formData = this._eventEditComponent.getData();
       const newEvent = parseFormData(formData);
+      newEvent.isFavorite = this._event.isFavorite;
 
       this._eventEditComponent.setData({
         saveButtonText: `Saving...`,
@@ -117,10 +119,10 @@ export default class PointController {
     });
 
     this._eventEditComponent.setEventFavoriteClickHandler(() => {
-      const newEvent = PointModel.clone(event);
+      const newEvent = PointModel.clone(this._event);
       newEvent.isFavorite = !newEvent.isFavorite;
 
-      this._onDataChange(this, event, newEvent);
+      this._onDataChange(this, this._event, newEvent);
     });
 
     this._eventEditComponent.setDeleteButtonClickHandler(() => {
@@ -148,6 +150,10 @@ export default class PointController {
         render(this._container, this._eventEditComponent, RenderPosition.AFTER);
         break;
     }
+  }
+
+  setEventIsFavorite(isFavorite) {
+    this._event.isFavorite = isFavorite;
   }
 
   setDefaultView() {
