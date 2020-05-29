@@ -248,11 +248,7 @@ export default class TripController {
   }
 
   _removeLoadingComponent() {
-    const oldLoadingComponent = this._loadingComponent;
-    if (oldLoadingComponent) {
-      remove(oldLoadingComponent);
-      this._loadingComponent = null;
-    }
+    this._removeComponent(`_loadingComponent`);
   }
 
   _renderLoadingComponent() {
@@ -266,11 +262,7 @@ export default class TripController {
   }
 
   _removeNoEventsComponent() {
-    const oldNoEventsComponent = this._noEventsComponent;
-    if (oldNoEventsComponent) {
-      remove(oldNoEventsComponent);
-      this._noEventsComponent = null;
-    }
+    this._removeComponent(`_noEventsComponent`);
   }
 
   _renderNoEventsComponent() {
@@ -284,10 +276,14 @@ export default class TripController {
   }
 
   _removeSortComponent() {
-    const oldSortComponent = this._sortComponent;
-    if (oldSortComponent) {
-      remove(oldSortComponent);
-      this._sortComponent = null;
+    this._removeComponent(`_sortComponent`);
+  }
+
+  _removeComponent(name) {
+    const component = this[name];
+    if (component) {
+      remove(component);
+      this[name] = null;
     }
   }
 
