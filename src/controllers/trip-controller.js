@@ -272,15 +272,16 @@ export default class TripController {
 
   _onDataChange(pointController, oldEvent, newEvent) {
     if (this._eventBeingCreated) {
-      this._removeEventBeingCreated();
       if (newEvent === null) {
         // Если расхотели создавать событие.
+        this._removeEventBeingCreated();
         pointController.destroy();
         this._updateEvents();
       } else {
         // Создание
         this._api.createEvent(newEvent)
           .then((pointModel) => {
+            this._removeEventBeingCreated();
             this._pointsModel.addEvent(pointModel);
             this._updateEvents();
           })
