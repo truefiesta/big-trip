@@ -312,6 +312,7 @@ export default class TripController {
             if (isEqual(oldEvent, eventWithRevertedFavorite)) {
               // no rerender
               pointController.setEventIsFavorite(updatedEvent.isFavorite);
+              pointController.enableFavoriteButton();
             } else {
               this.render();
             }

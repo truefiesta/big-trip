@@ -122,6 +122,10 @@ export default class PointController {
       const newEvent = PointModel.clone(this._event);
       newEvent.isFavorite = !newEvent.isFavorite;
 
+      this._eventEditComponent.updateData({
+        favoriteButtonState: `disabled`,
+      });
+
       this._onDataChange(this, this._event, newEvent);
     });
 
@@ -156,6 +160,12 @@ export default class PointController {
     this._event.isFavorite = isFavorite;
   }
 
+  enableFavoriteButton() {
+    this._eventEditComponent.updateData({
+      favoriteButtonState: ``,
+    });
+  }
+
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToEvent();
@@ -171,6 +181,7 @@ export default class PointController {
       this._eventComponent.getElement().style.animation = ``;
 
       this._eventEditComponent.setData({
+        favoriteButtonState: ``,
         saveButtonText: `Save`,
         deleteButtonText: `Delete`,
         formState: ``,

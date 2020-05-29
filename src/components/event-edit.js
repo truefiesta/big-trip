@@ -7,6 +7,7 @@ import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 
 const DefaultData = {
+  favoriteButtonState: ``,
   deleteButtonText: `Delete`,
   saveButtonText: `Save`,
   resetButtonText: `Cancel`,
@@ -109,10 +110,13 @@ const createDestinationInfoMarkup = (destinationInfo) => {
   );
 };
 
-const createFavoriteButtonTemplate = (isFavorite) => {
+const createFavoriteButtonTemplate = (isFavorite, externalData) => {
+  const {favoriteButtonState, formState} = externalData;
+  const buttonDisabled = favoriteButtonState || formState;
   const favoriteButton = isFavorite ? `checked` : ``;
+
   return (
-    `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${favoriteButton}>
+    `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${favoriteButton} ${buttonDisabled}>
     <label class="event__favorite-btn" for="event-favorite-1">
       <span class="visually-hidden">Add to favorite</span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -184,7 +188,7 @@ const createTripEventEditFormTemplate = (options = {}, mode, isInitialView) => {
   const eventDetailsMarkup = (isInitialView && isModeAdding) ? `` : createEventDetailsTemplate(type, offers, destinationInfo);
   const destinationOptions = createDestinationOptionsMarkup();
 
-  const favoriteAndRollupButtonsMarkup = isModeAdding ? `` : createFavoriteButtonTemplate(isFavorite);
+  const favoriteAndRollupButtonsMarkup = isModeAdding ? `` : createFavoriteButtonTemplate(isFavorite, externalData);
 
   const deleteButtonText = isModeAdding ? externalData.resetButtonText : externalData.deleteButtonText;
   const saveButtonText = externalData.saveButtonText;
@@ -307,6 +311,11 @@ export default class EventEdit extends AbstractSmartComponent {
 
   setData(data) {
     this._externalData = Object.assign({}, DefaultData, data);
+    this.rerender();
+  }
+
+  updateData(data) {
+    this._externalData = Object.assign({}, this._externalData, data);
     this.rerender();
   }
 
