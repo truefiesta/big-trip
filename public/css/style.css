@@ -289,6 +289,11 @@ main {
   opacity: 1;
   cursor: default; }
 
+.trip-filters__filter-input:disabled + .trip-filters__filter-label:hover {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .trip-search {
   -ms-flex-positive: 1;
       flex-grow: 1;
