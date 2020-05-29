@@ -17,11 +17,17 @@ export default class FilterController {
   }
 
   render() {
+    if (!this._pointsModel.hasEventsByFilterType(this._activeFilterType)) {
+      this._resetFilterType();
+    }
+
     const filters = Object.values(FilterType).map((filterType) => {
+      const isEnabled = this._pointsModel.hasEventsByFilterType(filterType);
+
       return {
         title: filterType,
-        isChecked: filterType === this._activeFilterType,
-        isEnabled: this._pointsModel.hasEventsByFilterType(filterType)
+        isChecked: (filterType === this._activeFilterType) && isEnabled,
+        isEnabled
       };
     });
 
@@ -37,8 +43,7 @@ export default class FilterController {
   }
 
   reset() {
-    this._pointsModel.setFilter(FilterType.ALL);
-    this._activeFilterType = FilterType.ALL;
+    this._resetFilterType();
     this.render();
   }
 
@@ -49,5 +54,10 @@ export default class FilterController {
   _onFilterChange(filterType) {
     this._pointsModel.setFilter(filterType);
     this._activeFilterType = filterType;
+  }
+
+  _resetFilterType() {
+    this._pointsModel.setFilter(FilterType.ALL);
+    this._activeFilterType = FilterType.ALL;
   }
 }
