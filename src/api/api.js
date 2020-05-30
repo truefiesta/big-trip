@@ -25,7 +25,7 @@ export default class API {
     return this._load({
       url: `points`,
       method: Method.POST,
-      body: JSON.stringify(event.toRAW()),
+      body: JSON.stringify(event.convertToRaw()),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json())
@@ -66,7 +66,7 @@ export default class API {
     return this._load({
       url: `points/${id}`,
       method: `PUT`,
-      body: JSON.stringify(event.toRAW()),
+      body: JSON.stringify(event.convertToRaw()),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((updatedEvent) => updatedEvent.json())

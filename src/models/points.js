@@ -1,7 +1,8 @@
-import {FilterType} from "../const.js";
+import {FilterType, SortType} from "../const.js";
 import {getEventsByFilter} from "../utils/filter.js";
+import {getSortedEvents} from "../utils/common.js";
 
-export default class PointsModel {
+export default class Points {
   constructor() {
     this._events = [];
 
@@ -11,35 +12,45 @@ export default class PointsModel {
     this._eventDataChangeHandlers = [];
   }
 
-  // Метод для получения отфильтрованных точек маршрута.
   getEvents() {
     return getEventsByFilter(this._events, this._activeFilterType);
   }
 
-  // Метод для получения всех точек маршрута.
   getAllEvents() {
     return this._events;
   }
 
-  // Метод для записи точек маршрута
+  getEventsSortedByStartTime() {
+    return getSortedEvents(this._events, SortType.EVENT);
+  }
+
   setEvents(events) {
     this._events = Array.from(events);
     this._callHandlers(this._eventDataChangeHandlers);
   }
 
-  // Метод для установки выбранного фильтра.
   setFilter(filterType) {
     this._activeFilterType = filterType;
     this._callHandlers(this._filterChangeHandlers);
   }
 
-  // Метод для добавления точки маршрута.
+  setFilterChangeHandler(handler) {
+    this._filterChangeHandlers.push(handler);
+  }
+
+  setEventsChangeHandler(handler) {
+    this._eventDataChangeHandlers.push(handler);
+  }
+
+  hasEventsByFilterType(filterType) {
+    return getEventsByFilter(this._events, filterType).length > 0;
+  }
+
   addEvent(event) {
     this._events = [].concat(event, this._events);
     this._callHandlers(this._eventDataChangeHandlers);
   }
 
-  // Метод для удаления конкретной точки маршрута.
   removeEvent(id) {
     const index = this._events.findIndex((it) => it.id === id);
 
@@ -54,7 +65,6 @@ export default class PointsModel {
     return true;
   }
 
-  // Метод для обновления конкретной точки маршрута.
   updateEvent(id, event) {
     const index = this._events.findIndex((it) => it.id === id);
 
@@ -67,14 +77,6 @@ export default class PointsModel {
     this._callHandlers(this._eventDataChangeHandlers);
 
     return true;
-  }
-
-  setFilterChangeHandler(handler) {
-    this._filterChangeHandlers.push(handler);
-  }
-
-  setEventsChangeHandler(handler) {
-    this._eventDataChangeHandlers.push(handler);
   }
 
   _callHandlers(handlers) {

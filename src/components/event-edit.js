@@ -7,6 +7,7 @@ import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 
 const DefaultData = {
+  favoriteButtonState: ``,
   deleteButtonText: `Delete`,
   saveButtonText: `Save`,
   resetButtonText: `Cancel`,
@@ -43,6 +44,7 @@ const createAvailableOffersMarkup = (eventType, allOffersForEventType, selectedE
       for (const selectedEventOffer of selectedEventOffers) {
         if (compareOffers(offerForEventType, selectedEventOffer)) {
           isChecked = `checked`;
+          break;
         }
       }
     }
@@ -109,10 +111,13 @@ const createDestinationInfoMarkup = (destinationInfo) => {
   );
 };
 
-const createFavoriteButtonTemplate = (isFavorite) => {
+const createFavoriteButtonTemplate = (isFavorite, externalData) => {
+  const {favoriteButtonState, formState} = externalData;
+  const buttonDisabled = favoriteButtonState || formState;
   const favoriteButton = isFavorite ? `checked` : ``;
+
   return (
-    `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${favoriteButton}>
+    `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${favoriteButton} ${buttonDisabled}>
     <label class="event__favorite-btn" for="event-favorite-1">
       <span class="visually-hidden">Add to favorite</span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -124,7 +129,6 @@ const createFavoriteButtonTemplate = (isFavorite) => {
     </button>`
   );
 };
-
 
 const createDestinationOptionsMarkup = () => {
   const destinationNames = getDestinations();
@@ -142,15 +146,7 @@ const checkType = (type) => {
   return types.includes(type) ? ` in` : ` to`;
 };
 
-const createTripEventEditFormTemplate = (options = {}, mode) => {
-  const {type, destination, offers, destinationInfo, price, time, isFavorite, externalData} = options;
-
-  const transferTypeEventsMarkup = createEventTypesMarkup(transferTypes, type);
-  const activityTypeEventsMarkup = createEventTypesMarkup(activityTypes, type);
-  const isActionType = checkType(type);
-
-  const {startTime, endTime} = time;
-
+const createEventDetailsTemplate = (type, offers, destinationInfo) => {
   const availableOffersForEventType = getOffersByType(type.toLowerCase());
   const offersSectionMarkup = availableOffersForEventType.length > 0 ? createOffersSectionMarkup(type, availableOffersForEventType, offers) : ``;
 
@@ -165,14 +161,39 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
     }
   }
   const destinationInfoSectionMarkup = (isDescription || isPhotos) ? createDestinationInfoMarkup(destinationInfo) : ``;
-  const destinationOptions = createDestinationOptionsMarkup();
+
+  if (!offersSectionMarkup && !destinationInfoSectionMarkup) {
+    return ``;
+  }
+
+  return (
+    `<section class="event__details">
+      ${offersSectionMarkup}
+      ${destinationInfoSectionMarkup}
+    </section>`
+  );
+};
+
+const createTripEventEditFormTemplate = (options = {}, mode, isInitialView) => {
+  const {type, destination, offers, destinationInfo, price, time, isFavorite, externalData} = options;
+
+  const transferTypeEventsMarkup = createEventTypesMarkup(transferTypes, type);
+  const activityTypeEventsMarkup = createEventTypesMarkup(activityTypes, type);
+  const isActionType = checkType(type);
+
+  const {startTime, endTime} = time;
 
   const isModeAdding = mode === Mode.ADDING;
-  const favoriteAndRollupButtonsMarkup = isModeAdding ? `` : createFavoriteButtonTemplate(isFavorite);
+
+  const eventDetailsMarkup = (isInitialView && isModeAdding) ? `` : createEventDetailsTemplate(type, offers, destinationInfo);
+  const destinationOptions = createDestinationOptionsMarkup();
+
+  const favoriteAndRollupButtonsMarkup = isModeAdding ? `` : createFavoriteButtonTemplate(isFavorite, externalData);
 
   const deleteButtonText = isModeAdding ? externalData.resetButtonText : externalData.deleteButtonText;
   const saveButtonText = externalData.saveButtonText;
   const formState = externalData.formState;
+  const buttonState = formState;
   const eventErrorStyle = externalData.isError ? `event--error` : ``;
 
   return (
@@ -228,15 +249,12 @@ const createTripEventEditFormTemplate = (options = {}, mode) => {
           <input class="event__input  event__input--price" id="event-price-1" type="number" step="1" min="0" name="event-price" value="${price}" required>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">${saveButtonText}</button>
-        <button class="event__reset-btn" type="reset">${deleteButtonText}</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${buttonState}>${saveButtonText}</button>
+        <button class="event__reset-btn" type="reset" ${buttonState}>${deleteButtonText}</button>
 
         ${favoriteAndRollupButtonsMarkup}
       </header>
-      <section class="event__details">
-        ${offersSectionMarkup}
-        ${destinationInfoSectionMarkup}
-      </section>
+      ${eventDetailsMarkup}
     </form>`
   );
 };
@@ -246,6 +264,7 @@ export default class EventEdit extends AbstractSmartComponent {
     super();
     this._event = event;
     this._mode = mode;
+    this._isInitialView = true;
     this._copyEventFields(event);
     this._isFavorite = event.isFavorite;
     this._externalData = DefaultData;
@@ -262,7 +281,7 @@ export default class EventEdit extends AbstractSmartComponent {
     this._applyFlatpickrEndDate();
   }
 
-  setEventEditFormSubmitHandler(handler) {
+  setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, (evt) => {
       evt.preventDefault();
       handler();
@@ -271,7 +290,7 @@ export default class EventEdit extends AbstractSmartComponent {
     this._submitHandler = handler;
   }
 
-  setEventFavoriteClickHandler(handler) {
+  setFavoriteEventClickHandler(handler) {
     const favoriteButtonElement = this.getElement().querySelector(`input[name=event-favorite]`);
 
     if (favoriteButtonElement) {
@@ -279,6 +298,7 @@ export default class EventEdit extends AbstractSmartComponent {
         this._isFavorite = !this._isFavorite;
         handler();
       });
+
       this._favoriteHandler = handler;
     }
   }
@@ -288,12 +308,6 @@ export default class EventEdit extends AbstractSmartComponent {
 
     this._deleteButtonClickHandler = handler;
   }
-
-  setData(data) {
-    this._externalData = Object.assign({}, DefaultData, data);
-    this.rerender();
-  }
-
 
   setCloseButtonClickHandler(handler) {
     const closeButtonElement = this.getElement().querySelector(`.event__rollup-btn`);
@@ -305,15 +319,19 @@ export default class EventEdit extends AbstractSmartComponent {
     }
   }
 
-  removeElement() {
-    this._removeFlatpickrStartDate();
-    this._removeFlatpickrEndDate();
-    super.removeElement();
-  }
-
   getData() {
     const form = this.getElement();
     return new FormData(form);
+  }
+
+  setData(data) {
+    this._externalData = Object.assign({}, DefaultData, data);
+    this.rerender();
+  }
+
+  updateData(data) {
+    this._externalData = Object.assign({}, this._externalData, data);
+    this.rerender();
   }
 
   getTemplate() {
@@ -329,12 +347,13 @@ export default class EventEdit extends AbstractSmartComponent {
       },
       isFavorite: this._isFavorite,
       externalData: this._externalData
-    }, this._mode);
+    }, this._mode, this._isInitialView);
   }
 
-  recoveryListeners() {
-    this.setEventEditFormSubmitHandler(this._submitHandler);
-    this.setEventFavoriteClickHandler(this._favoriteHandler);
+  recoverListeners() {
+    this.setSubmitHandler(this._submitHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
+    this.setFavoriteEventClickHandler(this._favoriteHandler);
     this.setCloseButtonClickHandler(this._closeHandler);
     this._subscribeOnEvents();
   }
@@ -343,6 +362,12 @@ export default class EventEdit extends AbstractSmartComponent {
     super.rerender();
     this._applyFlatpickrStartDate();
     this._applyFlatpickrEndDate();
+  }
+
+  removeElement() {
+    this._removeFlatpickrStartDate();
+    this._removeFlatpickrEndDate();
+    super.removeElement();
   }
 
   reset() {
@@ -389,17 +414,19 @@ export default class EventEdit extends AbstractSmartComponent {
 
   _applyFlatpickrStartDate() {
     const startDateElement = this.getElement().querySelector(`input[name=event-start-time]`);
-    this._applyFlatpickr(`_flatpickrStartDate`, this._event.time.startTime.valueOf(), startDateElement);
+    this._applyFlatpickr(`_flatpickrStartDate`, this._startTime.valueOf(), startDateElement);
   }
 
   _applyFlatpickrEndDate() {
     const endDateElement = this.getElement().querySelector(`input[name=event-end-time]`);
-    this._applyFlatpickr(`_flatpickrEndDate`, this._event.time.endTime.valueOf(), endDateElement);
+    this._applyFlatpickr(`_flatpickrEndDate`, this._endTime.valueOf(), endDateElement);
   }
 
   _subscribeOnTypeChange() {
     this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
       this._type = evt.target.value;
+      this._isInitialView = false;
+      this._selectedOffers = [];
 
       this.rerender();
     });
@@ -480,7 +507,7 @@ export default class EventEdit extends AbstractSmartComponent {
   _subscribeOnStartTimeChange() {
     const endTimeElement = this.getElement().querySelector(`input[name=event-end-time]`);
     const startTimeElement = this.getElement().querySelector(`input[name=event-start-time]`);
-    const saveButton = this.getElement().querySelector(`.event__save-btn`);
+    const saveButtonElement = this.getElement().querySelector(`.event__save-btn`);
 
     startTimeElement.addEventListener(`change`, (evt) => {
       this._startTime = evt.target.value;
@@ -489,9 +516,9 @@ export default class EventEdit extends AbstractSmartComponent {
       const endMoment = moment(endTimeElement.value, `DD-MM-YYYY HH:mm`);
 
       if (moment(startMoment).isAfter(endMoment)) {
-        saveButton.setAttribute(`disabled`, ``);
+        saveButtonElement.setAttribute(`disabled`, ``);
       } else {
-        saveButton.removeAttribute(`disabled`);
+        saveButtonElement.removeAttribute(`disabled`);
       }
     });
   }
@@ -499,7 +526,7 @@ export default class EventEdit extends AbstractSmartComponent {
   _subscribeOnEndTimeChange() {
     const endTimeElement = this.getElement().querySelector(`input[name=event-end-time]`);
     const startTimeElement = this.getElement().querySelector(`input[name=event-start-time]`);
-    const saveButton = this.getElement().querySelector(`.event__save-btn`);
+    const saveButtonElement = this.getElement().querySelector(`.event__save-btn`);
 
     endTimeElement.addEventListener(`change`, (evt) => {
       this._endTime = evt.target.value;
@@ -508,9 +535,9 @@ export default class EventEdit extends AbstractSmartComponent {
       const endMoment = moment(endTimeElement.value, `DD-MM-YYYY HH:mm`);
 
       if (moment(endMoment).isBefore(startMoment)) {
-        saveButton.setAttribute(`disabled`, ``);
+        saveButtonElement.setAttribute(`disabled`, ``);
       } else {
-        saveButton.removeAttribute(`disabled`);
+        saveButtonElement.removeAttribute(`disabled`);
       }
     });
   }

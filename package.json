@@ -6,7 +6,6 @@
   "scripts": {
     "eslint": "eslint src/**/*.js",
     "test": "npm run eslint",
-    "docs": "jsdoc -c jsdoc.json",
     "build": "webpack",
     "start": "webpack-dev-server --open"
   },
@@ -14,7 +13,6 @@
     "css-loader": "3.5.3",
     "eslint": "6.1.0",
     "eslint-config-htmlacademy": "0.5.2",
-    "jsdoc": "3.6.3",
     "moment-locales-webpack-plugin": "1.2.0",
     "style-loader": "1.2.1",
     "webpack": "4.42.1",

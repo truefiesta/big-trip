@@ -1,20 +1,23 @@
 import AbstractComponent from "../components/abstract-component.js";
 
 const sortNames = [`Event`, `Time`, `Price`];
-// <label class="trip-sort__btn  trip-sort__btn--active  trip-sort__btn--by-increase" for="sort-time">
-const createSortItemTemplate = (sortName, isChecked) => {
+
+const createSortItemTemplate = (sortType, currentSortType) => {
+  const sortTypeWithPrefix = `sort-${sortType.toLowerCase()}`;
+  const isChecked = sortTypeWithPrefix === currentSortType ? `checked` : ``;
+
   return (
-    `<div class="trip-sort__item  trip-sort__item--${sortName.toLowerCase()}">
-      <input id="sort-${sortName.toLowerCase()}" class="trip-sort__input  visually-hidden" type="radio"
-        name="trip-sort" value="sort-${sortName.toLowerCase()}" ${isChecked ? `checked` : ``}>
-      <label class="trip-sort__btn" for="sort-${sortName.toLowerCase()}">${sortName}</label>
+    `<div class="trip-sort__item  trip-sort__item--${sortType.toLowerCase()}">
+      <input id="${sortTypeWithPrefix}" class="trip-sort__input  visually-hidden" type="radio"
+        name="trip-sort" value="${sortTypeWithPrefix}" ${isChecked}>
+      <label class="trip-sort__btn" for="${sortTypeWithPrefix}">${sortType}</label>
     </div>`
   );
 };
 
-const createTripSortTemplate = (sortTypes) => {
-  const sortItemsMarkup = sortTypes.map((sortType, i) =>
-    createSortItemTemplate(sortType, i === 0)).join(`\n`);
+const createTripSortTemplate = (sortTypes, currentSortType) => {
+  const sortItemsMarkup = sortTypes.map((sortType) =>
+    createSortItemTemplate(sortType, currentSortType)).join(`\n`);
 
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
@@ -26,17 +29,13 @@ const createTripSortTemplate = (sortTypes) => {
 };
 
 export default class Sort extends AbstractComponent {
-  constructor() {
+  constructor(sortType) {
     super();
-    this._currentSortName = `sort-${sortNames[0].toLowerCase()}`;
-  }
-
-  getTemplate() {
-    return createTripSortTemplate(sortNames);
+    this._currentSortType = sortType;
   }
 
   getSortName() {
-    return this._currentSortName;
+    return this._currentSortType;
   }
 
   setSortNameChangeHandler(handler) {
@@ -49,15 +48,19 @@ export default class Sort extends AbstractComponent {
 
       const sortName = evt.target.getAttribute(`for`);
 
-      if (this._currentSortName === sortName) {
+      if (this._currentSortType === sortName) {
         return;
       }
 
       this.getElement().querySelector(`input:checked`).removeAttribute(`checked`);
       this.getElement().querySelector(`input[value=${sortName}]`).setAttribute(`checked`, `true`);
 
-      this._currentSortName = sortName;
-      handler(this._currentSortName);
+      this._currentSortType = sortName;
+      handler(this._currentSortType);
     });
+  }
+
+  getTemplate() {
+    return createTripSortTemplate(sortNames, this._currentSortType);
   }
 }

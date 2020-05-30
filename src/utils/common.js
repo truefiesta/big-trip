@@ -1,15 +1,15 @@
 import moment from "moment";
-import {DestinationsInformation, OffersByType} from "../const.js";
+import {DestinationsInformation, OffersByType, SortType} from "../const.js";
 
-const MILLISECONDS_IN_SECOND = 1000;
-const SECONDS_IN_MINUTE = 60;
-const MINUTES_IN_HOUR = 60;
-const HOURS_IN_DAY = 24;
-const DAYS_IN_WEEK = 7;
-const SECONDS_IN_HOUR = SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
-const SECONDS_IN_DAY = SECONDS_IN_HOUR * HOURS_IN_DAY;
-const MILLISECONDS_IN_HOUR = MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
-const MILLISECONDS_IN_DAY = MILLISECONDS_IN_HOUR * HOURS_IN_DAY;
+export const MILLISECONDS_IN_SECOND = 1000;
+export const SECONDS_IN_MINUTE = 60;
+export const MINUTES_IN_HOUR = 60;
+export const HOURS_IN_DAY = 24;
+export const DAYS_IN_WEEK = 7;
+export const SECONDS_IN_HOUR = SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
+export const SECONDS_IN_DAY = SECONDS_IN_HOUR * HOURS_IN_DAY;
+export const MILLISECONDS_IN_HOUR = MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
+export const MILLISECONDS_IN_DAY = MILLISECONDS_IN_HOUR * HOURS_IN_DAY;
 export const MILLISECONDS_IN_WEEK = DAYS_IN_WEEK * MILLISECONDS_IN_DAY;
 
 export const castTimeFormat = (value) => {
@@ -17,7 +17,7 @@ export const castTimeFormat = (value) => {
 };
 
 export const formatTime = (date) => {
-  return moment(date).format(`hh:mm`);
+  return moment(date).format(`HH:mm`);
 };
 
 export const formatDate = (date) => {
@@ -30,7 +30,7 @@ export const getDuration = (startDate, endDate) => {
   return moment.duration(endMoment.diff(startMoment));
 };
 
-const formatDuration = (duration) => {
+export const formatDuration = (duration) => {
   const durationInSeconds = duration.as(`seconds`);
   const durationInMinutes = castTimeFormat(duration.get(`minutes`));
   const durationInHours = castTimeFormat(duration.get(`hours`));
@@ -54,8 +54,8 @@ export const formatDurationFromDates = (startDate, endDate) => {
   return formatDuration(duration);
 };
 
-export const formatDurationString = (durationString) => {
-  const duration = moment.duration(durationString);
+export const formatDurationString = (durationToParse) => {
+  const duration = moment.duration(durationToParse);
   return formatDuration(duration);
 };
 
@@ -90,9 +90,33 @@ export const getDestinationInformation = (destinationName) => {
   return null;
 };
 
-
 export const getDestinations = () => {
   return DestinationsInformation.destinations.map((destinationsItem) => {
     return destinationsItem.name;
   });
+};
+
+export const getSortedEvents = (events, sortType) => {
+  let sortedEvents = [];
+  const allEvents = events.slice();
+
+  switch (sortType) {
+    case SortType.EVENT:
+      sortedEvents = allEvents.sort((a, b) => {
+        return a.time.startTime - b.time.startTime;
+      });
+      break;
+    case SortType.TIME:
+      sortedEvents = allEvents.sort((a, b) => {
+        return (b.time.endTime - b.time.startTime) - (a.time.endTime - a.time.startTime);
+      });
+      break;
+    case SortType.PRICE:
+      sortedEvents = allEvents.sort((a, b) => {
+        return b.price - a.price;
+      });
+      break;
+  }
+
+  return sortedEvents;
 };

@@ -21,7 +21,7 @@ const renderMoneyChart = (moneyCtx, events) => {
   });
 
   const moneySpendAndEventType = [];
-  for (let [type, moneyTotal] of Object.entries(moneySpendByEventType)) {
+  for (const [type, moneyTotal] of Object.entries(moneySpendByEventType)) {
     moneySpendAndEventType.push({type, moneyTotal});
   }
 
@@ -117,7 +117,7 @@ const renderTransportChart = (transportCtx, events) => {
   });
 
   const totalTimesTransportTypeUsed = [];
-  for (let [type, timesUsed] of Object.entries(timesTransportTypeUsed)) {
+  for (const [type, timesUsed] of Object.entries(timesTransportTypeUsed)) {
     totalTimesTransportTypeUsed.push({type, timesUsed});
   }
 
@@ -210,7 +210,7 @@ const renderTimeSpendChart = (timeSpendCtx, events) => {
   });
 
   const timeSpendAndEventType = [];
-  for (let [type, timeTotal] of Object.entries(timeSpendByEventType)) {
+  for (const [type, timeTotal] of Object.entries(timeSpendByEventType)) {
     timeSpendAndEventType.push({type, timeTotal});
   }
 
@@ -344,6 +344,8 @@ export default class Statistics extends AbstractSmartComponent {
     super.show();
   }
 
+  recoverListeners() {}
+
   _rerender() {
     super.rerender();
 
@@ -367,8 +369,8 @@ export default class Statistics extends AbstractSmartComponent {
       this._moneyChart = null;
     }
 
-    const moneyCtx = this.getElement().querySelector(`.statistics__chart--money`);
-    this._moneyChart = renderMoneyChart(moneyCtx, events);
+    const moneyCtxElement = this.getElement().querySelector(`.statistics__chart--money`);
+    this._moneyChart = renderMoneyChart(moneyCtxElement, events);
   }
 
   _renderTransportChart(events) {
@@ -377,8 +379,8 @@ export default class Statistics extends AbstractSmartComponent {
       this._transportChart = null;
     }
 
-    const transportCtx = this.getElement().querySelector(`.statistics__chart--transport`);
-    this._transportChart = renderTransportChart(transportCtx, events);
+    const transportCtxElement = this.getElement().querySelector(`.statistics__chart--transport`);
+    this._transportChart = renderTransportChart(transportCtxElement, events);
   }
 
   _renderTimeSpendChart(events) {
@@ -387,13 +389,11 @@ export default class Statistics extends AbstractSmartComponent {
       this._timeSpendChart = null;
     }
 
-    const timeSpendCtx = this.getElement().querySelector(`.statistics__chart--time`);
-    this._timeSpendChart = renderTimeSpendChart(timeSpendCtx, events);
+    const timeSpendCtxElement = this.getElement().querySelector(`.statistics__chart--time`);
+    this._timeSpendChart = renderTimeSpendChart(timeSpendCtxElement, events);
   }
 
   _onEventsChange() {
     this._rerender();
   }
-
-  recoveryListeners() {}
 }

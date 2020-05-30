@@ -1,9 +1,9 @@
-import API from "./api/index.js";
+import API from "./api/api.js";
 import AddButtonComponent from "./components/add-button.js";
-import CostComponent from "./components/cost.js";
+import CostController from "./controllers/cost-controller.js";
 import FilterController from "./controllers/filter-controller.js";
 import InfoSectionComponent from "./components/info-section.js";
-import InfoComponent from "./components/info.js";
+import InfoController from "./controllers/info-controller.js";
 import MenuComponent from "./components/menu.js";
 import PointsModel from "./models/points.js";
 import Provider from "./api/provider.js";
@@ -14,17 +14,20 @@ import {MenuItem, OffersByType, DestinationsInformation} from "./const.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
-const AUTHORIZATION = `Basic hljokjhk1PQsmnmdaHIo=`;
+const AUTHORIZATION = `Basic hljok1PQsmnmgdaHIo=`;
+
 const StorePrefix = {
   EVENTS: `bigtrip-events-localstorage`,
   DESTINATIONS: `bigtrip-destinations-localstorage`,
   OFFERS: `bigtrip-offers-localstorage`
 };
+
 const StoreVersion = {
   EVENTS: `v1`,
   DESTINATIONS: `v1`,
   OFFERS: `v1`
 };
+
 const EVENTS_STORE_NAME = `${StorePrefix.EVENTS}-${StoreVersion.EVENTS}`;
 const DESTINATIONS_STORE_NAME = `${StorePrefix.DESTINATIONS}-${StoreVersion.DESTINATIONS}`;
 const OFFERS_STORE_NAME = `${StorePrefix.OFFERS}-${StoreVersion.OFFERS}`;
@@ -55,13 +58,19 @@ render(tripMainElement, addButtonComponent, RenderPosition.BEFOREEND);
 addButtonComponent.disableElement();
 
 const tripMainInfoSectionElement = tripMainElement.querySelector(`.trip-info`);
-render(tripMainInfoSectionElement, new InfoComponent(), RenderPosition.BEFOREEND);
-render(tripMainInfoSectionElement, new CostComponent(), RenderPosition.BEFOREEND);
+const infoController = new InfoController(tripMainInfoSectionElement, pointsModel);
+infoController.render();
 
-// Trip
+const costController = new CostController(tripMainInfoSectionElement, pointsModel);
+costController.render();
+
 const tripEventsElement = document.querySelector(`.trip-events`);
 const tripController = new TripController(tripEventsElement, pointsModel, apiWithProvider);
 tripController.render();
+
+const statisticsComponent = new StatisticsComponent(pointsModel);
+render(tripEventsElement, statisticsComponent, RenderPosition.AFTER);
+statisticsComponent.hide();
 
 tripController.setNewEventFormToggleHandler((isOpen) => {
   if (isOpen) {
@@ -71,15 +80,12 @@ tripController.setNewEventFormToggleHandler((isOpen) => {
   }
 });
 
-const statisticsComponent = new StatisticsComponent(pointsModel);
-render(tripEventsElement, statisticsComponent, RenderPosition.AFTER);
-statisticsComponent.hide();
-
-menuComponent.setOnChange((menuItem) => {
+menuComponent.setChangeHandler((menuItem) => {
   switch (menuItem) {
     case MenuItem.TABLE:
       menuComponent.setActiveItem(MenuItem.TABLE);
       statisticsComponent.hide();
+      tripController.resetSorting();
       tripController.show();
       break;
     case MenuItem.STATS:
@@ -90,7 +96,7 @@ menuComponent.setOnChange((menuItem) => {
   }
 });
 
-addButtonComponent.setOnClick(() => {
+addButtonComponent.setClickHandler(() => {
   statisticsComponent.hide();
   filterController.reset();
   tripController.show();
@@ -114,7 +120,10 @@ Promise
   })
   .then((events) => {
     pointsModel.setEvents(events);
+    infoController.render();
+    costController.render();
     tripController.setNoLoading();
+    filterController.reset();
     addButtonComponent.enableElement();
   })
   .catch(() => {

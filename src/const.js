@@ -25,9 +25,9 @@ export const ESC_KEY = `Esc`;
 export const ESCAPE_KEY = `Escape`;
 
 export const SortType = {
-  SORT_EVENT: `sort-event`,
-  SORT_TIME: `sort-time`,
-  SORT_PRICE: `sort-price`
+  EVENT: `sort-event`,
+  TIME: `sort-time`,
+  PRICE: `sort-price`
 };
 
 export const FilterType = {

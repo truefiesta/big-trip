@@ -1,34 +1,12 @@
 import {getOffersByType} from "../utils/common.js";
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
-import {ESCAPE_KEY, ESC_KEY, EventType, Mode} from "../const.js";
+import {ESCAPE_KEY, ESC_KEY, Mode} from "../const.js";
 import EventComponent from "../components/event.js";
 import EventEditComponent from "../components/event-edit.js";
 import PointModel from "../models/point.js";
 import moment from "moment";
-import cloneDeep from "../../node_modules/lodash/cloneDeep";
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
-
-const DefaultEvent = {
-  type: EventType.FLIGHT,
-  destination: ``,
-  destinationInfo: {
-    description: ``,
-    photos: []
-  },
-  offers: [],
-  time: {
-    startTime: new Date(),
-    endTime: new Date()
-  },
-  price: ``,
-  isFavorite: false
-};
-
-export const generateDefaultEvent = () => {
-  const defauldEvent = cloneDeep(DefaultEvent);
-  return defauldEvent;
-};
 
 const getOfferByOfferTitle = (eventType, offerTitle) => {
   const offers = getOffersByType(eventType);
@@ -45,7 +23,6 @@ const parseFormData = (formData) => {
   const eventType = formData.get(`event-type`);
   const selectedOffers = [];
   for (const [key, value] of formData.entries()) {
-
     if (key.startsWith(`event-offer-`)) {
       const offerTitle = value;
       const offer = getOfferByOfferTitle(eventType, offerTitle);
@@ -72,37 +49,27 @@ const parseFormData = (formData) => {
   });
 };
 
-/**
- * Отвечает за смену точки маршрута на форму редактирования.
-*/
 export default class PointController {
   constructor(container, onDataChange, onViewChange) {
-    /** @private Элемент, в который контроллер будет отрисовывать точку маршрута */
     this._container = container;
-    /** @private Функция получает на вход точку маршрута и измененную точку маршрута */
     this._onDataChange = onDataChange;
-    /** @private Функция вызывается при смене точки маршрута на форму редактирования */
     this._onViewChange = onViewChange;
-    /** @private Режим */
+
     this._mode = Mode.DEFAULT;
-    /** @private Точка маршрута */
     this._eventComponent = null;
-    /** @private Форма редактирования */
     this._eventEditComponent = null;
-    /** @private Обработчик нажатия на клавишу Escape */
+
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  /**
-   * Render method - принимает данные одной точки маршрута (события).
-   * Отвечает за отрисовку точки маршрута, ее замену на форму редактирования и
-   * наоборот.
-   * @param {object} event - Данные одной точки марштура.
-   * @param {string} mode - Режим задачи.
-   */
+  setEventIsFavorite(isFavorite) {
+    this._event.isFavorite = isFavorite;
+  }
+
   render(event, mode) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
+    this._event = event;
     this._mode = mode;
 
     this._eventComponent = new EventComponent(event);
@@ -118,9 +85,10 @@ export default class PointController {
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    this._eventEditComponent.setEventEditFormSubmitHandler(() => {
+    this._eventEditComponent.setSubmitHandler(() => {
       const formData = this._eventEditComponent.getData();
       const newEvent = parseFormData(formData);
+      newEvent.isFavorite = this._event.isFavorite;
 
       this._eventEditComponent.setData({
         saveButtonText: `Saving...`,
@@ -131,11 +99,15 @@ export default class PointController {
       this._onDataChange(this, event, newEvent);
     });
 
-    this._eventEditComponent.setEventFavoriteClickHandler(() => {
-      const newEvent = PointModel.clone(event);
+    this._eventEditComponent.setFavoriteEventClickHandler(() => {
+      const newEvent = PointModel.clone(this._event);
       newEvent.isFavorite = !newEvent.isFavorite;
 
-      this._onDataChange(this, event, newEvent);
+      this._eventEditComponent.updateData({
+        favoriteButtonState: `disabled`,
+      });
+
+      this._onDataChange(this, this._event, newEvent);
     });
 
     this._eventEditComponent.setDeleteButtonClickHandler(() => {
@@ -165,6 +137,12 @@ export default class PointController {
     }
   }
 
+  enableFavoriteButton() {
+    this._eventEditComponent.updateData({
+      favoriteButtonState: ``,
+    });
+  }
+
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToEvent();
@@ -180,6 +158,7 @@ export default class PointController {
       this._eventComponent.getElement().style.animation = ``;
 
       this._eventEditComponent.setData({
+        favoriteButtonState: ``,
         saveButtonText: `Save`,
         deleteButtonText: `Delete`,
         formState: ``,

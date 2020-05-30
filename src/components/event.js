@@ -2,9 +2,6 @@ import AbstractComponent from "../components/abstract-component.js";
 import {formatTime, formatDate, formatDurationFromDates, capitalize} from "../utils/common.js";
 import {activityTypes} from "../const.js";
 
-// В колонке «Offers» отображаются не более 3-х дополнительных опций,
-// применённых к точке маршрута. Остальные опции пользователь может
-// посмотреть открыв карточку точки маршрута.
 const SELECTED_OFFERS_COUNT = 3;
 
 const createOffersMarkup = (offers) => {
@@ -19,7 +16,7 @@ const createOffersMarkup = (offers) => {
   }).join(`\n`);
 };
 
-export const createTripEventItemTemplate = (event) => {
+const createTripEventItemTemplate = (event) => {
   const {type, destination, offers, time, price} = event;
   const isActivityType = activityTypes.includes(type.toLowerCase()) ? ` in` : ` to`;
   const selectedOffers = offers.slice(0, SELECTED_OFFERS_COUNT);
@@ -64,11 +61,11 @@ export default class Event extends AbstractComponent {
     this._event = event;
   }
 
-  getTemplate() {
-    return createTripEventItemTemplate(this._event);
-  }
-
   setOpenButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
+  }
+
+  getTemplate() {
+    return createTripEventItemTemplate(this._event);
   }
 }

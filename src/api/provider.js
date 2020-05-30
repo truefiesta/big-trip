@@ -14,7 +14,6 @@ const createEventsStoreStructure = (items) => {
   }, {});
 };
 
-
 export default class Provider {
   constructor(api, eventsStore, destinationsStore, offersStore) {
     this._api = api;
@@ -28,7 +27,7 @@ export default class Provider {
     if (this._isOnline()) {
       return this._api.createEvent(event)
         .then((newEvent) => {
-          this._eventsStore.setItem(newEvent.id, newEvent.toRAW());
+          this._eventsStore.setItem(newEvent.id, newEvent.convertToRaw());
 
           return newEvent;
         });
@@ -39,7 +38,7 @@ export default class Provider {
     event.setId(localNewEventId);
 
     const localNewEvent = PointModel.clone(event);
-    this._eventsStore.setItem(localNewEvent.id, localNewEvent.toRAW());
+    this._eventsStore.setItem(localNewEvent.id, localNewEvent.convertToRaw());
     this._isSyncRequired = true;
 
     return Promise.resolve(localNewEvent);
@@ -62,7 +61,7 @@ export default class Provider {
       return this._api.getEvents()
         .then((events) => {
 
-          const items = createEventsStoreStructure(events.map((event) => event.toRAW()));
+          const items = createEventsStoreStructure(events.map((event) => event.convertToRaw()));
 
           this._eventsStore.setItems(items);
 
@@ -130,7 +129,7 @@ export default class Provider {
     if (this._isOnline()) {
       return this._api.updateEvent(id, event)
         .then((newEvent) => {
-          this._eventsStore.setItem(newEvent.id, newEvent.toRAW());
+          this._eventsStore.setItem(newEvent.id, newEvent.convertToRaw());
 
           return newEvent;
         });
@@ -138,7 +137,7 @@ export default class Provider {
 
     event.setId(id);
     const localEvent = PointModel.clone(event);
-    this._eventsStore.setItem(id, localEvent.toRAW());
+    this._eventsStore.setItem(id, localEvent.convertToRaw());
     this._isSyncRequired = true;
 
     return Promise.resolve(localEvent);
