@@ -29,11 +29,10 @@ const createEventTypesMarkup = (allTypes, type) => {
 };
 
 const compareOffers = (offerOne, offerTwo) => {
-  if (offerOne.title === offerTwo.title &&
-    offerOne.price === offerTwo.price) {
-    return true;
-  }
-  return false;
+  return (
+    offerOne.title === offerTwo.title &&
+    offerOne.price === offerTwo.price
+  );
 };
 
 const createAvailableOffersMarkup = (eventType, allOffersForEventType, selectedEventOffers) => {
