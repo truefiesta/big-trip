@@ -196,11 +196,7 @@ const createTripEventEditFormTemplate = (options = {}, mode, isInitialView) => {
   const eventErrorStyle = externalData.isError ? `event--error` : ``;
 
   return (
-    `<form class="event trip-events__item event--edit ${eventErrorStyle}" action="#" method="POST" data-netlify="true" netlify-honeypot="bot-field" name="event-form" ${formState}>
-      <input type="hidden" name="form-name" value="event-form">
-      <p style="visibility: hidden; height: 0">
-        <label>No need to fill it: <input name="bot-field" /></label>
-      </p>
+    `<form class="event trip-events__item event--edit ${eventErrorStyle}" action="#" method="POST" ${formState}>
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
