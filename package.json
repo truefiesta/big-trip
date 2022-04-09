@@ -27,7 +27,7 @@
     "chartjs-plugin-datalabels": "0.7.0",
     "flatpickr": "4.6.3",
     "lodash": "^4.17.20",
-    "moment": "2.24.0",
+    "moment": "2.29.2",
     "nanoid": "3.1.9"
   }
 }
